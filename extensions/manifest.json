@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "CyberHunter - Email Protection",
+  "version": "1.0.0",
+  "description": "Real-time phishing detection for emails using machine learning",
+  "permissions": [
+    "activeTab",
+    "storage"
+  ],
+  "host_permissions": [
+    "*://mail.google.com/*",
+    "*://outlook.live.com/*",
+    "*://outlook.office.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://mail.google.com/*",
+        "*://outlook.live.com/*",
+        "*://outlook.office.com/*"
+      ],
+      "js": ["content.js"],
+      "css": ["styles.css"],
+      "run_at": "document_idle"
+    }
+  ],
+  "action": {
+    "default_popup": "popup.html",
+    "default_icon": {
+      "16": "icons/CyberHunter",
+      "48": "icons/CyberHunter",
+      "128": "icons/CyberHunter"
+    }
+  },
+  "icons": {
+    "16": "icons/CyberHunter",
+    "48": "icons/CyberHunter",
+    "128": "icons/CyberHunter"
+  },
+  "web_accessible_resources": [
+    {
+      "resources": ["warning-banner.html"],
+      "matches": ["*://mail.google.com/*", "*://outlook.live.com/*", "*://outlook.office.com/*"]
+    }
+  ]
+}

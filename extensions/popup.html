@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CyberHunter</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            width: 360px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: linear-gradient(135deg, #0a0e17 0%, #131820 100%);
+            color: #e8eaed;
+            padding: 0;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            padding: 20px;
+            text-align: center;
+            color: #0a0e17;
+        }
+
+        .logo {
+            font-size: 40px;
+            margin-bottom: 8px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: 800;
+            margin-bottom: 4px;
+        }
+
+        .tagline {
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .content {
+            padding: 20px;
+        }
+
+        .status-card {
+            background: #1a2030;
+            border-radius: 12px;
+            padding: 16px;
+            margin-bottom: 16px;
+            border: 1px solid #2a3140;
+        }
+
+        .status-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 12px;
+        }
+
+        .status-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 20px;
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+        }
+
+        .status-text {
+            flex: 1;
+        }
+
+        .status-title {
+            font-weight: 700;
+            font-size: 14px;
+            margin-bottom: 2px;
+        }
+
+        .status-subtitle {
+            font-size: 12px;
+            color: #9aa0a6;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-box {
+            background: #1a2030;
+            border-radius: 10px;
+            padding: 14px;
+            text-align: center;
+            border: 1px solid #2a3140;
+        }
+
+        .stat-value {
+            font-size: 24px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 4px;
+        }
+
+        .stat-label {
+            font-size: 11px;
+            color: #9aa0a6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .recent-scans {
+            margin-top: 16px;
+        }
+
+        .section-title {
+            font-size: 13px;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: #9aa0a6;
+            margin-bottom: 10px;
+        }
+
+        .scan-item {
+            background: #1a2030;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border: 1px solid #2a3140;
+        }
+
+        .scan-icon {
+            font-size: 18px;
+        }
+
+        .scan-details {
+            flex: 1;
+            font-size: 12px;
+        }
+
+        .scan-time {
+            color: #9aa0a6;
+            font-size: 10px;
+        }
+
+        .scan-risk {
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .risk-high {
+            background: rgba(255, 51, 102, 0.2);
+            color: #ff5577;
+        }
+
+        .risk-medium {
+            background: rgba(255, 170, 0, 0.2);
+            color: #ffbb33;
+        }
+
+        .risk-low {
+            background: rgba(0, 255, 136, 0.2);
+            color: #00ff88;
+        }
+
+        .footer {
+            padding: 16px 20px;
+            background: #0a0e17;
+            border-top: 1px solid #2a3140;
+            text-align: center;
+        }
+
+        .website-link {
+            display: inline-block;
+            padding: 10px 20px;
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            color: #0a0e17;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: transform 0.2s;
+        }
+
+        .website-link:hover {
+            transform: translateY(-2px);
+        }
+
+        .no-scans {
+            text-align: center;
+            padding: 30px 20px;
+            color: #9aa0a6;
+            font-size: 13px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="logo">🛡️</div>
+        <h1>CyberHunter</h1>
+        <p class="tagline">AI-Powered Email Protection</p>
+    </div>
+
+    <div class="content">
+        <div class="status-card">
+            <div class="status-header">
+                <div class="status-icon">✓</div>
+                <div class="status-text">
+                    <div class="status-title">Protection Active</div>
+                    <div class="status-subtitle">Monitoring your emails</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-value" id="totalScans">0</div>
+                <div class="stat-label">Total Scans</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-value" id="threatsBlocked">0</div>
+                <div class="stat-label">Threats Blocked</div>
+            </div>
+        </div>
+
+        <div class="recent-scans">
+            <div class="section-title">Recent Scans</div>
+            <div id="scanList">
+                <div class="no-scans">No scans yet. Open an email to see protection in action!</div>
+            </div>
+        </div>
+    </div>
+
+    <div class="footer">
+        <a href="#" class="website-link" id="websiteLink">View Full Dashboard</a>
+    </div>
+
+    <script src="popup.js"></script>
+</body>
+</html>
