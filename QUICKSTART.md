@@ -1,172 +1,188 @@
-# 🚀 CyberHunter - Quick Start Guide
+# CyberHunter - Quick Start Guide
 
-Welcome to CyberHunter! Get started in 5 minutes.
+Get started in 5 minutes.
 
-## ⚡ Quick Setup
+## Quick Setup
 
-### 1. Test the Web Dashboard (Instant!)
+### 1. Train the ML Model (Required First)
 
-No installation needed - just open the file:
+The ML model must be trained before the API or website can use it.
 
 ```bash
-# Navigate to the website folder
-cd phishing-detector/website
+cd ml-model
 
-# Open index.html in your browser
-# Double-click the file OR run:
-python -m http.server 8000
-# Then visit: http://localhost:8000
+# Install dependencies
+pip install flask flask-cors numpy scikit-learn
+
+# Train the Random Forest model
+python train_model.py
 ```
 
-**Try it now:**
-- Enter a URL like `https://google.com` (should be safe)
-- Try `http://paypa1-verify.tk` (should be flagged as phishing)
+This creates `cyberhunter_ml_model.pkl` using the training data from `training_data.py`, which contains two separate datasets:
+- **EMAIL_TRAINING_DATA** - phishing and legitimate email samples
+- **URL_TRAINING_DATA** - phishing and legitimate URL samples
 
-### 2. Install the Browser Extension (2 minutes)
+Both are combined into `TRAINING_DATA` for model training.
+
+### 2. Start the API Server
+
+```bash
+cd ml-model
+python api_server.py
+```
+
+The API runs at `http://localhost:5000` with these endpoints:
+- `POST /api/analyze` - Analyze a URL or email
+- `POST /api/batch-analyze` - Analyze multiple items
+- `GET /api/health` - Health check
+- `GET /api/stats` - Usage statistics
+- `GET /api/features` - Model feature info
+
+### 3. Open the Web Dashboard
+
+Open `index.html` in your browser, or serve it locally:
+
+```bash
+python -m http.server 8000
+# Visit http://localhost:8000
+```
+
+The dashboard works in two modes:
+- **With API running** - Uses the Random Forest ML model for full analysis
+- **Without API** - Falls back to client-side detection (limited but functional)
+
+### 4. Install the Browser Extension
 
 **Chrome/Edge:**
 1. Open `chrome://extensions/`
 2. Turn ON "Developer mode" (top-right)
 3. Click "Load unpacked"
-4. Select the `phishing-detector/extension` folder
-5. Done! 🎉
+4. Select the `extensions` folder
+5. Open Gmail - the extension scans emails automatically
 
-**Test it:**
-1. Open Gmail
-2. The extension will show scanning indicators on emails
-3. Click the extension icon to see stats
+The extension does two things per email:
+- Analyzes the **sender email address** for phishing patterns
+- Scans all **links in the email body** for malicious URLs
+- If any link scores 70%+, the email is flagged high risk and links are highlighted/blocked
 
-### 3. Run the ML Model & API (Optional)
+## What Each Component Does
 
-For the full system with API:
+### Web Dashboard (`index.html`)
+- Visual URL scanner with feature-by-feature breakdown
+- 10 detection features: URL length, domain age, special characters, HTTPS, subdomains, keywords, domain type, URL type, TLD risk, homograph check
+- Detects typosquatting, brand-in-subdomain, `@` credential attacks, brand-in-path
 
+### Browser Extension (`extensions/`)
+- Real-time email scanning in Gmail/Outlook
+- Dual analysis: sender email + all embedded links
+- Phishing links are visually highlighted and click-blocked
+- Results are cached so re-opening an email re-applies protection
+- Works with or without the ML API (falls back to rule-based detection)
+
+### ML Model (`ml-model/`)
+- `training_data.py` - Separated email and URL training datasets
+- `feature_extractor.py` - Extracts 19 features from emails and URLs
+- `train_model.py` - Trains Random Forest classifier
+- `phishing_detector_ml.py` - ML prediction with critical security overrides
+- `api_server.py` - Flask REST API serving the model
+- `phishing_detector.py` - Unified detector with Arabic/English language routing
+
+## What to Test
+
+### Safe URLs (should show low risk)
+- `https://google.com`
+- `https://www.amazon.com/gp/product/B08N5WRWNW`
+- `https://support.apple.com/en-us/HT201222`
+- `https://www.paypal.com/myaccount/summary`
+
+### Phishing URLs (should show high risk)
+- `http://paypa1-security-verify.tk/login` - typosquatting
+- `http://paypal.evil-site.xyz/secure/login` - brand in subdomain
+- `http://192.168.1.100/paypal/verify` - IP address as domain
+- `http://google.com@evil-site.com/login` - credential attack
+- `http://account-verify-secure.xyz/update` - suspicious TLD + keywords
+- `http://secure-login-verify-account-update-confirm.tk/auth` - many hyphens + suspicious TLD
+
+### Test via API
 ```bash
-# Navigate to ml-model folder
-cd phishing-detector/ml-model
-
-# Install dependencies
-pip install flask flask-cors numpy
-
-# Run the API server
-python api_server.py
-
-# API will be available at http://localhost:5000
-```
-
-**Test the API:**
-```bash
+# Safe URL
 curl -X POST http://localhost:5000/api/analyze \
   -H "Content-Type: application/json" \
-  -d '{"url": "https://google.com"}'
+  -d "{\"url\": \"https://google.com\"}"
+
+# Phishing URL
+curl -X POST http://localhost:5000/api/analyze \
+  -H "Content-Type: application/json" \
+  -d "{\"url\": \"http://paypa1-security-verify.tk/login\"}"
 ```
 
-### 4. Run Tests (See it in action!)
-
-```bash
-cd phishing-detector/ml-model
-python test_suite.py
-```
-
-This will show you the ML model analyzing various URLs with colored output!
-
-## 📱 What Each Component Does
-
-### Web Dashboard (website/)
-- **File:** `index.html`
-- **Purpose:** Visual URL scanner with real-time analysis
-- **Use:** Manually check suspicious URLs
-- **No server needed:** Pure HTML/CSS/JavaScript
-
-### Browser Extension (extension/)
-- **Files:** `manifest.json`, `content.js`, `popup.html`, etc.
-- **Purpose:** Automatic email protection
-- **Use:** Scans emails in Gmail/Outlook automatically
-- **Works:** Chrome, Edge, Firefox
-
-### ML Model (ml-model/)
-- **Files:** `phishing_detector.py`, `api_server.py`
-- **Purpose:** Machine learning detection engine
-- **Use:** Power the web dashboard and extension (or integrate into your apps)
-- **API:** RESTful endpoints for integration
-
-## 🎯 Common Use Cases
-
-### As a Regular User
-1. Install the browser extension → Automatic protection ✅
-2. Bookmark the web dashboard → Manual URL checking ✅
-
-### As a Developer
-1. Run the API server
-2. Integrate with your application:
+### Test via Python
 ```python
 import requests
 
-response = requests.post('http://localhost:5000/api/analyze', 
-    json={'url': 'https://example.com'})
-result = response.json()
+result = requests.post('http://localhost:5000/api/analyze',
+    json={'url': 'http://paypa1-security-verify.tk/login'}).json()
 
-if result['is_phishing']:
-    print("⚠️ Warning: This URL is suspicious!")
+print(f"Risk: {result['risk_score']}%")
+print(f"Phishing: {result['is_phishing']}")
+for msg in result['feature_analysis']:
+    print(f"  {msg}")
 ```
 
-### For Testing/Demo
-1. Run `python test_suite.py` to see the ML model in action
-2. Open `index.html` to try the visual interface
-3. Test URLs in the browser extension
+## Adding Training Data
 
-## 🔍 What to Test
+Edit `ml-model/training_data.py`:
 
-### Safe URLs (Should be GREEN/Low Risk)
-- https://google.com
-- https://github.com
-- https://microsoft.com
+```python
+# Add to EMAIL_TRAINING_DATA for email samples
+EMAIL_TRAINING_DATA = [
+    {
+        'sender_email': 'phisher@fake-bank.com',
+        'sender_name': 'Your Bank',
+        'subject': 'Urgent',
+        'body': 'Verify your account now',
+        'label': 1,  # 1 = phishing, 0 = legitimate
+        'category': 'bank_phishing'
+    },
+    ...
+]
 
-### Phishing URLs (Should be RED/High Risk)
-- http://paypa1-security.tk
-- http://amazon-prize-winner.xyz
-- https://192.168.1.1/login
+# Add to URL_TRAINING_DATA for URL samples
+URL_TRAINING_DATA = [
+    {
+        'sender_email': 'http://evil-site.tk/login',
+        'sender_name': '',
+        'subject': '',
+        'body': '',
+        'label': 1,
+        'category': 'phishing_url'
+    },
+    ...
+]
+```
 
-### Suspicious URLs (Should be YELLOW/Medium Risk)
-- http://bit.ly/abc123 (URL shortener)
-- http://verify-account-now.ml
-- https://many.sub.domains.example.com
+After adding data, retrain the model:
+```bash
+cd ml-model
+python train_model.py
+```
 
-## 💡 Pro Tips
+## Troubleshooting
 
-1. **Test Safely**: All analysis happens locally - no URLs are sent to external servers
-2. **Browser Extension**: Click the extension icon to see your scan history
-3. **API Integration**: The REST API makes it easy to integrate into any application
-4. **Feature Analysis**: Look at individual features to understand WHY something is flagged
+**"ML model not loaded" error:**
+Run `python train_model.py` first to create `cyberhunter_ml_model.pkl`.
 
-## 🆘 Troubleshooting
+**Extension not scanning emails:**
+- Refresh Gmail after installing the extension
+- Check the browser console (F12) for errors
+- Ensure the extension has permission to run on `mail.google.com`
 
-**Extension not working?**
-- Make sure you're on Gmail or Outlook
-- Refresh the page after installation
-- Check browser console for errors (F12)
-
-**API not starting?**
+**API not starting:**
 - Install dependencies: `pip install -r requirements.txt`
-- Check port 5000 isn't already in use
-- Try a different port: `app.run(port=5001)`
+- Check port 5000 isn't in use: try `python api_server.py` on a different port
 
-**Dashboard not loading?**
-- Try using a local server: `python -m http.server 8000`
-- Check browser console (F12) for errors
-- Make sure JavaScript is enabled
+**Links not highlighted on second view:**
+Fixed - the extension now re-applies link highlighting from cache when Gmail re-renders the email DOM.
 
-## 📚 Next Steps
-
-1. Read the full README.md for detailed documentation
-2. Check out the API documentation
-3. Explore the ML model code
-4. Customize the features and thresholds
-5. Contribute improvements!
-
-## 🎉 You're All Set!
-
-CyberHunter is now protecting you from phishing attacks. Stay safe! 🛡️
-
----
-
-**Need Help?** Check the README.md or open an issue on GitHub
+**Dashboard shows "ML API server is not running":**
+Start the API with `python ml-model/api_server.py`. The dashboard will fall back to client-side detection without it, but ML detection is more accurate.
