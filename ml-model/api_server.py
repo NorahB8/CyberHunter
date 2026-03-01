@@ -3,11 +3,14 @@ CyberHunter API Server
 Flask-based REST API for phishing detection using Random Forest ML
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 from phishing_detector_ml import PhishingMLDetector
 import logging
 from datetime import datetime
+import os
+import zipfile
+import io
 app = Flask(__name__)
 CORS(app)  # Enable CORS for browser extension and web interface
 
@@ -244,6 +247,51 @@ def get_features():
         'cv_score': model.cv_score,
         'description': 'Features learned by Random Forest classifier from training data'
     })
+
+
+@app.route('/api/download-extension', methods=['GET'])
+def download_extension():
+    """Download browser extension as ZIP file"""
+    try:
+        # Get the extensions folder path (one level up from ml-model)
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(current_dir)
+        extensions_dir = os.path.join(project_root, 'extensions')
+
+        if not os.path.exists(extensions_dir):
+            return jsonify({
+                'error': 'Extensions folder not found'
+            }), 404
+
+        # Create ZIP file in memory
+        memory_file = io.BytesIO()
+        with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zf:
+            # Walk through the extensions directory
+            for root, dirs, files in os.walk(extensions_dir):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    # Calculate the archive name (relative path from extensions_dir)
+                    arcname = os.path.relpath(file_path, extensions_dir)
+                    zf.write(file_path, arcname)
+
+        # Seek to the beginning of the BytesIO buffer
+        memory_file.seek(0)
+
+        logger.info("Extension ZIP file created successfully")
+
+        return send_file(
+            memory_file,
+            mimetype='application/zip',
+            as_attachment=True,
+            download_name='cyberhunter-extension.zip'
+        )
+
+    except Exception as e:
+        logger.error(f"Error creating extension ZIP: {str(e)}")
+        return jsonify({
+            'error': 'Failed to create extension ZIP',
+            'message': str(e)
+        }), 500
 
 
 @app.errorhandler(404)

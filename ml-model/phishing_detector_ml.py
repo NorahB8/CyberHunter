@@ -6,6 +6,7 @@ Uses trained Random Forest model for predictions
 import pickle
 import os
 from typing import Dict
+from feature_extractor import FeatureExtractor
 
 class PhishingMLDetector:
     """ML-based phishing detector using trained Random Forest model"""
@@ -25,7 +26,8 @@ class PhishingMLDetector:
             model_data = pickle.load(f)
 
         self.model = model_data['model']
-        self.feature_extractor = model_data['feature_extractor']
+        # Always use fresh FeatureExtractor so code changes take effect immediately
+        self.feature_extractor = FeatureExtractor()
         self.feature_names = model_data['feature_names']
         self.model_accuracy = model_data['accuracy']
         self.cv_score = model_data['cv_score']

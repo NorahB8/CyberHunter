@@ -63,9 +63,12 @@ class FeatureExtractor:
             'apple': ['apple.com', 'icloud.com', 'email.apple.com'],
             'google': ['google.com', 'gmail.com'],
             'netflix': ['netflix.com', 'mailer.netflix.com'],
+            'ebay': ['ebay.com'],
             'chase': ['chase.com'],
             'الراجحي': ['alrajhibank.com.sa'],
             'راجحي': ['alrajhibank.com.sa'],
+            'sephora': ['sephora.com', 'sephora.sa', 'sephora-info-fr.com', 'sephora-info-me.com'],
+            'loccitane': ['loccitane.com', 'email-loccitane.com'],
             'stc': ['stc.com.sa'],
             'موبايلي': ['mobily.com.sa']
         }
@@ -125,10 +128,11 @@ class FeatureExtractor:
         return {'domain': input_lower, 'username': '', 'is_url': False, 'full_path': ''}
 
     def extract_features(self, email_data):
-        """Extract feature vector from email"""
+        """Extract feature vector from email or URL entry"""
         features = {}
 
-        sender_email = email_data.get('sender_email', '').lower()
+        # Support both 'sender_email' (email entries) and 'url' (URL entries)
+        sender_email = email_data.get('sender_email', email_data.get('url', '')).lower()
         sender_name = email_data.get('sender_name', '').lower()
         subject = email_data.get('subject', '').lower()
         body = email_data.get('body', '').lower()
@@ -197,6 +201,17 @@ class FeatureExtractor:
 
         # Feature 19: Direct typosquatting detection in domain
         features['typosquatting'] = self._check_typosquatting(sender_email)
+
+        # Feature 20: Legitimate email username pattern (negative = safe signal)
+        features['legitimate_username'] = self._check_legitimate_username(sender_email)
+
+        # Feature 21: Sender name vs domain mismatch
+        features['name_domain_mismatch'] = self._check_name_domain_mismatch(
+            sender_email, sender_name
+        )
+
+        # Feature 22: Domain age (new/suspicious domain detection)
+        features['domain_age_suspicious'] = self._check_domain_age(sender_email)
 
         return features
 
@@ -390,13 +405,44 @@ class FeatureExtractor:
             'g00gle': 'google',      # 0 instead of o
             'micr0soft': 'microsoft', # 0 instead of o
             'appl3': 'apple',        # 3 instead of e
-            'amaz0n': 'amazon',      # 0 instead of o
+            'app1e': 'apple',        # 1 instead of l
+            'amaz0n': 'amazon',      # 0 instead of second o
+            'ama0zon': 'amazon',     # 0 instead of first o
+            '4mazon': 'amazon',      # 4 instead of a
             'faceb00k': 'facebook',  # 0 instead of o
+            'fac3book': 'facebook',  # 3 instead of e
             'netf1ix': 'netflix',    # 1 instead of l
+            'netfl1x': 'netflix',    # 1 instead of i
+            'netf1ix': 'netflix',    # 1 instead of li
+            'n3tflix': 'netflix',    # 3 instead of e
             'twitt3r': 'twitter',    # 3 instead of e
             'linkdin': 'linkedin',   # missing e
+            'l1nkedin': 'linkedin',  # 1 instead of i
             'dh1': 'dhl',            # 1 instead of l
             'fed3x': 'fedex',        # 3 instead of e
+            'f3dex': 'fedex',        # 3 instead of first e
+            'f3d3x': 'fedex',        # 3 instead of both e's
+            'g0ogle': 'google',      # 0 instead of first o
+            'goog1e': 'google',      # 1 instead of l
+            'go0gle': 'google',      # 0 instead of second o
+            'micosoft': 'microsoft', # missing r
+            'microsfot': 'microsoft', # transposed letters
+            'paypal1': 'paypal',     # extra 1
+            'paypai': 'paypal',      # i instead of l
+            'ch4se': 'chase',        # 4 instead of a
+            'we11sfargo': 'wellsfargo', # 1 instead of l
+            's0ephora': 'sephora',   # 0 instead of e
+            'seph0ra': 'sephora',    # 0 instead of o
+            'seph1ra': 'sephora',    # 1 instead of o
+            'seph6ra': 'sephora',    # 6 instead of o
+            'sephura': 'sephora',    # u instead of o (misspelling)
+            'sephoora': 'sephora',   # double o
+            'sephu0ra': 'sephora',   # u and 0
+            'sephora1': 'sephora',   # 1 instead of l (trailing)
+            's3phora': 'sephora',    # 3 instead of e
+            'eb4y': 'ebay',          # 4 instead of a
+            'ebai': 'ebay',          # i instead of y (misspelling)
+            '3bay': 'ebay',          # 3 instead of e
         }
 
         # Check if domain matches any typosquatting pattern
@@ -405,12 +451,113 @@ class FeatureExtractor:
                 return 1
 
         # Check for common character substitutions
-        # Look for patterns like: o→0, l→1, e→3, i→1, s→5
-        # ONLY flag if it's NOT already a legitimate domain
-        if any(char in domain for char in ['0', '1', '3', '5']) and \
-           any(brand in domain.replace('0', 'o').replace('1', 'l').replace('3', 'e').replace('5', 's')
-               for brand in ['paypal', 'google', 'microsoft', 'apple', 'amazon', 'facebook', 'dhl', 'fedex']):
+        # Look for patterns like: o→0, l→1, e→3, i→1, s→5, a→4
+        # ONLY flag if the brand appears in normalized version but NOT in the original
+        # (i.e., the numbers are actually disguising the brand name)
+        if any(char in domain for char in ['0', '1', '3', '4', '5', '6']):
+            normalized = domain.replace('0', 'o').replace('1', 'l').replace('3', 'e').replace('5', 's').replace('4', 'a').replace('6', 'b')
+            for brand in ['paypal', 'google', 'microsoft', 'apple', 'amazon', 'facebook', 'dhl', 'fedex', 'sephora', 'ebay', 'netflix']:
+                if brand in normalized and brand not in domain:
+                    return 1
+
+        return 0
+
+    def _check_legitimate_username(self, email):
+        """Check if email username matches common legitimate patterns.
+        Returns 1 if legitimate (safe signal), 0 otherwise."""
+        parsed = self._parse_input(email)
+        if parsed['is_url']:
+            return 0  # Not applicable for URLs
+        username = parsed['username'].lower()
+        if not username:
+            return 0
+
+        # Common legitimate business email prefixes
+        legitimate_prefixes = [
+            'info', 'contact', 'support', 'help', 'sales', 'team',
+            'hello', 'admin', 'office', 'service', 'billing',
+            'noreply', 'no-reply', 'do-not-reply', 'donotreply',
+            'newsletters', 'newsletter', 'news', 'updates', 'marketing',
+            'notifications', 'notification', 'notify', 'alert', 'alerts',
+            'customercare', 'customer-care', 'customerservice',
+            'feedback', 'enquiry', 'inquiry', 'press', 'media', 'hr',
+            'careers', 'jobs', 'orders', 'shipping', 'returns',
+            'welcome', 'community', 'events', 'webmaster', 'postmaster'
+        ]
+
+        if username in legitimate_prefixes:
             return 1
+        return 0
+
+    def _check_name_domain_mismatch(self, email, sender_name):
+        """Detect mismatch between sender display name and email domain.
+        E.g., Western name 'Charles Koch' from Japanese domain ruby.plala.or.jp"""
+        parsed = self._parse_input(email)
+        if parsed['is_url'] or not sender_name:
+            return 0
+
+        domain = parsed['domain'].lower() if parsed['domain'] else ''
+        name = sender_name.lower().strip()
+        if not domain or not name:
+            return 0
+
+        # Check for Japanese/Asian ISP domains with Western names
+        jp_domains = ['.jp', '.or.jp', '.co.jp', '.ne.jp']
+        cn_domains = ['.cn', '.com.cn']
+        kr_domains = ['.kr', '.co.kr']
+
+        # Check if name looks Western (ASCII letters, common Western pattern)
+        is_western_name = bool(re.match(r'^[a-z\s\-\.\']+$', name)) and len(name.split()) >= 2
+
+        if is_western_name:
+            if any(domain.endswith(d) for d in jp_domains + cn_domains + kr_domains):
+                return 1
+
+        # Check for Japanese ISP consumer domains with any non-Japanese name
+        jp_isps = ['plala.or.jp', 'ocn.ne.jp', 'biglobe.ne.jp', 'nifty.com',
+                    'so-net.ne.jp', 'dti.ne.jp', 'infoweb.ne.jp']
+        if any(domain.endswith(isp) for isp in jp_isps) and is_western_name:
+            return 1
+
+        return 0
+
+    def _check_domain_age(self, email):
+        """Check if domain shows signs of being new/temporary.
+        Uses heuristic approach (no WHOIS) for speed.
+        Returns 1 if domain appears suspicious/temporary, 0 otherwise."""
+        parsed = self._parse_input(email)
+        domain = parsed['domain']
+        if not domain:
+            return 0
+
+        domain_lower = domain.lower()
+
+        # Check if it's a legitimate brand domain first
+        legitimate_domains_list = []
+        for domains in self.legitimate_brands.values():
+            legitimate_domains_list.extend(domains)
+
+        if any(legit_domain in domain_lower for legit_domain in legitimate_domains_list):
+            return 0  # Known legitimate brand - safe
+
+        # Check for disposable/free TLDs (strong signal of temporary domains)
+        disposable_tlds = [
+            '.tk', '.ml', '.ga', '.cf', '.gq',  # Freenom free TLDs
+            '.xyz', '.top', '.club', '.site', '.online', '.website',  # Cheap TLDs
+            '.win', '.bid', '.trade', '.stream', '.download'  # Suspicious TLDs
+        ]
+
+        for tld in disposable_tlds:
+            if domain_lower.endswith(tld):
+                return 1  # Likely temporary/new domain
+
+        # Check for patterns common in new phishing domains
+        # Long domains with hyphens + suspicious keywords
+        if '-' in domain_lower and len(domain_lower) > 25:
+            spam_keywords = ['verify', 'secure', 'login', 'account', 'update',
+                           'confirm', 'check', 'validation', 'security']
+            if any(kw in domain_lower for kw in spam_keywords):
+                return 1
 
         return 0
 

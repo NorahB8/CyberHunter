@@ -47,6 +47,9 @@ class EmailPhishingDetector {
             'الرياض': ['riyadbank.com'],
             'رياض': ['riyadbank.com'],
             'البنك العربي': ['arabbank.com'],
+            'sephora': ['sephora.com', 'sephora.sa', 'sephora-info-fr.com', 'sephora-info-me.com'],
+            'loccitane': ['loccitane.com', 'email-loccitane.com'],
+            "l'occitane": ['loccitane.com', 'email-loccitane.com'],
             'stc': ['stc.com.sa'],
             'موبايلي': ['mobily.com.sa'],
             'زين': ['sa.zain.com']
@@ -580,7 +583,7 @@ class EmailPhishingDetector {
         const email = emailData.senderEmail.toLowerCase();
 
         // Common spoofing patterns
-        const trustedBrands = ['paypal', 'amazon', 'microsoft', 'apple', 'google', 'bank'];
+        const trustedBrands = ['paypal', 'amazon', 'microsoft', 'apple', 'google', 'bank', 'sephora', 'loccitane'];
         
         trustedBrands.forEach(brand => {
             if (sender.includes(brand) && !email.includes(brand)) {
@@ -819,9 +822,25 @@ class EmailPhishingDetector {
         }
 
         try {
-            const username = emailAddress.split('@')[0].trim();
+            const username = emailAddress.split('@')[0].trim().toLowerCase();
             let score = 0;
             let issues = [];
+
+            // Check for legitimate business email usernames FIRST (safe signal)
+            const legitimateUsernames = [
+                'info', 'contact', 'support', 'help', 'sales', 'team',
+                'hello', 'admin', 'office', 'service', 'billing',
+                'noreply', 'no-reply', 'do-not-reply', 'donotreply',
+                'newsletters', 'newsletter', 'news', 'updates', 'marketing',
+                'notifications', 'notification', 'notify', 'alert', 'alerts',
+                'customercare', 'customer-care', 'customerservice',
+                'feedback', 'enquiry', 'inquiry', 'press', 'media', 'hr',
+                'careers', 'jobs', 'orders', 'shipping', 'returns',
+                'welcome', 'community', 'events', 'webmaster', 'postmaster'
+            ];
+            if (legitimateUsernames.includes(username)) {
+                return { score: 0, issues: [], isLegitimate: true };
+            }
 
             // Very short usernames (1-2 chars) are suspicious
             if (username.length <= 2) {
