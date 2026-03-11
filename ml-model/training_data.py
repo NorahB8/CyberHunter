@@ -157,9 +157,9 @@ EMAIL_TRAINING_DATA = [
         'category': 'security_alert'
     },
 
-    # === ADVANCE-FEE FRAUD / DONATION & PAYMENT SCAMS (label=1) ===
+    # === ADVANCE-FEE FRAUD / DONATION & PAYMENT SCAMS (label=1) 
 
-    # Inheritance / donation scam - Japanese domain
+    # Inheritance / donation scam 
     {
         'sender_email': 'nenkin.hyogo@ruby.plala.or.jp',
         'sender_name': 'Charles Koch',
@@ -169,7 +169,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'money_scam'
     },
 
-    # Lottery / prize scam - free email domain
+    # Lottery scam 
     {
         'sender_email': 'award.notification2024@gmail.com',
         'sender_name': 'International Lottery Foundation',
@@ -178,13 +178,21 @@ EMAIL_TRAINING_DATA = [
         'label': 1,
         'category': 'money_scam'
     },
+{
+        'sender_email': 'hfyueo7@aw.ard24891@gmail.com',
+        'sender_name': 'International Lottery Foundation',
+        'subject': '$600000 Prize - Claim Now',
+        'body': 'You have been randomly selected as a winner of our international lottery. Your email was picked from millions. Send Full name and credit card information to receive.',
+        'label': 1,
+        'category': 'money_scam'
+    },
 
     # Dying widow donation scam
     {
-        'sender_email': 'mrs.grace.donation@outlook.com',
+        'sender_email': 'athf@mon.com',
         'sender_name': 'Mrs Grace Williams',
         'subject': 'Donate My Wealth To You Before I Die',
-        'body': 'I am a dying widow with no children. I have USD8.5 million in a bank account and I want to donate it to a God-fearing individual. I found your email and believe you are trustworthy. Please reply with your bank details so I can transfer the funds.',
+        'body': 'I am a dying widow with no children. I have USD8.5 million in a bank account and I want to donate it, you were selected. I found your email and believe you are trustworthy. Please reply with your bank details so I can transfer the funds.',
         'label': 1,
         'category': 'money_scam'
     },
