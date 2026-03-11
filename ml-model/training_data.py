@@ -157,6 +157,108 @@ EMAIL_TRAINING_DATA = [
         'category': 'security_alert'
     },
 
+    # === ADVANCE-FEE FRAUD / DONATION & PAYMENT SCAMS (label=1) ===
+
+    # Inheritance / donation scam - Japanese domain
+    {
+        'sender_email': 'nenkin.hyogo@ruby.plala.or.jp',
+        'sender_name': 'Charles Koch',
+        'subject': 'DONATION NOTICE.REF:MDD9926',
+        'body': 'my late brother Mr. David Hamilton Koch decided to give USD2,000,000.00 Million Dollars to randomly selected individuals worldwide. On receipt of this email you should count yourself as the lucky individual. Kindly get back to me so that I will know your email address is valid.',
+        'label': 1,
+        'category': 'advance_fee_fraud'
+    },
+
+    # Lottery / prize scam - free email domain
+    {
+        'sender_email': 'award.notification2024@gmail.com',
+        'sender_name': 'International Lottery Foundation',
+        'subject': 'You Have Won $5,000,000.00 - Claim Now',
+        'body': 'You have been randomly selected as a winner of our international lottery. Your email was picked from millions of addresses. To claim your prize of five million dollars send your full name, address and phone number immediately.',
+        'label': 1,
+        'category': 'advance_fee_fraud'
+    },
+
+    # Dying widow donation scam
+    {
+        'sender_email': 'mrs.grace.donation@outlook.com',
+        'sender_name': 'Mrs Grace Williams',
+        'subject': 'Donate My Wealth To You Before I Die',
+        'body': 'I am a dying widow with no children. I have USD8.5 million in a bank account and I want to donate it to a God-fearing individual. I found your email and believe you are trustworthy. Please reply with your bank details so I can transfer the funds.',
+        'label': 1,
+        'category': 'advance_fee_fraud'
+    },
+
+    # Overpayment / refund scam - suspicious domain
+    {
+        'sender_email': 'refund-dept@payment-claims-center.tk',
+        'sender_name': 'Payment Claims Center',
+        'subject': 'Your Unclaimed Refund of $3,450.00 Awaits',
+        'body': 'Our records show you are owed an unclaimed refund. Visit our secure portal to verify your identity and receive your payment. You must claim within 48 hours or forfeit the amount.',
+        'label': 1,
+        'category': 'advance_fee_fraud'
+    },
+
+    # UN compensation fund scam
+    {
+        'sender_email': 'un.compensation2024@yahoo.com',
+        'sender_name': 'United Nations Compensation Fund',
+        'subject': 'UN Compensation Payment USD750,000',
+        'body': 'The United Nations has approved a compensation payment of USD750,000 to scam victims worldwide. Your email was selected. Contact us immediately with your full name and banking information to process your compensation.',
+        'label': 1,
+        'category': 'advance_fee_fraud'
+    },
+
+    # Bitcoin inheritance scam - plala.or.jp style domain
+    {
+        'sender_email': 'attorney.james@legal-estates.co.za',
+        'sender_name': 'Barrister James Morgan',
+        'subject': 'Deceased Client Estate - Same Surname',
+        'body': 'I am a solicitor handling the estate of a deceased client who shares your surname. He left behind 12.5 million USD with no next of kin. I propose you stand as beneficiary. This is 100% risk free and legal. Reply urgently.',
+        'label': 1,
+        'category': 'advance_fee_fraud'
+    },
+
+    # Crypto giveaway scam
+    {
+        'sender_email': 'giveaway@elon-crypto-fund.net',
+        'sender_name': 'Elon Musk Foundation',
+        'subject': 'You Have Been Selected for Our Crypto Giveaway',
+        'body': 'Elon Musk is giving back to the community. Send 0.1 BTC to our wallet and receive 1 BTC in return. This is a limited time event. Visit http://elon-crypto-fund.net/claim to register your wallet address now.',
+        'label': 1,
+        'category': 'advance_fee_fraud'
+    },
+
+    # Government grant scam - free domain
+    {
+        'sender_email': 'federal.grant.office@gmail.com',
+        'sender_name': 'Federal Grant Administration',
+        'subject': 'Government Grant Approved: $45,000 For You',
+        'body': 'You have been approved for a government small business grant of $45,000. No repayment required. You were randomly selected. To receive funds provide your Social Security Number and bank account details at http://federal-grants-claim.xyz',
+        'label': 1,
+        'category': 'advance_fee_fraud'
+    },
+
+    # Suspicious payment notification - random domain
+    {
+        'sender_email': 'payments@secure-wire-transfer-office.ru',
+        'sender_name': 'Wire Transfer Office',
+        'subject': 'Urgent: Incoming Wire Transfer Pending Your Verification',
+        'body': 'A wire transfer of $120,000 USD is pending to your account. You must verify your identity within 24 hours. Click here http://secure-wire-transfer-office.ru/verify to confirm receipt and release funds.',
+        'label': 1,
+        'category': 'advance_fee_fraud'
+    },
+
+    # Charity donation with upfront fee
+    {
+        'sender_email': 'donations@koch-family-foundation.co',
+        'sender_name': 'Koch Family Foundation',
+        'subject': 'You Are Selected to Receive a $2,000,000 Donation',
+        'body': 'The Koch Family Foundation has selected you to receive a donation of two million dollars. Before we can release the funds you must pay a small processing fee of $500. Please send payment via Western Union to activate your donation.',
+        'label': 1,
+        'category': 'advance_fee_fraud'
+    },
+
     # === LEGITIMATE EMAILS (label=0) ===
 
     # PSU domain

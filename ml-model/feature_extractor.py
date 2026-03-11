@@ -24,6 +24,15 @@ class FeatureExtractor:
             # English financial
             'payment', 'invoice', 'refund', 'transaction', 'wire transfer',
             'bank account', 'credit card', 'cvv', 'pin',
+            # Advance-fee fraud / donation scams
+            'million dollars', 'million usd', 'usd2,000,000', 'usd 2,000,000',
+            'randomly selected', 'lucky individual', 'late brother', 'deceased',
+            'next of kin', 'no next of kin', 'beneficiary', 'inheritance',
+            'dying widow', 'god-fearing', 'processing fee', 'western union',
+            'transfer the funds', 'release the funds', 'bank details',
+            'compensation payment', 'unclaimed refund', 'grant approved',
+            'count yourself', 'email address is valid', 'kindly get back',
+            'strongly believed in giving', 'give while living',
             # English shipping
             'parcel', 'delivery', 'tracking', 'warehouse', 'unable to deliver',
             'missing information', 'business days',

@@ -525,10 +525,12 @@
 
         .modal-steps li {
             counter-increment: step-counter;
-            margin-bottom: 1.5rem;
-            padding-left: 3rem;
+            margin-bottom: 0.6rem;
+            padding-left: 2rem;
             position: relative;
-            line-height: 1.6;
+            line-height: 1.4;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
         }
 
         .modal-steps li::before {
@@ -536,37 +538,167 @@
             position: absolute;
             left: 0;
             top: 0;
-            width: 32px;
-            height: 32px;
+            width: 20px;
+            height: 20px;
             background: linear-gradient(135deg, var(--primary), #00ccff);
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: 700;
+            font-size: 0.7rem;
             color: var(--bg-dark);
         }
 
         .modal-code {
             background: var(--bg-input);
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
             font-family: 'JetBrains Mono', monospace;
-            font-size: 0.85rem;
+            font-size: 0.75rem;
             color: var(--primary);
-            margin: 0.5rem 0;
+            margin: 0.25rem 0;
             border: 1px solid var(--border);
+            display: inline-block;
         }
 
         .modal-note {
-            background: rgba(255, 170, 0, 0.1);
-            border: 1px solid rgba(255, 170, 0, 0.3);
-            padding: 1rem;
-            border-radius: 12px;
-            margin-top: 1.5rem;
-            font-size: 0.9rem;
-            line-height: 1.5;
+            background: rgba(255, 170, 0, 0.08);
+            border: 1px solid rgba(255, 170, 0, 0.25);
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            margin-top: 0.75rem;
+            font-size: 0.78rem;
+            line-height: 1.4;
+            color: var(--text-secondary);
         }
+
+        /* Auth section inside modal */
+        .modal-auth-divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 1.5rem 0;
+        }
+
+        .modal-auth-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-auth-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .modal-auth-tab {
+            flex: 1;
+            padding: 0.6rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-auth-tab.active {
+            background: linear-gradient(135deg, var(--primary), #00ccff);
+            color: var(--bg-dark);
+            border-color: transparent;
+        }
+
+        .modal-auth-form {
+            display: none;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .modal-auth-form.active { display: flex; }
+
+        .modal-auth-input {
+            padding: 0.75rem 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .modal-auth-input:focus { border-color: var(--primary); }
+
+        .modal-auth-submit {
+            padding: 0.75rem;
+            background: linear-gradient(135deg, var(--primary), #00ccff);
+            border: none;
+            border-radius: 10px;
+            color: var(--bg-dark);
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .modal-auth-submit:hover { opacity: 0.85; }
+
+        .modal-auth-msg {
+            text-align: center;
+            font-size: 0.85rem;
+            min-height: 1.2em;
+        }
+
+        .modal-auth-msg.success { color: var(--primary); }
+        .modal-auth-msg.error   { color: var(--danger); }
+
+        .modal-logged-in {
+            display: none;
+            align-items: center;
+            gap: 1rem;
+            background: var(--bg-input);
+            border-radius: 12px;
+            padding: 1rem;
+            border: 1px solid var(--border);
+        }
+
+        .modal-logged-in.show { display: flex; }
+
+        .modal-logged-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #00ccff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--bg-dark);
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .modal-logged-info { flex: 1; }
+        .modal-logged-name { font-weight: 700; font-size: 0.95rem; }
+        .modal-logged-email { font-size: 0.8rem; color: var(--text-secondary); }
+
+        .modal-signout-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-signout-btn:hover { border-color: var(--danger); color: var(--danger); }
 
         @media (max-width: 768px) {
             h1 {
@@ -669,33 +801,55 @@
             <button class="modal-close" id="modalClose">×</button>
             <h2 class="modal-header">🛡️ Install CyberHunter Extension</h2>
 
+            <!-- Auth (top) -->
+            <p class="modal-auth-title">Sign in to use the extension</p>
+
+            <!-- Logged-in state -->
+            <div class="modal-logged-in" id="modalLoggedIn">
+                <div class="modal-logged-avatar" id="modalAvatar">U</div>
+                <div class="modal-logged-info">
+                    <div class="modal-logged-name" id="modalUserName">User</div>
+                    <div class="modal-logged-email" id="modalUserEmail"></div>
+                </div>
+                <button class="modal-signout-btn" id="modalSignOut">Sign Out</button>
+            </div>
+
+            <!-- Auth forms -->
+            <div id="modalAuthForms">
+                <div class="modal-auth-tabs">
+                    <button class="modal-auth-tab active" id="tabLogin">Log In</button>
+                    <button class="modal-auth-tab" id="tabSignup">Sign Up</button>
+                </div>
+
+                <form class="modal-auth-form active" id="loginForm">
+                    <input class="modal-auth-input" type="email" id="loginEmail" placeholder="Email" required>
+                    <input class="modal-auth-input" type="password" id="loginPassword" placeholder="Password" required>
+                    <button class="modal-auth-submit" type="submit">Log In</button>
+                    <div class="modal-auth-msg" id="loginMsg"></div>
+                </form>
+
+                <form class="modal-auth-form" id="signupForm">
+                    <input class="modal-auth-input" type="text" id="signupName" placeholder="Full Name" required>
+                    <input class="modal-auth-input" type="email" id="signupEmail" placeholder="Email" required>
+                    <input class="modal-auth-input" type="password" id="signupPassword" placeholder="Password (min 6 chars)" required>
+                    <button class="modal-auth-submit" type="submit">Create Account</button>
+                    <div class="modal-auth-msg" id="signupMsg"></div>
+                </form>
+            </div>
+
+            <hr class="modal-auth-divider">
+
+            <!-- Installation steps (compact) -->
             <ul class="modal-steps">
-                <li>
-                    <strong>Extract the ZIP file</strong> you just downloaded to a location on your computer
-                </li>
-                <li>
-                    Open Chrome/Edge and navigate to:
-                    <div class="modal-code">chrome://extensions</div>
-                    (For Edge: <code class="modal-code">edge://extensions</code>)
-                </li>
-                <li>
-                    Enable <strong>"Developer mode"</strong> using the toggle in the top-right corner
-                </li>
-                <li>
-                    Click <strong>"Load unpacked"</strong> button
-                </li>
-                <li>
-                    Navigate to the extracted folder and select it
-                </li>
-                <li>
-                    The CyberHunter extension will now be installed and active! 🎉
-                </li>
+                <li><strong>Extract the ZIP file</strong> to a folder on your computer</li>
+                <li>Open Chrome/Edge → <span class="modal-code">chrome://extensions</span></li>
+                <li>Enable <strong>"Developer mode"</strong> (top-right toggle)</li>
+                <li>Click <strong>"Load unpacked"</strong> and select the extracted folder</li>
+                <li>CyberHunter is now installed and active! 🎉</li>
             </ul>
 
             <div class="modal-note">
-                <strong>⚠️ Note:</strong> Make sure the ML API server is running for full protection:
-                <div class="modal-code">python ml-model/api_server.py</div>
-                The extension will work with both Gmail and Outlook web interfaces.
+                <strong>⚠️</strong> Keep the ML server running: <span class="modal-code">python ml-model/api_server.py</span>
             </div>
         </div>
     </div>
@@ -1333,6 +1487,7 @@
                 // Show installation instructions after download
                 setTimeout(() => {
                     extensionModal.classList.add('show');
+                    renderModalAuth();
                     downloadExtensionBtn.disabled = false;
                     downloadExtensionBtn.innerHTML = '<span class="download-icon">⬇</span> Download Browser Extension';
                 }, 1000);
@@ -1362,6 +1517,113 @@
                 extensionModal.classList.remove('show');
             }
         });
+
+        // ── Auth (server-backed) ─────────────────────────────────────────
+        const AUTH_API = 'http://localhost:5000/api/auth';
+        const SESSION_KEY = 'cyberhunter_session';
+        const getSession = () => JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+        const saveSession = u => {
+            localStorage.setItem(SESSION_KEY, JSON.stringify(u));
+            window.postMessage({ type: 'cyberhunter_auth', user: u }, '*');
+        };
+        const clearSession = () => {
+            localStorage.removeItem(SESSION_KEY);
+            window.postMessage({ type: 'cyberhunter_auth', user: null }, '*');
+        };
+
+        function renderModalAuth() {
+            const user = getSession();
+            const loggedInEl = document.getElementById('modalLoggedIn');
+            const formsEl = document.getElementById('modalAuthForms');
+            if (user) {
+                loggedInEl.classList.add('show');
+                formsEl.style.display = 'none';
+                document.getElementById('modalAvatar').textContent = user.name.charAt(0).toUpperCase();
+                document.getElementById('modalUserName').textContent = user.name;
+                document.getElementById('modalUserEmail').textContent = user.email;
+            } else {
+                loggedInEl.classList.remove('show');
+                formsEl.style.display = '';
+            }
+        }
+
+        // Tab switching
+        document.getElementById('tabLogin').addEventListener('click', () => {
+            document.getElementById('tabLogin').classList.add('active');
+            document.getElementById('tabSignup').classList.remove('active');
+            document.getElementById('loginForm').classList.add('active');
+            document.getElementById('signupForm').classList.remove('active');
+        });
+        document.getElementById('tabSignup').addEventListener('click', () => {
+            document.getElementById('tabSignup').classList.add('active');
+            document.getElementById('tabLogin').classList.remove('active');
+            document.getElementById('signupForm').classList.add('active');
+            document.getElementById('loginForm').classList.remove('active');
+        });
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
+            const password = document.getElementById('loginPassword').value;
+            const msg = document.getElementById('loginMsg');
+            try {
+                const res = await fetch(`${AUTH_API}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (!data.success) {
+                    msg.textContent = data.error;
+                    msg.className = 'modal-auth-msg error';
+                    return;
+                }
+                saveSession(data.user);
+                msg.textContent = '';
+                renderModalAuth();
+            } catch {
+                msg.textContent = 'Server unavailable. Make sure the API server is running.';
+                msg.className = 'modal-auth-msg error';
+            }
+        });
+
+        // Sign up
+        document.getElementById('signupForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim().toLowerCase();
+            const password = document.getElementById('signupPassword').value;
+            const msg = document.getElementById('signupMsg');
+            try {
+                const res = await fetch(`${AUTH_API}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await res.json();
+                if (!data.success) {
+                    msg.textContent = data.error;
+                    msg.className = 'modal-auth-msg error';
+                    return;
+                }
+                saveSession(data.user);
+                msg.textContent = '';
+                renderModalAuth();
+            } catch {
+                msg.textContent = 'Server unavailable. Make sure the API server is running.';
+                msg.className = 'modal-auth-msg error';
+            }
+        });
+
+        // Sign out
+        document.getElementById('modalSignOut').addEventListener('click', () => {
+            clearSession();
+            renderModalAuth();
+        });
+
+        // Render auth state on page load
+        renderModalAuth();
     </script>
 </body>
 </html>

@@ -211,6 +211,120 @@
             color: #9aa0a6;
             font-size: 13px;
         }
+
+        /* Profile / Auth */
+        .profile-section {
+            padding: 16px 20px;
+            border-top: 1px solid #2a3140;
+        }
+
+        .profile-logged-in {
+            display: none;
+            align-items: center;
+            gap: 10px;
+            background: #1a2030;
+            border-radius: 10px;
+            padding: 12px;
+            border: 1px solid #2a3140;
+        }
+
+        .profile-logged-in.show { display: flex; }
+
+        .profile-avatar {
+            width: 38px;
+            height: 38px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: #0a0e17;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        .profile-info { flex: 1; }
+        .profile-name { font-weight: 700; font-size: 13px; }
+        .profile-email { font-size: 11px; color: #9aa0a6; }
+
+        .profile-signout {
+            background: none;
+            border: 1px solid #2a3140;
+            color: #9aa0a6;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 11px;
+            cursor: pointer;
+        }
+
+        .profile-signout:hover { border-color: #ff3366; color: #ff3366; }
+
+        .auth-section { display: block; }
+
+        .auth-tabs {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 10px;
+        }
+
+        .auth-tab {
+            flex: 1;
+            padding: 6px;
+            background: #1a2030;
+            border: 1px solid #2a3140;
+            border-radius: 7px;
+            color: #9aa0a6;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .auth-tab.active {
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            color: #0a0e17;
+            border-color: transparent;
+        }
+
+        .auth-form {
+            display: none;
+            flex-direction: column;
+            gap: 7px;
+        }
+
+        .auth-form.active { display: flex; }
+
+        .auth-input {
+            padding: 8px 10px;
+            background: #1a2030;
+            border: 1px solid #2a3140;
+            border-radius: 8px;
+            color: #e8eaed;
+            font-size: 12px;
+            outline: none;
+        }
+
+        .auth-input:focus { border-color: #00ff88; }
+
+        .auth-submit {
+            padding: 8px;
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            border: none;
+            border-radius: 8px;
+            color: #0a0e17;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .auth-msg {
+            text-align: center;
+            font-size: 11px;
+            min-height: 14px;
+        }
+
+        .auth-msg.success { color: #00ff88; }
+        .auth-msg.error { color: #ff3366; }
     </style>
 </head>
 <body>
@@ -247,6 +361,42 @@
             <div id="scanList">
                 <div class="no-scans">No scans yet. Open an email to see protection in action!</div>
             </div>
+        </div>
+    </div>
+
+    <!-- Profile / Auth -->
+    <div class="profile-section">
+        <!-- Logged in state -->
+        <div class="profile-logged-in" id="extLoggedIn">
+            <div class="profile-avatar" id="extAvatar">U</div>
+            <div class="profile-info">
+                <div class="profile-name" id="extUserName">User</div>
+                <div class="profile-email" id="extUserEmail"></div>
+            </div>
+            <button class="profile-signout" id="extSignOut">Sign Out</button>
+        </div>
+
+        <!-- Auth forms -->
+        <div id="extAuthForms">
+            <div class="auth-tabs">
+                <button class="auth-tab active" id="extTabLogin">Log In</button>
+                <button class="auth-tab" id="extTabSignup">Sign Up</button>
+            </div>
+
+            <form class="auth-form active" id="extLoginForm">
+                <input class="auth-input" type="email" id="extLoginEmail" placeholder="Email" required>
+                <input class="auth-input" type="password" id="extLoginPassword" placeholder="Password" required>
+                <button class="auth-submit" type="submit">Log In</button>
+                <div class="auth-msg" id="extLoginMsg"></div>
+            </form>
+
+            <form class="auth-form" id="extSignupForm">
+                <input class="auth-input" type="text" id="extSignupName" placeholder="Full Name" required>
+                <input class="auth-input" type="email" id="extSignupEmail" placeholder="Email" required>
+                <input class="auth-input" type="password" id="extSignupPassword" placeholder="Password (min 6 chars)" required>
+                <button class="auth-submit" type="submit">Create Account</button>
+                <div class="auth-msg" id="extSignupMsg"></div>
+            </form>
         </div>
     </div>
 

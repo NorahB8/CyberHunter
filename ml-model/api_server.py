@@ -11,8 +11,25 @@ from datetime import datetime
 import os
 import zipfile
 import io
-app = Flask(__name__)
-CORS(app)  # Enable CORS for browser extension and web interface
+import json
+_ML_DIR = os.path.dirname(os.path.abspath(__file__))  # .../files/ml-model
+BASE_DIR = os.path.dirname(_ML_DIR)                   # .../files
+USERS_FILE = os.path.join(BASE_DIR, 'users.json')
+print(f"[Auth] users.json → {USERS_FILE}")
+app = Flask(__name__, static_folder=BASE_DIR, static_url_path='')
+CORS(app, origins='*')  # Enable CORS for browser extension and web interface
+
+
+def load_users():
+    if not os.path.exists(USERS_FILE):
+        return []
+    with open(USERS_FILE, 'r') as f:
+        return json.load(f)
+
+
+def save_users(users):
+    with open(USERS_FILE, 'w') as f:
+        json.dump(users, f)
 
 # Initialize ML model
 print("Loading Random Forest ML model...")
@@ -35,6 +52,43 @@ stats = {
     'safe_urls': 0,
     'start_time': datetime.now()
 }
+
+
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
+
+@app.route('/api/auth/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    name = (data.get('name') or '').strip()
+    email = (data.get('email') or '').strip().lower()
+    password = data.get('password') or ''
+    if not name or not email or not password:
+        return jsonify({'success': False, 'error': 'All fields are required'}), 400
+    if len(password) < 6:
+        return jsonify({'success': False, 'error': 'Password must be at least 6 characters'}), 400
+    users = load_users()
+    if any(u['email'] == email for u in users):
+        return jsonify({'success': False, 'error': 'An account with this email already exists'}), 409
+    user = {'name': name, 'email': email, 'password': password}
+    users.append(user)
+    save_users(users)
+    return jsonify({'success': True, 'user': {'name': name, 'email': email}})
+
+
+@app.route('/api/auth/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    email = (data.get('email') or '').strip().lower()
+    password = data.get('password') or ''
+    users = load_users()
+    print(f"[Login] email={repr(email)} password={repr(password)} users={users}")
+    user = next((u for u in users if u['email'] == email and u['password'] == password), None)
+    if not user:
+        return jsonify({'success': False, 'error': 'Invalid email or password'}), 401
+    return jsonify({'success': True, 'user': {'name': user['name'], 'email': user['email']}})
 
 
 @app.route('/api/health', methods=['GET'])

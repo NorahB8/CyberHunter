@@ -5,12 +5,14 @@
   "description": "Real-time phishing detection for emails using machine learning",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "host_permissions": [
     "*://mail.google.com/*",
     "*://outlook.live.com/*",
-    "*://outlook.office.com/*"
+    "*://outlook.office.com/*",
+    "http://localhost:5000/*"
   ],
   "background": {
     "service_worker": "background.js"
@@ -24,6 +26,11 @@
       ],
       "js": ["content.js"],
       "css": ["styles.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["http://localhost:5000/*"],
+      "js": ["website-sync.js"],
       "run_at": "document_idle"
     }
   ],
