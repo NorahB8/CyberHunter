@@ -211,6 +211,129 @@
             color: #9aa0a6;
             font-size: 13px;
         }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            background: #0a0e17;
+            border-bottom: 1px solid #2a3140;
+        }
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            background: none;
+            border: none;
+            color: #9aa0a6;
+            font-size: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            transition: all 0.2s;
+            border-bottom: 2px solid transparent;
+        }
+        .tab-btn.active {
+            color: #00ff88;
+            border-bottom-color: #00ff88;
+        }
+        .tab-panel { display: none; }
+        .tab-panel.active { display: block; }
+
+        /* Profile Styles */
+        .profile-section { padding: 20px; }
+        .profile-avatar-lg {
+            width: 64px;
+            height: 64px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: #0a0e17;
+            margin: 0 auto 12px;
+        }
+        .profile-name-lg {
+            text-align: center;
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+        .profile-email-lg {
+            text-align: center;
+            font-size: 12px;
+            color: #9aa0a6;
+            margin-bottom: 16px;
+        }
+        .profile-info-card {
+            background: #1a2030;
+            border-radius: 10px;
+            padding: 14px;
+            margin-bottom: 12px;
+            border: 1px solid #2a3140;
+            font-size: 12px;
+        }
+        .profile-info-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 6px 0;
+            border-bottom: 1px solid #2a3140;
+        }
+        .profile-info-row:last-child { border-bottom: none; }
+        .profile-info-label { color: #9aa0a6; }
+        .profile-info-value { font-weight: 600; }
+
+        /* Profile form */
+        .profile-setup { padding: 20px; }
+        .pf-label {
+            display: block;
+            font-size: 11px;
+            color: #9aa0a6;
+            margin-bottom: 4px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .pf-input {
+            width: 100%;
+            padding: 10px 12px;
+            background: #1a2030;
+            border: 1.5px solid #2a3140;
+            border-radius: 8px;
+            color: #e8eaed;
+            font-size: 13px;
+            margin-bottom: 12px;
+            font-family: inherit;
+            box-sizing: border-box;
+        }
+        .pf-input:focus { outline: none; border-color: #00ff88; }
+        .pf-btn {
+            width: 100%;
+            padding: 11px;
+            background: linear-gradient(135deg, #00ff88, #00ccff);
+            border: none;
+            border-radius: 8px;
+            color: #0a0e17;
+            font-size: 13px;
+            font-weight: 700;
+            cursor: pointer;
+            font-family: inherit;
+        }
+        .pf-btn.secondary {
+            background: #1a2030;
+            color: #9aa0a6;
+            margin-top: 8px;
+        }
+        .pf-msg {
+            font-size: 12px;
+            padding: 8px 10px;
+            border-radius: 6px;
+            margin-bottom: 10px;
+            display: none;
+        }
+        .pf-msg.error { background: rgba(255,51,102,0.15); color: #ff3366; display: block; }
+        .pf-msg.success { background: rgba(0,255,136,0.1); color: #00ff88; display: block; }
     </style>
 </head>
 <body>
@@ -220,38 +343,111 @@
         <p class="tagline">AI-Powered Email Protection</p>
     </div>
 
-    <div class="content">
-        <div class="status-card">
-            <div class="status-header">
-                <div class="status-icon">✓</div>
-                <div class="status-text">
-                    <div class="status-title">Protection Active</div>
-                    <div class="status-subtitle">Monitoring your emails</div>
+    <!-- Tab Navigation -->
+    <div class="tab-nav">
+        <button class="tab-btn active" id="scansTabBtn">Scans</button>
+        <button class="tab-btn" id="profileTabBtn">Profile</button>
+    </div>
+
+    <!-- Scans Panel -->
+    <div class="tab-panel active" id="scansPanel">
+        <div class="content">
+            <div class="status-card">
+                <div class="status-header">
+                    <div class="status-icon">✓</div>
+                    <div class="status-text">
+                        <div class="status-title">Protection Active</div>
+                        <div class="status-subtitle">Monitoring your emails</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-value" id="totalScans">0</div>
+                    <div class="stat-label">Total Scans</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-value" id="threatsBlocked">0</div>
+                    <div class="stat-label">Threats Blocked</div>
+                </div>
+            </div>
+
+            <div class="recent-scans">
+                <div class="section-title">Recent Scans</div>
+                <div id="scanList">
+                    <div class="no-scans">No scans yet. Open an email to see protection in action!</div>
                 </div>
             </div>
         </div>
 
-        <div class="stats-grid">
-            <div class="stat-box">
-                <div class="stat-value" id="totalScans">0</div>
-                <div class="stat-label">Total Scans</div>
-            </div>
-            <div class="stat-box">
-                <div class="stat-value" id="threatsBlocked">0</div>
-                <div class="stat-label">Threats Blocked</div>
-            </div>
-        </div>
-
-        <div class="recent-scans">
-            <div class="section-title">Recent Scans</div>
-            <div id="scanList">
-                <div class="no-scans">No scans yet. Open an email to see protection in action!</div>
-            </div>
+        <div class="footer">
+            <a href="#" class="website-link" id="websiteLink">View Full Dashboard</a>
         </div>
     </div>
 
-    <div class="footer">
-        <a href="#" class="website-link" id="websiteLink">View Full Dashboard</a>
+    <!-- Profile Panel -->
+    <div class="tab-panel" id="profilePanel">
+        <!-- Logged-in profile view -->
+        <div id="profileView" style="display:none;">
+            <div class="profile-section">
+                <div class="profile-avatar-lg" id="profileAvatarLg">U</div>
+                <div class="profile-name-lg" id="profileNameLg">User</div>
+                <div class="profile-email-lg" id="profileEmailLg">—</div>
+                <div class="profile-info-card">
+                    <div class="profile-info-row">
+                        <span class="profile-info-label">Member since</span>
+                        <span class="profile-info-value" id="profileJoined">—</span>
+                    </div>
+                    <div class="profile-info-row">
+                        <span class="profile-info-label">Total Scans</span>
+                        <span class="profile-info-value" id="profileScans">0</span>
+                    </div>
+                    <div class="profile-info-row">
+                        <span class="profile-info-label">Threats Blocked</span>
+                        <span class="profile-info-value" id="profileThreats">0</span>
+                    </div>
+                </div>
+                <button class="pf-btn secondary" id="profileSignOutBtn">Sign Out</button>
+            </div>
+        </div>
+
+        <!-- Sign up / Login form -->
+        <div id="profileAuthView">
+            <div class="profile-setup">
+                <div style="text-align:center; margin-bottom:16px;">
+                    <div style="font-size:2rem; margin-bottom:8px;">🛡️</div>
+                    <div style="font-weight:700; margin-bottom:4px;">Sign In to CyberHunter</div>
+                    <div style="font-size:12px; color:#9aa0a6;">Access your profile and sync settings</div>
+                </div>
+
+                <!-- Auth tabs -->
+                <div style="display:flex; gap:4px; background:#0a0e17; padding:4px; border-radius:8px; margin-bottom:14px;">
+                    <button class="tab-btn active" id="extLoginTabBtn" style="border-radius:6px; padding:8px;">Login</button>
+                    <button class="tab-btn" id="extSignupTabBtn" style="border-radius:6px; padding:8px;">Sign Up</button>
+                </div>
+
+                <div id="extLoginForm">
+                    <label class="pf-label">Email</label>
+                    <input class="pf-input" type="email" id="extLoginEmail" placeholder="you@example.com">
+                    <label class="pf-label">Password</label>
+                    <input class="pf-input" type="password" id="extLoginPassword" placeholder="••••••••">
+                    <div class="pf-msg" id="extLoginMsg"></div>
+                    <button class="pf-btn" id="extLoginSubmit">Login</button>
+                </div>
+
+                <div id="extSignupForm" style="display:none;">
+                    <label class="pf-label">Full Name</label>
+                    <input class="pf-input" type="text" id="extSignupName" placeholder="Jane Doe">
+                    <label class="pf-label">Email</label>
+                    <input class="pf-input" type="email" id="extSignupEmail" placeholder="you@example.com">
+                    <label class="pf-label">Password</label>
+                    <input class="pf-input" type="password" id="extSignupPassword" placeholder="Min. 6 characters">
+                    <div class="pf-msg" id="extSignupMsg"></div>
+                    <button class="pf-btn" id="extSignupSubmit">Create Account</button>
+                </div>
+            </div>
+        </div>
     </div>
 
     <script src="popup.js"></script>

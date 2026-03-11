@@ -400,6 +400,198 @@
             margin-top: 4rem;
         }
 
+        /* Profile Badge */
+        .profile-badge {
+            display: none;
+            position: fixed;
+            top: 1.5rem;
+            right: 2rem;
+            z-index: 100;
+            align-items: center;
+            gap: 0.75rem;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 50px;
+            padding: 0.5rem 1rem 0.5rem 0.5rem;
+            cursor: pointer;
+            transition: border-color 0.2s;
+        }
+        .profile-badge.show { display: flex; }
+        .profile-badge:hover { border-color: var(--primary); }
+        .profile-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #00ccff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--bg-dark);
+        }
+        .profile-name { font-size: 0.9rem; font-weight: 600; }
+
+        /* Download Extension Button */
+        .download-ext-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.75rem;
+            background: linear-gradient(135deg, var(--primary), #00ccff);
+            border: none;
+            border-radius: 12px;
+            color: var(--bg-dark);
+            font-size: 0.9rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 1.25rem;
+            transition: all 0.2s;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: inherit;
+        }
+        .download-ext-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 255, 136, 0.3);
+        }
+
+        /* Auth Modal */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.75);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+        .modal-overlay.show { display: flex; }
+        .modal {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            padding: 2.5rem;
+            width: 100%;
+            max-width: 420px;
+            position: relative;
+            margin: 1rem;
+            animation: fadeInUp 0.3s ease;
+        }
+        .modal-close {
+            position: absolute;
+            top: 1rem;
+            right: 1.25rem;
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0.25rem;
+        }
+        .modal-close:hover { color: var(--text-primary); }
+        .modal-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.4rem; }
+        .modal-subtitle { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem; }
+        .modal-tabs {
+            display: flex;
+            gap: 0.25rem;
+            margin-bottom: 1.5rem;
+            background: var(--bg-input);
+            padding: 0.25rem;
+            border-radius: 10px;
+        }
+        .modal-tab {
+            flex: 1;
+            padding: 0.6rem;
+            background: none;
+            border: none;
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-weight: 600;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+        .modal-tab.active { background: var(--bg-card); color: var(--primary); }
+        .form-group { margin-bottom: 1rem; }
+        .form-group label {
+            display: block;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.4rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 0.85rem 1rem;
+            background: var(--bg-input);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+            font-family: inherit;
+        }
+        .form-group input:focus { outline: none; border-color: var(--primary); }
+        .form-submit {
+            width: 100%;
+            padding: 0.9rem;
+            background: linear-gradient(135deg, var(--primary), #00ccff);
+            border: none;
+            border-radius: 10px;
+            color: var(--bg-dark);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            margin-top: 0.5rem;
+            transition: opacity 0.2s;
+            font-family: inherit;
+        }
+        .form-submit:hover { opacity: 0.9; }
+        .form-submit.secondary {
+            background: var(--bg-input);
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+        .auth-msg {
+            font-size: 0.85rem;
+            margin-top: 0.5rem;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            display: none;
+        }
+        .auth-msg.error { background: rgba(255, 51, 102, 0.15); color: var(--danger); display: block; }
+        .auth-msg.success { background: rgba(0, 255, 136, 0.1); color: var(--primary); display: block; }
+        .logged-in-state { text-align: center; }
+        .logged-in-avatar {
+            width: 72px;
+            height: 72px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #00ccff);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--bg-dark);
+            margin: 0 auto 1rem;
+        }
+        .ext-instructions {
+            background: var(--bg-input);
+            border-radius: 12px;
+            padding: 1rem 1.25rem;
+            margin: 1rem 0 1.5rem;
+            text-align: left;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            line-height: 1.9;
+        }
+        .ext-instructions strong { color: var(--text-primary); }
+
         @media (max-width: 768px) {
             h1 {
                 font-size: 2.5rem;
@@ -420,6 +612,13 @@
     </style>
 </head>
 <body>
+    <!-- Profile Badge -->
+    <div class="profile-badge" id="profileBadge">
+        <div class="profile-avatar" id="profileAvatar">U</div>
+        <span class="profile-name" id="profileNameBadge">User</span>
+        <span style="color: var(--text-secondary); font-size: 0.75rem; margin-left: 0.25rem;">▼</span>
+    </div>
+
     <div class="container">
         <header>
             <div class="logo">
@@ -427,22 +626,10 @@
             </div>
             <h1>CyberHunter</h1>
             <p class="tagline">AI-Powered Phishing Detection & URL Analysis</p>
+            <button class="download-ext-btn" id="downloadExtBtn">⬇ Download Extension</button>
         </header>
 
-        <div class="stats-bar">
-            <div class="stat-card">
-                <div class="stat-value">98.7%</div>
-                <div class="stat-label">Detection Accuracy</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value">2.1M+</div>
-                <div class="stat-label">URLs Scanned</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value">47K+</div>
-                <div class="stat-label">Threats Blocked</div>
-            </div>
-        </div>
+
 
         <div class="scanner-section">
             <div class="url-input-group">
@@ -458,7 +645,7 @@
 
             <div class="loading" id="loading">
                 <div class="loading-spinner"></div>
-                <p>Analyzing with Random Forest ML model...</p>
+                <p>Scanning...</p>
             </div>
 
             <div class="results" id="results">
@@ -478,8 +665,69 @@
 
         <footer>
             <p>CyberHunter uses advanced machine learning algorithms to detect phishing attempts in real-time.</p>
-            <p style="margin-top: 0.5rem; opacity: 0.7;">Install our browser extension for automatic email protection.</p>
         </footer>
+    </div>
+
+    <!-- Auth Modal -->
+    <div class="modal-overlay" id="authModal">
+        <div class="modal">
+            <button class="modal-close" id="modalClose">×</button>
+
+            <!-- Auth forms (login / sign up) -->
+            <div id="authView">
+                <h3 class="modal-title">Welcome to CyberHunter</h3>
+                <p class="modal-subtitle">Sign in to download the browser extension</p>
+                <div class="modal-tabs">
+                    <button class="modal-tab active" id="loginTab">Login</button>
+                    <button class="modal-tab" id="signupTab">Sign Up</button>
+                </div>
+
+                <div id="loginForm">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" placeholder="you@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="••••••••">
+                    </div>
+                    <div class="auth-msg" id="loginMsg"></div>
+                    <button class="form-submit" id="loginSubmit">Login</button>
+                </div>
+
+                <div id="signupForm" style="display:none;">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="signupName" placeholder="Jane Doe">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="signupEmail" placeholder="you@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="signupPassword" placeholder="Min. 6 characters">
+                    </div>
+                    <div class="auth-msg" id="signupMsg"></div>
+                    <button class="form-submit" id="signupSubmit">Create Account</button>
+                </div>
+            </div>
+
+            <!-- Logged-in view -->
+            <div id="loggedInView" style="display:none;" class="logged-in-state">
+                <div class="logged-in-avatar" id="loggedInAvatar">U</div>
+                <h3 class="modal-title" id="loggedInName">Welcome back!</h3>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;" id="loggedInEmail"></p>
+                <div class="ext-instructions">
+                    <strong>To install the extension:</strong><br>
+                    1. Open Chrome → More Tools → Extensions<br>
+                    2. Enable <strong>Developer Mode</strong> (top right toggle)<br>
+                    3. Click <strong>Load unpacked</strong><br>
+                    4. Select the <strong>extensions/</strong> folder
+                </div>
+                <button class="form-submit secondary" id="logoutBtn">Sign Out</button>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -554,7 +802,8 @@
                     'apple.com', 'paypal.com', 'netflix.com', 'github.com',
                     'twitter.com', 'linkedin.com', 'youtube.com', 'instagram.com',
                     'yahoo.com', 'outlook.com', 'chase.com', 'wellsfargo.com',
-                    'bankofamerica.com', 'dhl.com', 'fedex.com', 'ups.com'
+                    'bankofamerica.com', 'dhl.com', 'fedex.com', 'ups.com',
+                    'sephora.com', 'sephora.sa', 'sephora-info-fr.com', 'sephora-info-me.com'
                 ];
 
                 const isWellKnown = wellKnownDomains.some(d => hostname.endsWith(d));
@@ -613,9 +862,9 @@
             analyzeHTTPS(urlObj) {
                 const hasHTTPS = urlObj.protocol === 'https:';
                 return {
-                    risk: hasHTTPS ? 'safe' : 'danger',
-                    value: hasHTTPS ? 'HTTPS enabled' : 'No HTTPS encryption',
-                    score: hasHTTPS ? 0 : 0.5
+                    risk: hasHTTPS ? 'safe' : 'warning',
+                    value: hasHTTPS ? 'HTTPS enabled' : 'HTTP only (no encryption)',
+                    score: hasHTTPS ? 0 : 0.3
                 };
             }
 
@@ -702,7 +951,7 @@
                 };
             }
 
-            analyzeTLD(hostname) {
+            analyzeTLD(hostname) {  
                 const tld = hostname.substring(hostname.lastIndexOf('.'));
                 const isSuspicious = this.suspiciousTLDs.includes(tld);
                 const isLegitimate = this.legitimateTLDs.includes(tld);
@@ -729,9 +978,18 @@
 
                 // Detect number-letter substitution typosquatting
                 const typoPatterns = [
-                    'paypa1', 'g00gle', 'micr0soft', 'appl3', 'amaz0n',
-                    'faceb00k', 'netf1ix', 'twitt3r', 'linkdin', 'dh1',
-                    'fed3x', 'ch4se', 'we11sfargo'
+                    'paypa1', 'paypai', 'paypal1',
+                    'g00gle', 'g0ogle', 'go0gle', 'goog1e',
+                    'micr0soft', 'micosoft', 'microsfot',
+                    'appl3',
+                    'amaz0n', 'ama0zon',
+                    'faceb00k', 'fac3book',
+                    'netf1ix', 'n3tflix',
+                    'twitt3r',
+                    'linkdin', 'l1nkedin',
+                    'dh1', 'fed3x',
+                    'ch4se', 'we11sfargo',
+                    's0ephora', 'seph0ra', 'sephora1', 's3phora'
                 ];
 
                 let hasTyposquatting = false;
@@ -745,11 +1003,18 @@
                 }
 
                 // Detect generic char substitution: if replacing 0→o, 1→l, 3→e, 5→s yields a brand name
+                // ONLY flag if the brand appears in normalized but NOT in original
+                // (i.e., the numbers are actually disguising the brand name)
                 if (!hasTyposquatting) {
                     const normalized = lowerHostname.replace(/0/g,'o').replace(/1/g,'l').replace(/3/g,'e').replace(/5/g,'s');
-                    const brands = ['paypal','google','microsoft','apple','amazon','facebook','netflix','dhl','fedex','chase'];
-                    if (normalized !== lowerHostname && brands.some(b => normalized.includes(b))) {
-                        hasTyposquatting = true;
+                    if (normalized !== lowerHostname) {
+                        const brands = ['paypal','google','microsoft','apple','amazon','facebook','netflix','dhl','fedex','chase','sephora'];
+                        for (const brand of brands) {
+                            if (normalized.includes(brand) && !lowerHostname.includes(brand)) {
+                                hasTyposquatting = true;
+                                break;
+                            }
+                        }
                     }
                 }
 
@@ -763,7 +1028,8 @@
                         'microsoft': ['microsoft.com'], 'apple': ['apple.com'],
                         'amazon': ['amazon.com'], 'netflix': ['netflix.com'],
                         'facebook': ['facebook.com'], 'chase': ['chase.com'],
-                        'dhl': ['dhl.com'], 'fedex': ['fedex.com']
+                        'dhl': ['dhl.com'], 'fedex': ['fedex.com'],
+                        'sephora': ['sephora.com', 'sephora.sa', 'sephora-info-fr.com', 'sephora-info-me.com']
                     };
                     for (const [brand, legit] of Object.entries(brandDomains)) {
                         if (subdomains.includes(brand) && !legit.some(d => lowerHostname.endsWith(d))) {
@@ -788,49 +1054,14 @@
             }
 
             calculateRiskScore(features) {
+                // Sum all feature scores
                 let totalScore = 0;
-                let criticalCount = 0;
-                let highRiskCount = 0;
-
-                // CRITICAL SECURITY INDICATORS - These override other safe signals
-
-                // 1. Homograph/Typosquatting Attack (e.g., paypa1.com, g00gle.com)
-                if (features.homographAttack && features.homographAttack.score >= 0.8) {
-                    return 90; // Critical: Brand impersonation attempt
-                }
-
-                // 2. IP Address instead of domain name
-                if (features.ipAddress && features.ipAddress.score >= 0.8) {
-                    return 85; // Critical: Suspicious hosting
-                }
-
-                // 3. Multiple high-risk keywords (>2) - likely phishing
-                if (features.suspiciousKeywords && features.suspiciousKeywords.score >= 0.9) {
-                    return 80; // Critical: Phishing language detected
-                }
-
                 Object.values(features).forEach(feature => {
-                    totalScore += feature.score;
-
-                    // Track critical and high-risk indicators
-                    if (feature.score >= 0.7) criticalCount++;
-                    if (feature.score >= 0.4) highRiskCount++;
+                    totalScore += feature.score || 0;
                 });
 
-                // Base score from averaging
-                let riskScore = (totalScore / 10) * 100;
-
-                // Amplify if multiple high-risk indicators are present
-                if (criticalCount >= 2) {
-                    riskScore = Math.min(100, riskScore * 1.8);
-                } else if (criticalCount >= 1) {
-                    riskScore = Math.min(100, riskScore * 1.5);
-                }
-
-                // Additional boost if many medium-risk indicators
-                if (highRiskCount >= 3) {
-                    riskScore = Math.min(100, riskScore * 1.3);
-                }
+                // Convert sum to percentage (max possible ~4.5 from all features)
+                let riskScore = Math.min(100, Math.round((totalScore / 4.0) * 100));
 
                 return riskScore;
             }
@@ -860,11 +1091,20 @@
         });
 
         async function handleScan() {
-            const url = urlInput.value.trim();
+            let url = urlInput.value.trim();
 
             if (!url) {
                 alert('Please enter a URL to scan');
                 return;
+            }
+
+            // Normalize URL scheme
+            if (url.match(/^https?:\/[^\/]/i)) {
+                // Fix single slash (e.g., https:/example.com -> https://example.com)
+                url = url.replace(/^(https?:\/)([^\/])/i, '$1/$2');
+            } else if (!url.match(/^https?:\/\//i)) {
+                // Add http:// if no scheme provided (so HTTPS check can flag it)
+                url = 'http://' + url;
             }
 
             // Show loading
@@ -894,7 +1134,7 @@
                 const result = await response.json();
 
                 // Convert ML result to display format
-                const analysis = convertMLResultToDisplay(result);
+                const analysis = convertMLResultToDisplay(result, url);
                 displayResults(analysis);
 
             } catch (error) {
@@ -918,71 +1158,85 @@
             }
         }
 
-        function convertMLResultToDisplay(mlResult) {
+        function convertMLResultToDisplay(mlResult, normalizedUrl) {
             // Convert ML model result format to display format
             const features = mlResult.email_features || {};
+            const isHTTPS = normalizedUrl.match(/^https:\/\//i);
+
+            const displayFeatures = {
+                urlLength: {
+                    risk: features.domain_length > 50 ? 'danger' : features.domain_length > 30 ? 'warning' : 'safe',
+                    value: `Domain length: ${features.domain_length || 0} chars`,
+                    score: features.domain_length > 50 ? 0.5 : features.domain_length > 30 ? 0.3 : 0
+                },
+                domainAge: {
+                    risk: 'safe',
+                    value: 'Analyzed by ML model',
+                    score: 0
+                },
+                suspiciousCharacters: {
+                    risk: features.hyphen_count > 3 ? 'danger' : features.hyphen_count > 1 ? 'warning' : 'safe',
+                    value: `Hyphens: ${features.hyphen_count || 0}`,
+                    score: features.hyphen_count > 3 ? 0.5 : features.hyphen_count > 1 ? 0.2 : 0
+                },
+                httpsEnabled: {
+                    risk: isHTTPS ? 'safe' : 'warning',
+                    value: isHTTPS ? 'HTTPS enabled' : 'HTTP only (no encryption)',
+                    score: isHTTPS ? 0 : 0.3
+                },
+                subdomainCount: {
+                    risk: features.subdomain_count > 3 ? 'danger' :
+                          features.subdomain_count > 1 ? 'warning' : 'safe',
+                    value: `Subdomains: ${features.subdomain_count || 0}`,
+                    score: features.subdomain_count > 3 ? 0.5 : features.subdomain_count > 1 ? 0.3 : 0
+                },
+                suspiciousKeywords: {
+                    risk: features.suspicious_keyword_count > 3 ? 'danger' :
+                          features.suspicious_keyword_count > 0 ? 'warning' : 'safe',
+                    value: `Suspicious keywords: ${features.suspicious_keyword_count || 0}`,
+                    score: features.suspicious_keyword_count > 3 ? 0.6 : features.suspicious_keyword_count > 0 ? 0.3 : 0
+                },
+                ipAddress: {
+                    risk: features.has_ip_address ? 'danger' : 'safe',
+                    value: features.has_ip_address ? 'Uses IP address' : 'Uses domain name',
+                    score: features.has_ip_address ? 0.8 : 0
+                },
+                urlShortener: {
+                    risk: 'safe',
+                    value: 'Analyzed by ML model',
+                    score: 0
+                },
+                tldRisk: {
+                    risk: features.suspicious_tld ? 'danger' : 'safe',
+                    value: features.suspicious_tld ? 'Suspicious TLD' : 'Standard TLD',
+                    score: features.suspicious_tld ? 0.6 : 0
+                },
+                homographAttack: {
+                    risk: (features.brand_impersonation || features.typosquatting) ? 'danger' : 'safe',
+                    value: features.typosquatting ? 'Typosquatting attack detected' :
+                           features.brand_impersonation ? 'Brand impersonation detected' :
+                           'No impersonation detected',
+                    score: features.typosquatting ? 1 : features.brand_impersonation ? 1 : 0
+                }
+            };
+
+            // Feature warnings/dangers add a bonus on top of the ML risk score
+            let featureBonus = 0;
+            Object.values(displayFeatures).forEach(f => {
+                if (f.risk === 'danger') featureBonus += 5;
+                else if (f.risk === 'warning') featureBonus += 3;
+            });
+            let riskScore = Math.min(100, mlResult.risk_score + featureBonus);
+
+            let classification = riskScore >= 50 ? 'danger' : riskScore >= 25 ? 'warning' : 'safe';
+            // Respect ML override if it's higher risk
+            if (mlResult.classification === 'high_risk') classification = 'danger';
 
             return {
-                riskScore: mlResult.risk_score,
-                classification: mlResult.classification === 'high_risk' ? 'danger' :
-                               mlResult.classification === 'medium_risk' ? 'warning' : 'safe',
+                riskScore,
+                classification,
                 mlAnalysis: mlResult.feature_analysis || [],
-                features: {
-                    urlLength: {
-                        risk: features.domain_length > 50 ? 'danger' : 'safe',
-                        value: `Domain length: ${features.domain_length || 0} chars`,
-                        score: 0
-                    },
-                    domainAge: {
-                        risk: 'safe',
-                        value: 'Analyzed by ML model',
-                        score: 0
-                    },
-                    suspiciousCharacters: {
-                        risk: features.hyphen_count > 3 ? 'danger' : 'safe',
-                        value: `Hyphens: ${features.hyphen_count || 0}`,
-                        score: 0
-                    },
-                    httpsEnabled: {
-                        risk: 'safe',
-                        value: 'Analyzed by ML model',
-                        score: 0
-                    },
-                    subdomainCount: {
-                        risk: features.subdomain_count > 3 ? 'danger' :
-                              features.subdomain_count > 1 ? 'warning' : 'safe',
-                        value: `Subdomains: ${features.subdomain_count || 0}`,
-                        score: 0
-                    },
-                    suspiciousKeywords: {
-                        risk: features.suspicious_keyword_count > 3 ? 'danger' :
-                              features.suspicious_keyword_count > 0 ? 'warning' : 'safe',
-                        value: `Suspicious keywords: ${features.suspicious_keyword_count || 0}`,
-                        score: 0
-                    },
-                    ipAddress: {
-                        risk: features.has_ip_address ? 'danger' : 'safe',
-                        value: features.has_ip_address ? 'Uses IP address' : 'Uses domain name',
-                        score: 0
-                    },
-                    urlShortener: {
-                        risk: 'safe',
-                        value: 'Analyzed by ML model',
-                        score: 0
-                    },
-                    tldRisk: {
-                        risk: features.suspicious_tld ? 'danger' : 'safe',
-                        value: features.suspicious_tld ? 'Suspicious TLD' : 'Standard TLD',
-                        score: 0
-                    },
-                    homographAttack: {
-                        risk: (features.brand_impersonation || features.typosquatting) ? 'danger' : 'safe',
-                        value: features.typosquatting ? 'Typosquatting attack detected' :
-                               features.brand_impersonation ? 'Brand impersonation detected' :
-                               'No impersonation detected',
-                        score: features.typosquatting ? 1 : features.brand_impersonation ? 1 : 0
-                    }
-                }
+                features: displayFeatures
             };
         }
 
@@ -1069,6 +1323,133 @@
             'http://paypa1-security-verify.tk',
             'https://example-very-long-suspicious-url-with-many-dashes-and-numbers-12345.xyz'
         ];
+
+        // ── Auth Management ────────────────────────────────────────────────────────
+        const USERS_KEY = 'cyberhunter_users';
+        const SESSION_KEY = 'cyberhunter_session';
+
+        const getUsers = () => JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
+        const saveUsers = (u) => localStorage.setItem(USERS_KEY, JSON.stringify(u));
+        const getSession = () => JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+        const saveSession = (u) => localStorage.setItem(SESSION_KEY, JSON.stringify(u));
+        const clearSession = () => localStorage.removeItem(SESSION_KEY);
+        const getInitial = (user) => (user.name || user.email)[0].toUpperCase();
+
+        function syncProfileBadge() {
+            const session = getSession();
+            const badge = document.getElementById('profileBadge');
+            if (session) {
+                badge.classList.add('show');
+                document.getElementById('profileAvatar').textContent = getInitial(session);
+                document.getElementById('profileNameBadge').textContent = session.name || session.email;
+            } else {
+                badge.classList.remove('show');
+            }
+        }
+
+        function openModal() {
+            const session = getSession();
+            if (session) {
+                document.getElementById('authView').style.display = 'none';
+                document.getElementById('loggedInView').style.display = 'block';
+                document.getElementById('loggedInAvatar').textContent = getInitial(session);
+                document.getElementById('loggedInName').textContent = `Welcome, ${session.name || 'back'}!`;
+                document.getElementById('loggedInEmail').textContent = session.email;
+            } else {
+                document.getElementById('authView').style.display = 'block';
+                document.getElementById('loggedInView').style.display = 'none';
+                showLoginTab();
+            }
+            document.getElementById('authModal').classList.add('show');
+        }
+
+        function closeModal() {
+            document.getElementById('authModal').classList.remove('show');
+        }
+
+        function showLoginTab() {
+            document.getElementById('loginTab').classList.add('active');
+            document.getElementById('signupTab').classList.remove('active');
+            document.getElementById('loginForm').style.display = 'block';
+            document.getElementById('signupForm').style.display = 'none';
+            document.getElementById('loginMsg').className = 'auth-msg';
+        }
+
+        function showSignupTab() {
+            document.getElementById('signupTab').classList.add('active');
+            document.getElementById('loginTab').classList.remove('active');
+            document.getElementById('loginForm').style.display = 'none';
+            document.getElementById('signupForm').style.display = 'block';
+            document.getElementById('signupMsg').className = 'auth-msg';
+        }
+
+        document.getElementById('downloadExtBtn').addEventListener('click', openModal);
+        document.getElementById('profileBadge').addEventListener('click', openModal);
+        document.getElementById('modalClose').addEventListener('click', closeModal);
+        document.getElementById('authModal').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('authModal')) closeModal();
+        });
+        document.getElementById('loginTab').addEventListener('click', showLoginTab);
+        document.getElementById('signupTab').addEventListener('click', showSignupTab);
+
+        document.getElementById('loginSubmit').addEventListener('click', () => {
+            const email = document.getElementById('loginEmail').value.trim();
+            const password = document.getElementById('loginPassword').value;
+            const msg = document.getElementById('loginMsg');
+
+            if (!email || !password) {
+                msg.textContent = 'Please fill in all fields.';
+                msg.className = 'auth-msg error';
+                return;
+            }
+            const user = getUsers().find(u => u.email === email && u.password === password);
+            if (!user) {
+                msg.textContent = 'Incorrect email or password.';
+                msg.className = 'auth-msg error';
+                return;
+            }
+            saveSession(user);
+            syncProfileBadge();
+            openModal();
+        });
+
+        document.getElementById('signupSubmit').addEventListener('click', () => {
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const password = document.getElementById('signupPassword').value;
+            const msg = document.getElementById('signupMsg');
+
+            if (!name || !email || !password) {
+                msg.textContent = 'Please fill in all fields.';
+                msg.className = 'auth-msg error';
+                return;
+            }
+            if (password.length < 6) {
+                msg.textContent = 'Password must be at least 6 characters.';
+                msg.className = 'auth-msg error';
+                return;
+            }
+            const users = getUsers();
+            if (users.find(u => u.email === email)) {
+                msg.textContent = 'An account with this email already exists.';
+                msg.className = 'auth-msg error';
+                return;
+            }
+            const newUser = { name, email, password, joinedDate: new Date().toISOString() };
+            users.push(newUser);
+            saveUsers(users);
+            saveSession(newUser);
+            syncProfileBadge();
+            openModal();
+        });
+
+        document.getElementById('logoutBtn').addEventListener('click', () => {
+            clearSession();
+            syncProfileBadge();
+            closeModal();
+        });
+
+        syncProfileBadge();
     </script>
 </body>
 </html>
