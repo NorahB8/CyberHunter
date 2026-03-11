@@ -15,7 +15,7 @@ import json
 _ML_DIR = os.path.dirname(os.path.abspath(__file__))  # .../files/ml-model
 BASE_DIR = os.path.dirname(_ML_DIR)                   # .../files
 USERS_FILE = os.path.join(BASE_DIR, 'users.json')
-print(f"[Auth] users.json → {USERS_FILE}")
+print(f"[Auth] users.json -> {USERS_FILE}")
 app = Flask(__name__, static_folder=BASE_DIR, static_url_path='')
 CORS(app, origins='*')  # Enable CORS for browser extension and web interface
 

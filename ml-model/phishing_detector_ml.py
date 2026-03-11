@@ -131,7 +131,7 @@ class PhishingMLDetector:
             is_phishing = False
 
         # Generate feature analysis
-        analysis = self._generate_analysis(features_dict, risk_score, sender_email)
+        analysis = self._generate_analysis(features_dict, risk_score, sender_email, email_body)
 
         # Get sender domain
         try:
@@ -155,9 +155,10 @@ class PhishingMLDetector:
             'model_accuracy': round(self.model_accuracy * 100, 2)
         }
 
-    def _generate_analysis(self, features: Dict, risk_score: float, sender_email: str = '') -> list:
+    def _generate_analysis(self, features: Dict, risk_score: float, sender_email: str = '', email_body: str = '') -> list:
         """Generate human-readable analysis from features"""
         analysis = []
+        body_lower = (email_body or '').lower()
 
         # CRITICAL WARNINGS FIRST
         if features.get('typosquatting', 0) == 1:
@@ -197,6 +198,25 @@ class PhishingMLDetector:
         if features.get('suspicious_keyword_count', 0) >= 3:
             count = int(features['suspicious_keyword_count'])
             analysis.append(f"[WARNING] Contains {count} phishing-related keywords")
+
+        # Money/donation/lottery scam detection
+        money_keywords = [
+            'million', 'billion', 'donation', 'donate', 'lottery', 'jackpot',
+            'prize', 'award', 'inheritance', 'beneficiary', 'fund', 'transfer',
+            'wire', 'payment', 'compensation', 'grant', 'winning', 'won'
+        ]
+        if any(kw in body_lower for kw in money_keywords):
+            analysis.append("[CRITICAL] Email mentions large sums of money or financial rewards — common advance-fee fraud tactic")
+
+        # ID / personal document request detection
+        id_keywords = [
+            'copy of your id', 'copy of passport', 'picture of your id', 'photo of your id',
+            'scan of your id', 'scan of your passport', 'send your id', 'send your passport',
+            'attach your id', 'national id', 'id or passport', 'id card', 'passport copy',
+            'government id', 'identification document', 'proof of identity'
+        ]
+        if any(kw in body_lower for kw in id_keywords):
+            analysis.append("[CRITICAL] Email asks for a photo or copy of your ID/passport — never send this to unknown senders")
 
         if features.get('urgency_count', 0) >= 2:
             analysis.append("[WARNING] Uses urgency tactics to pressure action")

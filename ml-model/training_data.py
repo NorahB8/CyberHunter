@@ -166,7 +166,7 @@ EMAIL_TRAINING_DATA = [
         'subject': 'DONATION NOTICE.REF:MDD9926',
         'body': 'my late brother Mr. David Hamilton Koch decided to give USD2,000,000.00 Million Dollars to randomly selected individuals worldwide. On receipt of this email you should count yourself as the lucky individual. Kindly get back to me so that I will know your email address is valid.',
         'label': 1,
-        'category': 'advance_fee_fraud'
+        'category': 'money_scam'
     },
 
     # Lottery / prize scam - free email domain
@@ -176,7 +176,7 @@ EMAIL_TRAINING_DATA = [
         'subject': 'You Have Won $5,000,000.00 - Claim Now',
         'body': 'You have been randomly selected as a winner of our international lottery. Your email was picked from millions of addresses. To claim your prize of five million dollars send your full name, address and phone number immediately.',
         'label': 1,
-        'category': 'advance_fee_fraud'
+        'category': 'money_scam'
     },
 
     # Dying widow donation scam
@@ -186,7 +186,7 @@ EMAIL_TRAINING_DATA = [
         'subject': 'Donate My Wealth To You Before I Die',
         'body': 'I am a dying widow with no children. I have USD8.5 million in a bank account and I want to donate it to a God-fearing individual. I found your email and believe you are trustworthy. Please reply with your bank details so I can transfer the funds.',
         'label': 1,
-        'category': 'advance_fee_fraud'
+        'category': 'money_scam'
     },
 
     # Overpayment / refund scam - suspicious domain
@@ -196,7 +196,7 @@ EMAIL_TRAINING_DATA = [
         'subject': 'Your Unclaimed Refund of $3,450.00 Awaits',
         'body': 'Our records show you are owed an unclaimed refund. Visit our secure portal to verify your identity and receive your payment. You must claim within 48 hours or forfeit the amount.',
         'label': 1,
-        'category': 'advance_fee_fraud'
+        'category': 'money_scam'
     },
 
     # UN compensation fund scam
@@ -206,7 +206,7 @@ EMAIL_TRAINING_DATA = [
         'subject': 'UN Compensation Payment USD750,000',
         'body': 'The United Nations has approved a compensation payment of USD750,000 to scam victims worldwide. Your email was selected. Contact us immediately with your full name and banking information to process your compensation.',
         'label': 1,
-        'category': 'advance_fee_fraud'
+        'category': 'money_scam'
     },
 
     # Bitcoin inheritance scam - plala.or.jp style domain
@@ -216,7 +216,7 @@ EMAIL_TRAINING_DATA = [
         'subject': 'Deceased Client Estate - Same Surname',
         'body': 'I am a solicitor handling the estate of a deceased client who shares your surname. He left behind 12.5 million USD with no next of kin. I propose you stand as beneficiary. This is 100% risk free and legal. Reply urgently.',
         'label': 1,
-        'category': 'advance_fee_fraud'
+        'category': 'money_scam'
     },
 
     # Crypto giveaway scam
@@ -226,7 +226,7 @@ EMAIL_TRAINING_DATA = [
         'subject': 'You Have Been Selected for Our Crypto Giveaway',
         'body': 'Elon Musk is giving back to the community. Send 0.1 BTC to our wallet and receive 1 BTC in return. This is a limited time event. Visit http://elon-crypto-fund.net/claim to register your wallet address now.',
         'label': 1,
-        'category': 'advance_fee_fraud'
+        'category': 'money_scam'
     },
 
     # Government grant scam - free domain
@@ -236,7 +236,7 @@ EMAIL_TRAINING_DATA = [
         'subject': 'Government Grant Approved: $45,000 For You',
         'body': 'You have been approved for a government small business grant of $45,000. No repayment required. You were randomly selected. To receive funds provide your Social Security Number and bank account details at http://federal-grants-claim.xyz',
         'label': 1,
-        'category': 'advance_fee_fraud'
+        'category': 'money_scam'
     },
 
     # Suspicious payment notification - random domain
@@ -246,7 +246,7 @@ EMAIL_TRAINING_DATA = [
         'subject': 'Urgent: Incoming Wire Transfer Pending Your Verification',
         'body': 'A wire transfer of $120,000 USD is pending to your account. You must verify your identity within 24 hours. Click here http://secure-wire-transfer-office.ru/verify to confirm receipt and release funds.',
         'label': 1,
-        'category': 'advance_fee_fraud'
+        'category': 'money_scam'
     },
 
     # Charity donation with upfront fee
@@ -256,7 +256,7 @@ EMAIL_TRAINING_DATA = [
         'subject': 'You Are Selected to Receive a $2,000,000 Donation',
         'body': 'The Koch Family Foundation has selected you to receive a donation of two million dollars. Before we can release the funds you must pay a small processing fee of $500. Please send payment via Western Union to activate your donation.',
         'label': 1,
-        'category': 'advance_fee_fraud'
+        'category': 'money_scam'
     },
 
     # === LEGITIMATE EMAILS (label=0) ===
@@ -439,6 +439,138 @@ EMAIL_TRAINING_DATA = [
         'body': 'This is to inform you that my late brother strongly believed in giving while living and decided to give USD2,000,000.00 Million Dollars to randomly selected individuals worldwide. On receipt of this email you should count yourself as the lucky individual.',
         'label': 1,
         'category': 'donation_scam'
+    },
+
+    # Phishing - Lottery jackpot donation scam (Mark K. Harder style)
+    {
+        'sender_email': 'sayama_komuro@olive.plala.or.jp',
+        'sender_name': 'Mark K. Harder',
+        'subject': '$10 Million Donation Award For You, Confirmation Required',
+        'body': 'My name is Mark K. Harder, legal representative of The Breakfast Club. We have won the $842.4 million Powerball jackpot. We have chosen to donate $10 million each to five selected individuals worldwide. You have been selected as one of these recipients. Please reach out to Mr. Paul Carey, Chief Financial Officer, to confirm your acceptance. Contact Person: Mr. Paul Carey. Email: paulcarey@contactcibc.org. Please provide Full Name, Age, Gender, Country and Full Address, Occupation, WhatsApp Number, and a recent photograph and copy of your ID or passport. Payment code: TBC-97121USA.',
+        'label': 1,
+        'category': 'donation_scam'
+    },
+
+    # Phishing - Lottery jackpot donation scam variant 2
+    {
+        'sender_email': 'tanaka_yuki@nifty.com',
+        'sender_name': 'James R. Wellington',
+        'subject': 'You Have Been Selected To Receive $5 Million USD',
+        'body': 'I am the legal representative of a deceased billionaire who has chosen you as a beneficiary. You have been selected to receive $5,000,000 USD from his estate. This transaction is monitored by the government. Contact our representative Mr. Robert Mills at robertmills@claimfunds.org with your full name, age, occupation, bank details, and copy of passport to initiate the payment process. Payment reference code: WLT-44821INT.',
+        'label': 1,
+        'category': 'donation_scam'
+    },
+
+    # Phishing - Charity lottery winner donating millions
+    {
+        'sender_email': 'ishikawa_reiko@biglobe.ne.jp',
+        'sender_name': 'Sarah M. Richardson',
+        'subject': 'Congratulations - You Are Chosen To Receive A Donation Of $8 Million',
+        'body': 'Greetings to you. I am a lottery jackpot winner and I have committed myself to philanthropy. I have chosen you to receive a donation of $8 million USD. You have been randomly selected from a global database. To facilitate the secure processing of this donation please contact my financial officer at donations@paymentrelease.com and provide your full name, gender, age, country, occupation, phone number, and a copy of your identification. God-fearing individuals who wish to make a difference are encouraged to apply.',
+        'label': 1,
+        'category': 'donation_scam'
+    },
+
+    # Phishing - UN compensation donation scam
+    {
+        'sender_email': 'ogawa_hideo@so-net.ne.jp',
+        'sender_name': 'Dr. William Foster',
+        'subject': 'UN Compensation Award - You Are A Selected Beneficiary',
+        'body': 'On behalf of the United Nations Compensation Committee I am pleased to inform you that you have been selected as a compensation payment recipient. You are entitled to receive $2.5 million USD. This is not a scam. The transaction is monitored by the United States Government. Contact our payment officer to confirm your acceptance. You must provide bank account details, full name, address, occupation, and passport copy. Western Union or bank wire transfer available.',
+        'label': 1,
+        'category': 'donation_scam'
+    },
+
+    # Phishing - Dying widow donating via legal rep from Asian ISP
+    {
+        'sender_email': 'matsumoto_ai@dti.ne.jp',
+        'sender_name': 'Rev. Patricia Coleman',
+        'subject': 'Dying Widow Wishes To Donate $4 Million To You',
+        'body': 'I am a dying widow with no next of kin. I have decided to donate my life savings of $4,000,000 to you as God has chosen you. I found your email address through a divine revelation. My doctor says I have only months to live. Please contact my legal representative to release the funds before I pass. You must provide your bank details and processing fee to initiate the transfer of funds. Next of kin information required.',
+        'label': 1,
+        'category': 'donation_scam'
+    },
+
+    # === LEGITIMATE EMAILS (label=0) ===
+
+    # Legitimate - Arabic brand Eid promotion (sokkat-alteeb style)
+    {
+        'sender_email': 'info@sokkat-alteeb.com',
+        'sender_name': 'سقاط الطيب',
+        'subject': 'عرض العيد الكبير - خصم 75%',
+        'body': 'عيد مبارك! استمتع بأكبر عروضنا على العطور والبخور السعودية الأصيلة. خصم 75% على جميع المنتجات. سارع بالطلب قبل انتهاء العرض. تسوق الآن عبر موقعنا sokkat-alteeb.com.',
+        'label': 0,
+        'category': 'legitimate'
+    },
+
+    # Legitimate - Arabic clothing brand Eid sale
+    {
+        'sender_email': 'info@thobes-alriyadh.com',
+        'sender_name': 'ثياب الرياض',
+        'subject': 'عروض العيد - تخفيضات حتى 60%',
+        'body': 'بمناسبة عيد الفطر المبارك نقدم لكم أفضل العروض على الأثواب والعبايات السعودية الأصيلة. خصم حتى 60% على مجموعتنا المميزة. اطلب الآن وسنوصل إليك في كل أنحاء المملكة.',
+        'label': 0,
+        'category': 'legitimate'
+    },
+
+    # Legitimate - Arabic sweets brand Ramadan campaign
+    {
+        'sender_email': 'newsletter@halawiyat-saudiya.com',
+        'sender_name': 'حلاويات سعودية',
+        'subject': 'رمضان كريم - اطلب بسبوسة وكنافة طازجة',
+        'body': 'رمضان كريم وكل عام وأنتم بخير! استمتع بأشهى الحلويات الشرقية في رمضان. اطلب كنافة وبسبوسة وقطايف طازجة توصل لباب بيتك. تسوق الآن.',
+        'label': 0,
+        'category': 'legitimate'
+    },
+
+    # Legitimate - Arabic perfume brand regular promotion
+    {
+        'sender_email': 'marketing@oud-arabiyya.com',
+        'sender_name': 'عود عربية',
+        'subject': 'جديد - عطر العود الملكي الأصيل',
+        'body': 'يسعدنا أن نقدم لكم عطر العود الملكي الجديد من مجموعتنا الحصرية. مصنوع من أجود أنواع العود الكمبودي. متوفر الآن على موقعنا وفي متجرنا في الرياض وجدة. اطلب الآن.',
+        'label': 0,
+        'category': 'legitimate'
+    },
+
+    # Legitimate - Arabic food delivery app promotion
+    {
+        'sender_email': 'noreply@hungerstation.com',
+        'sender_name': 'HungerStation هنقرستيشن',
+        'subject': 'عرض اليوم - توصيل مجاني على طلبك',
+        'body': 'استمتع بتوصيل مجاني على أول طلبك اليوم! اطلب من مطاعمك المفضلة عبر هنقرستيشن. العرض محدود ليوم واحد فقط. استخدم الكود FREEDELIVER عند الطلب.',
+        'label': 0,
+        'category': 'legitimate'
+    },
+
+    # Legitimate - Arabic beauty brand newsletter
+    {
+        'sender_email': 'newsletter@noon.com',
+        'sender_name': 'نون Noon',
+        'subject': 'أحدث منتجات التجميل بخصم 30%',
+        'body': 'اكتشف أحدث منتجات التجميل والعناية بالبشرة على نون. خصم 30% على ماركات عالمية مختارة. تسوق الآن واستمتع بالتوصيل السريع لباب بيتك في المملكة العربية السعودية والإمارات.',
+        'label': 0,
+        'category': 'legitimate'
+    },
+
+    # Legitimate - Saudi retail chain sale announcement
+    {
+        'sender_email': 'info@extra.com.sa',
+        'sender_name': 'Extra إكسترا',
+        'subject': 'تخفيضات نهاية الموسم - أجهزة إلكترونية',
+        'body': 'لا تفوت تخفيضات نهاية الموسم من إكسترا! خصومات رائعة على الأجهزة الإلكترونية والهواتف والأجهزة المنزلية. العرض متاح في جميع فروعنا وعلى موقع extra.com.sa.',
+        'label': 0,
+        'category': 'legitimate'
+    },
+
+    # Legitimate - Arabic brand with hyphenated domain (important: not suspicious)
+    {
+        'sender_email': 'info@al-baik.com',
+        'sender_name': 'البيك Al-Baik',
+        'subject': 'وجبة العائلة السعيدة - عروض خاصة',
+        'body': 'احتفلوا مع العائلة بوجبة البيك الشهية. عروض خاصة على وجبات العائلة طوال الأسبوع. تفضل بزيارة أقرب فرع أو اطلب عبر تطبيق البيك.',
+        'label': 0,
+        'category': 'legitimate'
     },
 ]
 

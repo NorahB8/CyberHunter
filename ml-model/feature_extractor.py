@@ -24,7 +24,7 @@ class FeatureExtractor:
             # English financial
             'payment', 'invoice', 'refund', 'transaction', 'wire transfer',
             'bank account', 'credit card', 'cvv', 'pin',
-            # Advance-fee fraud / donation scams
+            # inheritance / donation scams
             'million dollars', 'million usd', 'usd2,000,000', 'usd 2,000,000',
             'randomly selected', 'lucky individual', 'late brother', 'deceased',
             'next of kin', 'no next of kin', 'beneficiary', 'inheritance',
@@ -33,6 +33,23 @@ class FeatureExtractor:
             'compensation payment', 'unclaimed refund', 'grant approved',
             'count yourself', 'email address is valid', 'kindly get back',
             'strongly believed in giving', 'give while living',
+            # Lottery donation scam patterns
+            'selected as one', 'selected recipient', 'chosen to receive',
+            'five selected individuals', 'selected individuals worldwide',
+            'powerball jackpot', 'lottery jackpot', 'jackpot winner',
+            'legal representative', 'contact person', 'payment code',
+            'confirm your acceptance', 'initiate the payment', 'release the funds',
+            'facilitate the payment', 'payment reference', 'payment officer',
+            'recent photograph', 
+            #request of personal information
+            'copy of your id', 'copy of passport','credit card information', 'social security number',             'id or passport', 'picture of your id', 'photo of your id',
+            'scan of your id', 'scan of your passport', 'send your id',
+            'send your passport', 'national id', 'attach your id',
+            'provide your bank', 'provide bank account',
+            'whatsapp number', 'text message only', 'transaction is monitored',
+            'united states government', 'full transparency', 'prevent fraudulent',
+            'five million', 'ten million', '$10 million', '$5 million',
+            'global database', 'divine revelation', 
             # English shipping
             'parcel', 'delivery', 'tracking', 'warehouse', 'unable to deliver',
             'missing information', 'business days',
