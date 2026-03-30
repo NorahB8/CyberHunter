@@ -28,14 +28,28 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
         handlePhishingDetection(request.data, sender.tab);
         sendResponse({ success: true });
     }
-    
+
     if (request.action === 'getSettings') {
         chrome.storage.local.get(['settings'], (result) => {
             sendResponse(result.settings || {});
         });
         return true; // Keep channel open for async response
     }
-    
+
+    if (request.action === 'openFullDashboard') {
+        chrome.tabs.create({ url: chrome.runtime.getURL('popup.html'), active: true });
+        sendResponse({ success: true });
+    }
+
+    if (request.action === 'syncSession') {
+        if (request.user) {
+            chrome.storage.local.set({ ext_cyberhunter_session: request.user });
+        } else {
+            chrome.storage.local.remove('ext_cyberhunter_session');
+        }
+        sendResponse({ success: true });
+    }
+
     return false;
 });
 

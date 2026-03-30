@@ -5,12 +5,14 @@
   "description": "Real-time phishing detection for emails using machine learning",
   "permissions": [
     "activeTab",
-    "storage"
+    "storage",
+    "tabs"
   ],
   "host_permissions": [
     "*://mail.google.com/*",
     "*://outlook.live.com/*",
-    "*://outlook.office.com/*"
+    "*://outlook.office.com/*",
+    "http://localhost:5000/*"
   ],
   "background": {
     "service_worker": "background.js"
@@ -25,24 +27,29 @@
       "js": ["content.js"],
       "css": ["styles.css"],
       "run_at": "document_idle"
+    },
+    {
+      "matches": ["http://localhost:5000/*"],
+      "js": ["website-sync.js"],
+      "run_at": "document_idle"
     }
   ],
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "icons/CyberHunter",
-      "48": "icons/CyberHunter",
-      "128": "icons/CyberHunter"
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
     }
   },
   "icons": {
-    "16": "icons/CyberHunter",
-    "48": "icons/CyberHunter",
-    "128": "icons/CyberHunter"
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "web_accessible_resources": [
     {
-      "resources": ["warning-banner.html"],
+      "resources": ["warning-banner.html", "cyberhunter_ext.png"],
       "matches": ["*://mail.google.com/*", "*://outlook.live.com/*", "*://outlook.office.com/*"]
     }
   ]

@@ -2,6 +2,12 @@
 document.addEventListener('DOMContentLoaded', async () => {
     loadStats();
     loadRecentScans();
+    initAuth();
+
+    document.getElementById('websiteLink').addEventListener('click', (e) => {
+        e.preventDefault();
+        chrome.runtime.sendMessage({ action: 'openFullDashboard' });
+    });
 });
 
 async function loadStats() {
@@ -68,7 +74,114 @@ function getTimeAgo(date) {
     return Math.floor(seconds / 86400) + ' days ago';
 }
 
-document.getElementById('websiteLink').addEventListener('click', (e) => {
-    e.preventDefault();
-    chrome.tabs.create({ url: 'index.html' });
-});
+// ── Auth (server-backed, shared with website) ─────────────────────────
+const AUTH_API = 'http://localhost:5000/api/auth';
+const EXT_SESSION_KEY = 'ext_cyberhunter_session';
+
+async function getExtSession() {
+    const r = await chrome.storage.local.get([EXT_SESSION_KEY]);
+    return r[EXT_SESSION_KEY] || null;
+}
+
+async function saveExtSession(user) {
+    await chrome.storage.local.set({ [EXT_SESSION_KEY]: user });
+}
+
+async function clearExtSession() {
+    await chrome.storage.local.remove(EXT_SESSION_KEY);
+}
+
+async function renderExtAuth() {
+    const user = await getExtSession();
+    const loggedInEl = document.getElementById('extLoggedIn');
+    const formsEl = document.getElementById('extAuthForms');
+    if (user) {
+        loggedInEl.classList.add('show');
+        formsEl.style.display = 'none';
+        document.getElementById('extAvatar').textContent = user.name.charAt(0).toUpperCase();
+        document.getElementById('extUserName').textContent = user.name;
+        document.getElementById('extUserEmail').textContent = user.email;
+    } else {
+        loggedInEl.classList.remove('show');
+        formsEl.style.display = '';
+    }
+}
+
+function initAuth() {
+    renderExtAuth();
+
+    // Tab switching
+    document.getElementById('extTabLogin').addEventListener('click', () => {
+        document.getElementById('extTabLogin').classList.add('active');
+        document.getElementById('extTabSignup').classList.remove('active');
+        document.getElementById('extLoginForm').classList.add('active');
+        document.getElementById('extSignupForm').classList.remove('active');
+    });
+    document.getElementById('extTabSignup').addEventListener('click', () => {
+        document.getElementById('extTabSignup').classList.add('active');
+        document.getElementById('extTabLogin').classList.remove('active');
+        document.getElementById('extSignupForm').classList.add('active');
+        document.getElementById('extLoginForm').classList.remove('active');
+    });
+
+    // Login
+    document.getElementById('extLoginForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        const email = document.getElementById('extLoginEmail').value.trim().toLowerCase();
+        const password = document.getElementById('extLoginPassword').value;
+        const msg = document.getElementById('extLoginMsg');
+        try {
+            const res = await fetch(`${AUTH_API}/login`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ email, password })
+            });
+            const data = await res.json();
+            if (!data.success) {
+                msg.textContent = data.error;
+                msg.className = 'auth-msg error';
+                return;
+            }
+            await saveExtSession(data.user);
+            msg.textContent = '';
+            renderExtAuth();
+        } catch {
+            msg.textContent = 'Server unavailable. Start the API server first.';
+            msg.className = 'auth-msg error';
+        }
+    });
+
+    // Sign up
+    document.getElementById('extSignupForm').addEventListener('submit', async e => {
+        e.preventDefault();
+        const name = document.getElementById('extSignupName').value.trim();
+        const email = document.getElementById('extSignupEmail').value.trim().toLowerCase();
+        const password = document.getElementById('extSignupPassword').value;
+        const msg = document.getElementById('extSignupMsg');
+        try {
+            const res = await fetch(`${AUTH_API}/register`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name, email, password })
+            });
+            const data = await res.json();
+            if (!data.success) {
+                msg.textContent = data.error;
+                msg.className = 'auth-msg error';
+                return;
+            }
+            await saveExtSession(data.user);
+            msg.textContent = '';
+            renderExtAuth();
+        } catch {
+            msg.textContent = 'Server unavailable. Start the API server first.';
+            msg.className = 'auth-msg error';
+        }
+    });
+
+    // Sign out
+    document.getElementById('extSignOut').addEventListener('click', async () => {
+        await clearExtSession();
+        renderExtAuth();
+    });
+}

@@ -24,6 +24,32 @@ class FeatureExtractor:
             # English financial
             'payment', 'invoice', 'refund', 'transaction', 'wire transfer',
             'bank account', 'credit card', 'cvv', 'pin',
+            # inheritance / donation scams
+            'million dollars', 'million usd', 'usd2,000,000', 'usd 2,000,000',
+            'randomly selected', 'lucky individual', 'late brother', 'deceased',
+            'next of kin', 'no next of kin', 'beneficiary', 'inheritance',
+            'dying widow', 'god-fearing', 'processing fee', 'western union',
+            'transfer the funds', 'release the funds', 'bank details',
+            'compensation payment', 'unclaimed refund', 'grant approved',
+            'count yourself', 'email address is valid', 'kindly get back',
+            'strongly believed in giving', 'give while living',
+            # Lottery donation scam patterns
+            'selected as one', 'selected recipient', 'chosen to receive',
+            'five selected individuals', 'selected individuals worldwide',
+            'powerball jackpot', 'lottery jackpot', 'jackpot winner',
+            'legal representative', 'contact person', 'payment code',
+            'confirm your acceptance', 'initiate the payment', 'release the funds',
+            'facilitate the payment', 'payment reference', 'payment officer',
+            'recent photograph', 
+            #request of personal information
+            'copy of your id', 'copy of passport','credit card information', 'social security number',             'id or passport', 'picture of your id', 'photo of your id',
+            'scan of your id', 'scan of your passport', 'send your id',
+            'send your passport', 'national id', 'attach your id',
+            'provide your bank', 'provide bank account',
+            'whatsapp number', 'text message only', 'transaction is monitored',
+            'united states government', 'full transparency', 'prevent fraudulent',
+            'five million', 'ten million', '$10 million', '$5 million',
+            'global database', 'divine revelation', 
             # English shipping
             'parcel', 'delivery', 'tracking', 'warehouse', 'unable to deliver',
             'missing information', 'business days',
@@ -209,9 +235,6 @@ class FeatureExtractor:
         features['name_domain_mismatch'] = self._check_name_domain_mismatch(
             sender_email, sender_name
         )
-
-        # Feature 22: Domain age (new/suspicious domain detection)
-        features['domain_age_suspicious'] = self._check_domain_age(sender_email)
 
         return features
 
@@ -518,46 +541,6 @@ class FeatureExtractor:
                     'so-net.ne.jp', 'dti.ne.jp', 'infoweb.ne.jp']
         if any(domain.endswith(isp) for isp in jp_isps) and is_western_name:
             return 1
-
-        return 0
-
-    def _check_domain_age(self, email):
-        """Check if domain shows signs of being new/temporary.
-        Uses heuristic approach (no WHOIS) for speed.
-        Returns 1 if domain appears suspicious/temporary, 0 otherwise."""
-        parsed = self._parse_input(email)
-        domain = parsed['domain']
-        if not domain:
-            return 0
-
-        domain_lower = domain.lower()
-
-        # Check if it's a legitimate brand domain first
-        legitimate_domains_list = []
-        for domains in self.legitimate_brands.values():
-            legitimate_domains_list.extend(domains)
-
-        if any(legit_domain in domain_lower for legit_domain in legitimate_domains_list):
-            return 0  # Known legitimate brand - safe
-
-        # Check for disposable/free TLDs (strong signal of temporary domains)
-        disposable_tlds = [
-            '.tk', '.ml', '.ga', '.cf', '.gq',  # Freenom free TLDs
-            '.xyz', '.top', '.club', '.site', '.online', '.website',  # Cheap TLDs
-            '.win', '.bid', '.trade', '.stream', '.download'  # Suspicious TLDs
-        ]
-
-        for tld in disposable_tlds:
-            if domain_lower.endswith(tld):
-                return 1  # Likely temporary/new domain
-
-        # Check for patterns common in new phishing domains
-        # Long domains with hyphens + suspicious keywords
-        if '-' in domain_lower and len(domain_lower) > 25:
-            spam_keywords = ['verify', 'secure', 'login', 'account', 'update',
-                           'confirm', 'check', 'validation', 'security']
-            if any(kw in domain_lower for kw in spam_keywords):
-                return 1
 
         return 0
 
