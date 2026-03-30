@@ -37,19 +37,19 @@
   "action": {
     "default_popup": "popup.html",
     "default_icon": {
-      "16": "icons/CyberHunter",
-      "48": "icons/CyberHunter",
-      "128": "icons/CyberHunter"
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png",
+      "128": "icons/icon128.png"
     }
   },
   "icons": {
-    "16": "icons/CyberHunter",
-    "48": "icons/CyberHunter",
-    "128": "icons/CyberHunter"
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
   },
   "web_accessible_resources": [
     {
-      "resources": ["warning-banner.html"],
+      "resources": ["warning-banner.html", "cyberhunter_ext.png"],
       "matches": ["*://mail.google.com/*", "*://outlook.live.com/*", "*://outlook.office.com/*"]
     }
   ]

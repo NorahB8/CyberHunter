@@ -7,15 +7,15 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #00ff88;
+            --primary: #d4a200;
             --danger: #ff3366;
             --warning: #ffaa00;
-            --bg-dark: #0a0e17;
-            --bg-card: #131820;
-            --bg-input: #1a2030;
-            --text-primary: #e8eaed;
+            --bg-dark: #0d0900;
+            --bg-card: #1a1400;
+            --bg-input: #221c00;
+            --text-primary: #c8a800;
             --text-secondary: #9aa0a6;
-            --border: #2a3140;
+            --border: #4a3c00;
             --glow: rgba(0, 255, 136, 0.3);
         }
 
@@ -92,7 +92,7 @@
         .logo-icon {
             width: 60px;
             height: 60px;
-            background: linear-gradient(135deg, var(--primary), #00ccff);
+            background: linear-gradient(135deg, var(--primary), #c8a800);
             border-radius: 16px;
             display: flex;
             align-items: center;
@@ -110,7 +110,7 @@
         h1 {
             font-size: 3.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), #00ccff);
+            background: linear-gradient(135deg, var(--primary), #c8a800);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -127,7 +127,7 @@
         .download-extension-btn {
             margin-top: 2rem;
             padding: 1rem 2rem;
-            background: linear-gradient(135deg, #00ccff, var(--primary));
+            background: linear-gradient(135deg, #c8a800, var(--primary));
             border: none;
             border-radius: 12px;
             color: var(--bg-dark);
@@ -210,7 +210,7 @@
 
         .scan-btn {
             padding: 1.25rem 2.5rem;
-            background: linear-gradient(135deg, var(--primary), #00ccff);
+            background: linear-gradient(135deg, var(--primary), #c8a800);
             border: none;
             border-radius: 16px;
             color: var(--bg-dark);
@@ -415,7 +415,7 @@
         .stat-value {
             font-size: 2.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), #00ccff);
+            background: linear-gradient(135deg, var(--primary), #c8a800);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -512,7 +512,7 @@
             font-size: 1.8rem;
             font-weight: 700;
             margin-bottom: 1.5rem;
-            background: linear-gradient(135deg, var(--primary), #00ccff);
+            background: linear-gradient(135deg, var(--primary), #c8a800);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -540,7 +540,7 @@
             top: 0;
             width: 20px;
             height: 20px;
-            background: linear-gradient(135deg, var(--primary), #00ccff);
+            background: linear-gradient(135deg, var(--primary), #c8a800);
             border-radius: 50%;
             display: flex;
             align-items: center;
@@ -608,7 +608,7 @@
         }
 
         .modal-auth-tab.active {
-            background: linear-gradient(135deg, var(--primary), #00ccff);
+            background: linear-gradient(135deg, var(--primary), #c8a800);
             color: var(--bg-dark);
             border-color: transparent;
         }
@@ -636,7 +636,7 @@
 
         .modal-auth-submit {
             padding: 0.75rem;
-            background: linear-gradient(135deg, var(--primary), #00ccff);
+            background: linear-gradient(135deg, var(--primary), #c8a800);
             border: none;
             border-radius: 10px;
             color: var(--bg-dark);
@@ -673,7 +673,7 @@
             width: 44px;
             height: 44px;
             border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), #00ccff);
+            background: linear-gradient(135deg, var(--primary), #c8a800);
             display: flex;
             align-items: center;
             justify-content: center;
@@ -732,7 +732,7 @@
     <div class="container">
         <header>
             <div class="logo">
-                <div class="logo-icon">🛡️</div>
+                <img src="Cyberhunter_web.png" alt="CyberHunter Logo" style="width:250px;height:250px;object-fit:contain;">
             </div>
             <h1>CyberHunter</h1>
             <p class="tagline">AI-Powered Phishing Detection & URL Analysis</p>
@@ -742,20 +742,6 @@
             </button>
         </header>
 
-        <div class="stats-bar">
-            <div class="stat-card">
-                <div class="stat-value">98.7%</div>
-                <div class="stat-label">Detection Accuracy</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value">2.1M+</div>
-                <div class="stat-label">URLs Scanned</div>
-            </div>
-            <div class="stat-card">
-                <div class="stat-value">47K+</div>
-                <div class="stat-label">Threats Blocked</div>
-            </div>
-        </div>
 
         <div class="scanner-section">
             <div class="url-input-group">
@@ -877,7 +863,6 @@
                     // Extract features
                     const features = {
                         urlLength: this.analyzeURLLength(url),
-                        domainAge: this.analyzeDomainAge(urlObj.hostname),
                         suspiciousCharacters: this.analyzeSuspiciousChars(url),
                         httpsEnabled: this.analyzeHTTPS(urlObj),
                         subdomainCount: this.analyzeSubdomains(urlObj.hostname),
@@ -919,32 +904,6 @@
                 return { risk, value: status, score: length > 75 ? 0.8 : length > 54 ? 0.4 : 0 };
             }
 
-            analyzeDomainAge(hostname) {
-                // Check if domain looks established based on well-known domains
-                const wellKnownDomains = [
-                    'google.com', 'facebook.com', 'amazon.com', 'microsoft.com',
-                    'apple.com', 'paypal.com', 'netflix.com', 'github.com',
-                    'twitter.com', 'linkedin.com', 'youtube.com', 'instagram.com',
-                    'yahoo.com', 'outlook.com', 'chase.com', 'wellsfargo.com',
-                    'bankofamerica.com', 'dhl.com', 'fedex.com', 'ups.com',
-                    'sephora.com', 'sephora.sa', 'sephora-info-fr.com', 'sephora-info-me.com'
-                ];
-
-                const isWellKnown = wellKnownDomains.some(d => hostname.endsWith(d));
-
-                if (isWellKnown) {
-                    return { risk: 'safe', value: 'Well-known established domain', score: 0 };
-                }
-
-                // Flag suspicious TLDs as likely new/disposable
-                const disposableTLDs = ['.tk', '.ml', '.ga', '.cf', '.gq', '.xyz', '.top', '.club'];
-                const tld = hostname.substring(hostname.lastIndexOf('.'));
-                if (disposableTLDs.includes(tld)) {
-                    return { risk: 'danger', value: 'Disposable/free TLD - likely temporary domain', score: 0.7 };
-                }
-
-                return { risk: 'safe', value: 'Domain age unknown (use ML API for full analysis)', score: 0 };
-            }
 
             analyzeSuspiciousChars(url) {
                 // Check for @ in URL (credential attack: http://google.com@evil.com)
@@ -1293,11 +1252,6 @@
                     value: `Domain length: ${features.domain_length || 0} chars`,
                     score: features.domain_length > 50 ? 0.5 : features.domain_length > 30 ? 0.3 : 0
                 },
-                domainAge: {
-                    risk: 'safe',
-                    value: 'Analyzed by ML model',
-                    score: 0
-                },
                 suspiciousCharacters: {
                     risk: features.hyphen_count > 3 ? 'danger' : features.hyphen_count > 1 ? 'warning' : 'safe',
                     value: `Hyphens: ${features.hyphen_count || 0}`,
@@ -1415,7 +1369,6 @@
 
             const featureLabels = {
                 urlLength: 'URL Length',
-                domainAge: 'Domain Age',
                 suspiciousCharacters: 'Special Characters',
                 httpsEnabled: 'HTTPS Security',
                 subdomainCount: 'Subdomain Analysis',
@@ -1423,7 +1376,7 @@
                 ipAddress: 'Domain Type',
                 urlShortener: 'URL Type',
                 tldRisk: 'Top-Level Domain',
-                homographAttack: 'Homograph Check'
+                homographAttack: 'Impersonating Letters'
             };
 
             Object.entries(features).forEach(([key, feature]) => {

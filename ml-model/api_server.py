@@ -11,25 +11,38 @@ from datetime import datetime
 import os
 import zipfile
 import io
-import json
+import sqlite3
+
 _ML_DIR = os.path.dirname(os.path.abspath(__file__))  # .../files/ml-model
 BASE_DIR = os.path.dirname(_ML_DIR)                   # .../files
-USERS_FILE = os.path.join(BASE_DIR, 'users.json')
-print(f"[Auth] users.json -> {USERS_FILE}")
+DB_FILE = os.path.join(BASE_DIR, 'users.db')
+print(f"[Auth] SQLite database -> {DB_FILE}")
+
 app = Flask(__name__, static_folder=BASE_DIR, static_url_path='')
 CORS(app, origins='*')  # Enable CORS for browser extension and web interface
 
 
-def load_users():
-    if not os.path.exists(USERS_FILE):
-        return []
-    with open(USERS_FILE, 'r') as f:
-        return json.load(f)
+def get_db():
+    conn = sqlite3.connect(DB_FILE)
+    conn.row_factory = sqlite3.Row
+    return conn
 
 
-def save_users(users):
-    with open(USERS_FILE, 'w') as f:
-        json.dump(users, f)
+def init_db():
+    with get_db() as conn:
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id        INTEGER PRIMARY KEY AUTOINCREMENT,
+                name      TEXT    NOT NULL,
+                email     TEXT    NOT NULL UNIQUE,
+                password  TEXT    NOT NULL,
+                created_at TEXT   DEFAULT (datetime('now'))
+            )
+        ''')
+    print(f"[Auth] Database ready: {DB_FILE}")
+
+
+init_db()
 
 # Initialize ML model
 print("Loading Random Forest ML model...")
@@ -69,13 +82,16 @@ def register():
         return jsonify({'success': False, 'error': 'All fields are required'}), 400
     if len(password) < 6:
         return jsonify({'success': False, 'error': 'Password must be at least 6 characters'}), 400
-    users = load_users()
-    if any(u['email'] == email for u in users):
+    try:
+        with get_db() as conn:
+            conn.execute(
+                'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
+                (name, email, password)
+            )
+        print(f"[Auth] New user registered: {email}")
+        return jsonify({'success': True, 'user': {'name': name, 'email': email}})
+    except sqlite3.IntegrityError:
         return jsonify({'success': False, 'error': 'An account with this email already exists'}), 409
-    user = {'name': name, 'email': email, 'password': password}
-    users.append(user)
-    save_users(users)
-    return jsonify({'success': True, 'user': {'name': name, 'email': email}})
 
 
 @app.route('/api/auth/login', methods=['POST'])
@@ -83,12 +99,23 @@ def login():
     data = request.get_json()
     email = (data.get('email') or '').strip().lower()
     password = data.get('password') or ''
-    users = load_users()
-    print(f"[Login] email={repr(email)} password={repr(password)} users={users}")
-    user = next((u for u in users if u['email'] == email and u['password'] == password), None)
-    if not user:
+    with get_db() as conn:
+        row = conn.execute(
+            'SELECT name, email FROM users WHERE email = ? AND password = ?',
+            (email, password)
+        ).fetchone()
+    if not row:
         return jsonify({'success': False, 'error': 'Invalid email or password'}), 401
-    return jsonify({'success': True, 'user': {'name': user['name'], 'email': user['email']}})
+    print(f"[Auth] Login: {email}")
+    return jsonify({'success': True, 'user': {'name': row['name'], 'email': row['email']}})
+
+
+@app.route('/api/auth/users', methods=['GET'])
+def list_users():
+    """View all registered users (for debugging)"""
+    with get_db() as conn:
+        rows = conn.execute('SELECT id, name, email, created_at FROM users ORDER BY id').fetchall()
+    return jsonify({'users': [dict(r) for r in rows], 'count': len(rows)})
 
 
 @app.route('/api/health', methods=['GET'])
