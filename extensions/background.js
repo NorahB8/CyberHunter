@@ -1,5 +1,52 @@
 // CyberHunter Background Service Worker
 
+// FR12 — Right-click context menu to scan selected text
+chrome.runtime.onInstalled.addListener(() => {
+    chrome.contextMenus.create({
+        id: 'cyberhunter-scan',
+        title: 'CyberHunter: Scan selected text',
+        contexts: ['selection']
+    });
+});
+
+chrome.contextMenus.onClicked.addListener(async (info, tab) => {
+    if (info.menuItemId !== 'cyberhunter-scan') return;
+    const text = info.selectionText?.trim();
+    if (!text) return;
+
+    try {
+        const res = await fetch('http://localhost:5000/api/analyze', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                url: 'selected-text@scan',
+                sender_name: 'Selected Text',
+                email_body: text
+            })
+        });
+        const result = await res.json();
+        const score = Math.round(result.risk_score || 0);
+        const level = score >= 70 ? 'HIGH RISK' : score >= 40 ? 'SUSPICIOUS' : 'SAFE';
+        const icon = score >= 70 ? '🚨' : score >= 40 ? '⚠️' : '✅';
+
+        chrome.notifications.create({
+            type: 'basic',
+            iconUrl: 'icons/icon128.png',
+            title: `${icon} CyberHunter: ${level}`,
+            message: `Risk Score: ${score}%\n${result.feature_analysis?.[0] || 'Analysis complete.'}`
+        });
+
+        updateBadge(tab.id, score >= 70 ? 'high' : score >= 40 ? 'medium' : 'low');
+    } catch (e) {
+        chrome.notifications.create({
+            type: 'basic',
+            iconUrl: 'icons/icon128.png',
+            title: 'CyberHunter',
+            message: 'Unable to scan — make sure the API server is running.'
+        });
+    }
+});
+
 // Initialize extension
 chrome.runtime.onInstalled.addListener((details) => {
     if (details.reason === 'install') {
@@ -105,7 +152,7 @@ chrome.tabs.onRemoved.addListener((tabId) => {
 });
 
 // Monitor navigation to email clients
-chrome.tabs.onUpdated.addListener((tabId, changeInfo, tab) => {
+chrome.tabs.onUpdated.addListener((_tabId, changeInfo, tab) => {
     if (changeInfo.status === 'complete') {
         const emailClients = ['mail.google.com', 'outlook.live.com', 'outlook.office.com'];
         

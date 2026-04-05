@@ -10,6 +10,7 @@ class WhatsAppPhishingDetector {
             prizes:      /winner|won|prize|congratulations|claim|free gift|selected|reward|lottery|jackpot|فائز|جائزة|مبروك|مجاني|هدية|يانصيب/i,
             credentials: /password|pin|otp|verification code|credit card|bank account|national id|copy of id|send your id|photo of your id|picture of id|كلمة المرور|رقم سري|بيانات البنك|الهوية/i,
             financial:   /send money|wire transfer|western union|bitcoin|crypto|wallet address|payment required|advance fee|أرسل مبلغ|تحويل|عملة رقمية|رسوم/i,
+            socialEngineering: /جربه|جرب الرابط|جالي فعلاً|وصلني فعلاً|try it|try the link|it actually worked|i got paid|i received|share this link|forward this|أنا استلمت|وصلني مبلغ|كسبت فعلاً/i,
             threats:     /suspended|blocked|account will be closed|unauthorized access|security breach|تعليق|محظور|إغلاق الحساب|اختراق/i
         };
 
@@ -88,7 +89,13 @@ class WhatsAppPhishingDetector {
     }
 
     extractLinks(el) {
-        return [...el.querySelectorAll('a[href]')].map(a => a.href);
+        // Get anchor tags
+        const anchorLinks = [...el.querySelectorAll('a[href]')].map(a => a.href);
+        // Also extract URLs from raw text (WhatsApp doesn't always wrap links in <a>)
+        const text = el.innerText || '';
+        const urlRegex = /https?:\/\/[^\s\u200B\u00A0]+/gi;
+        const textLinks = [...(text.match(urlRegex) || [])];
+        return [...new Set([...anchorLinks, ...textLinks])];
     }
 
     extractSender(el) {
@@ -137,7 +144,12 @@ class WhatsAppPhishingDetector {
         // High consonant ratio = gibberish (xgegg, sngvotla, etc.)
         const vowels = (name.match(/[aeiou]/gi) || []).length;
         const ratio = vowels / name.length;
-        return ratio < 0.2; // less than 20% vowels = gibberish
+        if (ratio < 0.3) return true; // less than 30% vowels
+        // Repeated characters pattern (xgegg → gg repeated)
+        if (/(.)\1{2,}/.test(name)) return true;
+        // Starts with rare consonant combos
+        if (/^[xzqkvw]{2}/i.test(name)) return true;
+        return false;
     }
 
     async analyzeMessage(msgElement, msgId) {
@@ -176,6 +188,10 @@ class WhatsAppPhishingDetector {
         if (links.length > 0 && this.moneyPattern.test(body)) {
             riskScore = Math.min(riskScore + 25, 100);
             reasons.push('Message contains a link with a money amount — possible scam');
+        }
+        if (this.suspiciousPatterns.socialEngineering.test(body)) {
+            riskScore = Math.min(riskScore + 30, 100);
+            reasons.push('Uses social proof ("I got money, try it") — common scam tactic');
         }
 
         // Try ML API for additional scoring
@@ -243,7 +259,7 @@ class WhatsAppPhishingDetector {
             color: #aaa;
         `;
         badge.innerHTML = `<span style="color:#00c864;">✓ CyberHunter</span> Safe — ${Math.round(riskScore)}% risk`;
-        msgElement.parentNode?.insertBefore(badge, msgElement) || msgElement.prepend(badge);
+        this._insertBanner(msgElement, badge);
     }
 
     showWarning(msgElement, riskScore, reasons) {
@@ -271,7 +287,7 @@ class WhatsAppPhishingDetector {
         `;
 
         const reasonsHtml = reasons.slice(0, 3)
-            .map(r => `<div style="margin-top:3px;color:#ddd;font-size:11px;">• ${r}</div>`)
+            .map(r => `<div style="margin-top:3px;color:#555;font-size:11px;">• ${r}</div>`)
             .join('');
 
         banner.innerHTML = `
@@ -282,8 +298,22 @@ class WhatsAppPhishingDetector {
             ${reasonsHtml}
         `;
 
-        // Insert before the message bubble
-        msgElement.parentNode?.insertBefore(banner, msgElement) || msgElement.prepend(banner);
+        this._insertBanner(msgElement, banner);
+    }
+
+    _insertBanner(msgElement, el) {
+        // Try to find the inner text container to insert before it
+        const textContainer =
+            msgElement.querySelector('div.copyable-text') ||
+            msgElement.querySelector('[data-pre-plain-text]') ||
+            msgElement.querySelector('span.selectable-text')?.closest('div') ||
+            msgElement.querySelector('div > div > div');
+
+        if (textContainer && textContainer.parentNode) {
+            textContainer.parentNode.insertBefore(el, textContainer);
+        } else {
+            msgElement.prepend(el);
+        }
     }
 }
 

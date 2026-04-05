@@ -185,3 +185,43 @@ function initAuth() {
         renderExtAuth();
     });
 }
+
+// FR13 — Per-site scanning toggle
+async function initSiteToggle() {
+    const toggle = document.getElementById('siteToggle');
+    const label = document.getElementById('siteToggleLabel');
+    const thumb = document.getElementById('siteToggleThumb');
+    const track = document.getElementById('siteToggleTrack');
+
+    const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+    if (!tab?.url) return;
+
+    let hostname;
+    try { hostname = new URL(tab.url).hostname; } catch { return; }
+
+    const { disabledSites = [] } = await chrome.storage.local.get('disabledSites');
+    const isEnabled = !disabledSites.includes(hostname);
+
+    function applyState(enabled) {
+        toggle.checked = enabled;
+        thumb.style.left = enabled ? '23px' : '3px';
+        track.style.background = enabled ? '#d4a200' : '#4a3c00';
+        label.textContent = enabled ? `Scanning enabled on ${hostname}` : `Scanning disabled on ${hostname}`;
+        label.style.color = enabled ? '#c8a800' : '#888';
+    }
+
+    applyState(isEnabled);
+
+    toggle.addEventListener('change', async () => {
+        const { disabledSites = [] } = await chrome.storage.local.get('disabledSites');
+        const updated = toggle.checked
+            ? disabledSites.filter(s => s !== hostname)
+            : [...new Set([...disabledSites, hostname])];
+        await chrome.storage.local.set({ disabledSites: updated });
+        applyState(toggle.checked);
+        // Notify content script
+        chrome.tabs.sendMessage(tab.id, { action: 'setSiteEnabled', enabled: toggle.checked });
+    });
+}
+
+initSiteToggle();
