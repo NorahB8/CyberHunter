@@ -7,15 +7,15 @@
     <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&family=Outfit:wght@300;400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #00ff88;
+            --primary: #d4a200;
             --danger: #ff3366;
             --warning: #ffaa00;
-            --bg-dark: #0a0e17;
-            --bg-card: #131820;
-            --bg-input: #1a2030;
-            --text-primary: #e8eaed;
+            --bg-dark: #0d0900;
+            --bg-card: #1a1400;
+            --bg-input: #221c00;
+            --text-primary: #c8a800;
             --text-secondary: #9aa0a6;
-            --border: #2a3140;
+            --border: #4a3c00;
             --glow: rgba(0, 255, 136, 0.3);
         }
 
@@ -92,7 +92,7 @@
         .logo-icon {
             width: 60px;
             height: 60px;
-            background: linear-gradient(135deg, var(--primary), #00ccff);
+            background: linear-gradient(135deg, var(--primary), #c8a800);
             border-radius: 16px;
             display: flex;
             align-items: center;
@@ -110,7 +110,7 @@
         h1 {
             font-size: 3.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), #00ccff);
+            background: linear-gradient(135deg, var(--primary), #c8a800);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -122,6 +122,44 @@
             font-size: 1.2rem;
             margin-top: 0.5rem;
             font-weight: 300;
+        }
+
+        .download-extension-btn {
+            margin-top: 2rem;
+            padding: 1rem 2rem;
+            background: linear-gradient(135deg, #c8a800, var(--primary));
+            border: none;
+            border-radius: 12px;
+            color: var(--bg-dark);
+            font-size: 1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            box-shadow: 0 8px 24px rgba(0, 204, 255, 0.3);
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .download-extension-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 32px rgba(0, 204, 255, 0.5);
+        }
+
+        .download-extension-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .download-icon {
+            font-size: 1.3rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-5px); }
         }
 
         /* Main Scanner */
@@ -172,7 +210,7 @@
 
         .scan-btn {
             padding: 1.25rem 2.5rem;
-            background: linear-gradient(135deg, var(--primary), #00ccff);
+            background: linear-gradient(135deg, var(--primary), #c8a800);
             border: none;
             border-radius: 16px;
             color: var(--bg-dark);
@@ -377,7 +415,7 @@
         .stat-value {
             font-size: 2.5rem;
             font-weight: 800;
-            background: linear-gradient(135deg, var(--primary), #00ccff);
+            background: linear-gradient(135deg, var(--primary), #c8a800);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
@@ -400,197 +438,267 @@
             margin-top: 4rem;
         }
 
-        /* Profile Badge */
-        .profile-badge {
+        /* Extension Modal */
+        .extension-modal {
             display: none;
             position: fixed;
-            top: 1.5rem;
-            right: 2rem;
-            z-index: 100;
-            align-items: center;
-            gap: 0.75rem;
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 50px;
-            padding: 0.5rem 1rem 0.5rem 0.5rem;
-            cursor: pointer;
-            transition: border-color 0.2s;
-        }
-        .profile-badge.show { display: flex; }
-        .profile-badge:hover { border-color: var(--primary); }
-        .profile-avatar {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), #00ccff);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 1rem;
-            font-weight: 700;
-            color: var(--bg-dark);
-        }
-        .profile-name { font-size: 0.9rem; font-weight: 600; }
-
-        /* Download Extension Button */
-        .download-ext-btn {
-            display: inline-flex;
-            align-items: center;
-            gap: 0.5rem;
-            padding: 0.75rem 1.75rem;
-            background: linear-gradient(135deg, var(--primary), #00ccff);
-            border: none;
-            border-radius: 12px;
-            color: var(--bg-dark);
-            font-size: 0.9rem;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 1.25rem;
-            transition: all 0.2s;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            font-family: inherit;
-        }
-        .download-ext-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(0, 255, 136, 0.3);
-        }
-
-        /* Auth Modal */
-        .modal-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.75);
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
             z-index: 1000;
             align-items: center;
             justify-content: center;
+            animation: fadeIn 0.3s ease;
         }
-        .modal-overlay.show { display: flex; }
-        .modal {
+
+        .extension-modal.show {
+            display: flex;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
             background: var(--bg-card);
-            border: 1px solid var(--border);
             border-radius: 24px;
-            padding: 2.5rem;
-            width: 100%;
-            max-width: 420px;
+            padding: 3rem;
+            max-width: 600px;
+            width: 90%;
+            border: 2px solid var(--border);
+            box-shadow: 0 20px 80px rgba(0, 0, 0, 0.5);
+            animation: slideUp 0.3s ease;
             position: relative;
-            margin: 1rem;
-            animation: fadeInUp 0.3s ease;
         }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
         .modal-close {
             position: absolute;
-            top: 1rem;
-            right: 1.25rem;
-            background: none;
+            top: 1.5rem;
+            right: 1.5rem;
+            background: var(--bg-input);
             border: none;
-            color: var(--text-secondary);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            color: var(--text-primary);
             font-size: 1.5rem;
             cursor: pointer;
-            line-height: 1;
-            padding: 0.25rem;
-        }
-        .modal-close:hover { color: var(--text-primary); }
-        .modal-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 0.4rem; }
-        .modal-subtitle { color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1.5rem; }
-        .modal-tabs {
-            display: flex;
-            gap: 0.25rem;
-            margin-bottom: 1.5rem;
-            background: var(--bg-input);
-            padding: 0.25rem;
-            border-radius: 10px;
-        }
-        .modal-tab {
-            flex: 1;
-            padding: 0.6rem;
-            background: none;
-            border: none;
-            border-radius: 8px;
-            color: var(--text-secondary);
-            font-weight: 600;
-            font-size: 0.9rem;
-            cursor: pointer;
-            transition: all 0.2s;
-            font-family: inherit;
-        }
-        .modal-tab.active { background: var(--bg-card); color: var(--primary); }
-        .form-group { margin-bottom: 1rem; }
-        .form-group label {
-            display: block;
-            font-size: 0.8rem;
-            color: var(--text-secondary);
-            margin-bottom: 0.4rem;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        .form-group input {
-            width: 100%;
-            padding: 0.85rem 1rem;
-            background: var(--bg-input);
-            border: 1.5px solid var(--border);
-            border-radius: 10px;
-            color: var(--text-primary);
-            font-size: 0.95rem;
-            transition: border-color 0.2s;
-            font-family: inherit;
-        }
-        .form-group input:focus { outline: none; border-color: var(--primary); }
-        .form-submit {
-            width: 100%;
-            padding: 0.9rem;
-            background: linear-gradient(135deg, var(--primary), #00ccff);
-            border: none;
-            border-radius: 10px;
-            color: var(--bg-dark);
-            font-size: 1rem;
-            font-weight: 700;
-            cursor: pointer;
-            margin-top: 0.5rem;
-            transition: opacity 0.2s;
-            font-family: inherit;
-        }
-        .form-submit:hover { opacity: 0.9; }
-        .form-submit.secondary {
-            background: var(--bg-input);
-            color: var(--text-secondary);
-            margin-top: 0.5rem;
-        }
-        .auth-msg {
-            font-size: 0.85rem;
-            margin-top: 0.5rem;
-            padding: 0.5rem 0.75rem;
-            border-radius: 6px;
-            display: none;
-        }
-        .auth-msg.error { background: rgba(255, 51, 102, 0.15); color: var(--danger); display: block; }
-        .auth-msg.success { background: rgba(0, 255, 136, 0.1); color: var(--primary); display: block; }
-        .logged-in-state { text-align: center; }
-        .logged-in-avatar {
-            width: 72px;
-            height: 72px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, var(--primary), #00ccff);
+            transition: all 0.3s ease;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            font-weight: 700;
-            color: var(--bg-dark);
-            margin: 0 auto 1rem;
         }
-        .ext-instructions {
+
+        .modal-close:hover {
+            background: var(--danger);
+            transform: rotate(90deg);
+        }
+
+        .modal-header {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--primary), #c8a800);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .modal-steps {
+            list-style: none;
+            counter-reset: step-counter;
+        }
+
+        .modal-steps li {
+            counter-increment: step-counter;
+            margin-bottom: 0.6rem;
+            padding-left: 2rem;
+            position: relative;
+            line-height: 1.4;
+            font-size: 0.82rem;
+            color: var(--text-secondary);
+        }
+
+        .modal-steps li::before {
+            content: counter(step-counter);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, var(--primary), #c8a800);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.7rem;
+            color: var(--bg-dark);
+        }
+
+        .modal-code {
+            background: var(--bg-input);
+            padding: 0.3rem 0.6rem;
+            border-radius: 6px;
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 0.75rem;
+            color: var(--primary);
+            margin: 0.25rem 0;
+            border: 1px solid var(--border);
+            display: inline-block;
+        }
+
+        .modal-note {
+            background: rgba(255, 170, 0, 0.08);
+            border: 1px solid rgba(255, 170, 0, 0.25);
+            padding: 0.6rem 0.8rem;
+            border-radius: 8px;
+            margin-top: 0.75rem;
+            font-size: 0.78rem;
+            line-height: 1.4;
+            color: var(--text-secondary);
+        }
+
+        /* Auth section inside modal */
+        .modal-auth-divider {
+            border: none;
+            border-top: 1px solid var(--border);
+            margin: 1.5rem 0;
+        }
+
+        .modal-auth-title {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-secondary);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .modal-auth-tabs {
+            display: flex;
+            gap: 0.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .modal-auth-tab {
+            flex: 1;
+            padding: 0.6rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 8px;
+            color: var(--text-secondary);
+            font-size: 0.9rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-auth-tab.active {
+            background: linear-gradient(135deg, var(--primary), #c8a800);
+            color: var(--bg-dark);
+            border-color: transparent;
+        }
+
+        .modal-auth-form {
+            display: none;
+            flex-direction: column;
+            gap: 0.75rem;
+        }
+
+        .modal-auth-form.active { display: flex; }
+
+        .modal-auth-input {
+            padding: 0.75rem 1rem;
+            background: var(--bg-input);
+            border: 1px solid var(--border);
+            border-radius: 10px;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .modal-auth-input:focus { border-color: var(--primary); }
+
+        .modal-auth-submit {
+            padding: 0.75rem;
+            background: linear-gradient(135deg, var(--primary), #c8a800);
+            border: none;
+            border-radius: 10px;
+            color: var(--bg-dark);
+            font-size: 0.95rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+
+        .modal-auth-submit:hover { opacity: 0.85; }
+
+        .modal-auth-msg {
+            text-align: center;
+            font-size: 0.85rem;
+            min-height: 1.2em;
+        }
+
+        .modal-auth-msg.success { color: var(--primary); }
+        .modal-auth-msg.error   { color: var(--danger); }
+
+        .modal-logged-in {
+            display: none;
+            align-items: center;
+            gap: 1rem;
             background: var(--bg-input);
             border-radius: 12px;
-            padding: 1rem 1.25rem;
-            margin: 1rem 0 1.5rem;
-            text-align: left;
-            font-size: 0.85rem;
-            color: var(--text-secondary);
-            line-height: 1.9;
+            padding: 1rem;
+            border: 1px solid var(--border);
         }
-        .ext-instructions strong { color: var(--text-primary); }
+
+        .modal-logged-in.show { display: flex; }
+
+        .modal-logged-avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), #c8a800);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: var(--bg-dark);
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .modal-logged-info { flex: 1; }
+        .modal-logged-name { font-weight: 700; font-size: 0.95rem; }
+        .modal-logged-email { font-size: 0.8rem; color: var(--text-secondary); }
+
+        .modal-signout-btn {
+            background: none;
+            border: 1px solid var(--border);
+            color: var(--text-secondary);
+            padding: 0.4rem 0.8rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .modal-signout-btn:hover { border-color: var(--danger); color: var(--danger); }
 
         @media (max-width: 768px) {
             h1 {
@@ -608,27 +716,31 @@
             .feature-grid {
                 grid-template-columns: 1fr;
             }
+
+            .modal-content {
+                padding: 2rem 1.5rem;
+            }
+
+            .download-extension-btn {
+                font-size: 0.9rem;
+                padding: 0.875rem 1.5rem;
+            }
         }
     </style>
 </head>
 <body>
-    <!-- Profile Badge -->
-    <div class="profile-badge" id="profileBadge">
-        <div class="profile-avatar" id="profileAvatar">U</div>
-        <span class="profile-name" id="profileNameBadge">User</span>
-        <span style="color: var(--text-secondary); font-size: 0.75rem; margin-left: 0.25rem;">▼</span>
-    </div>
-
     <div class="container">
         <header>
             <div class="logo">
-                <div class="logo-icon">🛡️</div>
+                <img src="Cyberhunter_web.png" alt="CyberHunter Logo" style="width:250px;height:250px;object-fit:contain;">
             </div>
             <h1>CyberHunter</h1>
             <p class="tagline">AI-Powered Phishing Detection & URL Analysis</p>
-            <button class="download-ext-btn" id="downloadExtBtn">⬇ Download Extension</button>
+            <button class="download-extension-btn" id="downloadExtensionBtn">
+                <span class="download-icon">⬇</span>
+                Download Browser Extension
+            </button>
         </header>
-
 
 
         <div class="scanner-section">
@@ -665,67 +777,65 @@
 
         <footer>
             <p>CyberHunter uses advanced machine learning algorithms to detect phishing attempts in real-time.</p>
+            <p style="margin-top: 0.5rem; opacity: 0.7;">Install our browser extension for automatic email protection.</p>
         </footer>
     </div>
 
-    <!-- Auth Modal -->
-    <div class="modal-overlay" id="authModal">
-        <div class="modal">
+    <!-- Extension Installation Modal -->
+    <div class="extension-modal" id="extensionModal">
+        <div class="modal-content">
             <button class="modal-close" id="modalClose">×</button>
+            <h2 class="modal-header">🛡️ Install CyberHunter Extension</h2>
 
-            <!-- Auth forms (login / sign up) -->
-            <div id="authView">
-                <h3 class="modal-title">Welcome to CyberHunter</h3>
-                <p class="modal-subtitle">Sign in to download the browser extension</p>
-                <div class="modal-tabs">
-                    <button class="modal-tab active" id="loginTab">Login</button>
-                    <button class="modal-tab" id="signupTab">Sign Up</button>
-                </div>
+            <!-- Auth (top) -->
+            <p class="modal-auth-title">Sign in to use the extension</p>
 
-                <div id="loginForm">
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="loginEmail" placeholder="you@example.com">
-                    </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" id="loginPassword" placeholder="••••••••">
-                    </div>
-                    <div class="auth-msg" id="loginMsg"></div>
-                    <button class="form-submit" id="loginSubmit">Login</button>
+            <!-- Logged-in state -->
+            <div class="modal-logged-in" id="modalLoggedIn">
+                <div class="modal-logged-avatar" id="modalAvatar">U</div>
+                <div class="modal-logged-info">
+                    <div class="modal-logged-name" id="modalUserName">User</div>
+                    <div class="modal-logged-email" id="modalUserEmail"></div>
                 </div>
-
-                <div id="signupForm" style="display:none;">
-                    <div class="form-group">
-                        <label>Full Name</label>
-                        <input type="text" id="signupName" placeholder="Jane Doe">
-                    </div>
-                    <div class="form-group">
-                        <label>Email</label>
-                        <input type="email" id="signupEmail" placeholder="you@example.com">
-                    </div>
-                    <div class="form-group">
-                        <label>Password</label>
-                        <input type="password" id="signupPassword" placeholder="Min. 6 characters">
-                    </div>
-                    <div class="auth-msg" id="signupMsg"></div>
-                    <button class="form-submit" id="signupSubmit">Create Account</button>
-                </div>
+                <button class="modal-signout-btn" id="modalSignOut">Sign Out</button>
             </div>
 
-            <!-- Logged-in view -->
-            <div id="loggedInView" style="display:none;" class="logged-in-state">
-                <div class="logged-in-avatar" id="loggedInAvatar">U</div>
-                <h3 class="modal-title" id="loggedInName">Welcome back!</h3>
-                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;" id="loggedInEmail"></p>
-                <div class="ext-instructions">
-                    <strong>To install the extension:</strong><br>
-                    1. Open Chrome → More Tools → Extensions<br>
-                    2. Enable <strong>Developer Mode</strong> (top right toggle)<br>
-                    3. Click <strong>Load unpacked</strong><br>
-                    4. Select the <strong>extensions/</strong> folder
+            <!-- Auth forms -->
+            <div id="modalAuthForms">
+                <div class="modal-auth-tabs">
+                    <button class="modal-auth-tab active" id="tabLogin">Log In</button>
+                    <button class="modal-auth-tab" id="tabSignup">Sign Up</button>
                 </div>
-                <button class="form-submit secondary" id="logoutBtn">Sign Out</button>
+
+                <form class="modal-auth-form active" id="loginForm">
+                    <input class="modal-auth-input" type="email" id="loginEmail" placeholder="Email" required>
+                    <input class="modal-auth-input" type="password" id="loginPassword" placeholder="Password" required>
+                    <button class="modal-auth-submit" type="submit">Log In</button>
+                    <div class="modal-auth-msg" id="loginMsg"></div>
+                </form>
+
+                <form class="modal-auth-form" id="signupForm">
+                    <input class="modal-auth-input" type="text" id="signupName" placeholder="Full Name" required>
+                    <input class="modal-auth-input" type="email" id="signupEmail" placeholder="Email" required>
+                    <input class="modal-auth-input" type="password" id="signupPassword" placeholder="Password (min 6 chars)" required>
+                    <button class="modal-auth-submit" type="submit">Create Account</button>
+                    <div class="modal-auth-msg" id="signupMsg"></div>
+                </form>
+            </div>
+
+            <hr class="modal-auth-divider">
+
+            <!-- Installation steps (compact) -->
+            <ul class="modal-steps">
+                <li><strong>Extract the ZIP file</strong> to a folder on your computer</li>
+                <li>Open Chrome/Edge → <span class="modal-code">chrome://extensions</span></li>
+                <li>Enable <strong>"Developer mode"</strong> (top-right toggle)</li>
+                <li>Click <strong>"Load unpacked"</strong> and select the extracted folder</li>
+                <li>CyberHunter is now installed and active! 🎉</li>
+            </ul>
+
+            <div class="modal-note">
+                <strong>⚠️</strong> Keep the ML server running: <span class="modal-code">python ml-model/api_server.py</span>
             </div>
         </div>
     </div>
@@ -753,7 +863,6 @@
                     // Extract features
                     const features = {
                         urlLength: this.analyzeURLLength(url),
-                        domainAge: this.analyzeDomainAge(urlObj.hostname),
                         suspiciousCharacters: this.analyzeSuspiciousChars(url),
                         httpsEnabled: this.analyzeHTTPS(urlObj),
                         subdomainCount: this.analyzeSubdomains(urlObj.hostname),
@@ -795,32 +904,6 @@
                 return { risk, value: status, score: length > 75 ? 0.8 : length > 54 ? 0.4 : 0 };
             }
 
-            analyzeDomainAge(hostname) {
-                // Check if domain looks established based on well-known domains
-                const wellKnownDomains = [
-                    'google.com', 'facebook.com', 'amazon.com', 'microsoft.com',
-                    'apple.com', 'paypal.com', 'netflix.com', 'github.com',
-                    'twitter.com', 'linkedin.com', 'youtube.com', 'instagram.com',
-                    'yahoo.com', 'outlook.com', 'chase.com', 'wellsfargo.com',
-                    'bankofamerica.com', 'dhl.com', 'fedex.com', 'ups.com',
-                    'sephora.com', 'sephora.sa', 'sephora-info-fr.com', 'sephora-info-me.com'
-                ];
-
-                const isWellKnown = wellKnownDomains.some(d => hostname.endsWith(d));
-
-                if (isWellKnown) {
-                    return { risk: 'safe', value: 'Well-known established domain', score: 0 };
-                }
-
-                // Flag suspicious TLDs as likely new/disposable
-                const disposableTLDs = ['.tk', '.ml', '.ga', '.cf', '.gq', '.xyz', '.top', '.club'];
-                const tld = hostname.substring(hostname.lastIndexOf('.'));
-                if (disposableTLDs.includes(tld)) {
-                    return { risk: 'danger', value: 'Disposable/free TLD - likely temporary domain', score: 0.7 };
-                }
-
-                return { risk: 'safe', value: 'Domain age unknown (use ML API for full analysis)', score: 0 };
-            }
 
             analyzeSuspiciousChars(url) {
                 // Check for @ in URL (credential attack: http://google.com@evil.com)
@@ -951,7 +1034,7 @@
                 };
             }
 
-            analyzeTLD(hostname) {  
+            analyzeTLD(hostname) {
                 const tld = hostname.substring(hostname.lastIndexOf('.'));
                 const isSuspicious = this.suspiciousTLDs.includes(tld);
                 const isLegitimate = this.legitimateTLDs.includes(tld);
@@ -1090,6 +1173,23 @@
             if (e.key === 'Enter') handleScan();
         });
 
+        // Detects incomplete/malformed URL schemes before normalization
+        function checkMalformedURL(raw) {
+            // Missing colon: "http//", "https//"
+            if (/^https?\/\//i.test(raw)) {
+                return { risk: 'danger', value: 'Malformed URL — missing colon after scheme', score: 0.9 };
+            }
+            // Scheme only with no host: "http:", "http:/", "https:", "https:/"
+            if (/^https?:\/{0,1}$/i.test(raw)) {
+                return { risk: 'danger', value: 'Incomplete URL — no hostname after scheme', score: 0.9 };
+            }
+            // Scheme + slashes but no host: "https://"
+            if (/^https?:\/\/\s*$/i.test(raw)) {
+                return { risk: 'danger', value: 'Incomplete URL — empty hostname', score: 0.9 };
+            }
+            return { risk: 'safe', value: 'URL structure looks complete', score: 0 };
+        }
+
         async function handleScan() {
             let url = urlInput.value.trim();
 
@@ -1097,6 +1197,9 @@
                 alert('Please enter a URL to scan');
                 return;
             }
+
+            // Check for malformed URL BEFORE normalization
+            const malformedFeature = checkMalformedURL(url);
 
             // Normalize URL scheme
             if (url.match(/^https?:\/[^\/]/i)) {
@@ -1135,6 +1238,7 @@
 
                 // Convert ML result to display format
                 const analysis = convertMLResultToDisplay(result, url);
+                injectMalformedFeature(analysis, malformedFeature);
                 displayResults(analysis);
 
             } catch (error) {
@@ -1145,6 +1249,7 @@
                     alert('ML API server is not running. Please start it with: python ml-model/api_server.py\n\nFalling back to client-side detection...');
                     try {
                         const analysis = await detector.analyzeURL(url);
+                        injectMalformedFeature(analysis, malformedFeature);
                         displayResults(analysis);
                     } catch (e) {
                         alert(e.message);
@@ -1158,6 +1263,15 @@
             }
         }
 
+        function injectMalformedFeature(analysis, malformedFeature) {
+            analysis.features.malformedURL = malformedFeature;
+            if (malformedFeature.score > 0) {
+                // Boost overall risk score
+                analysis.riskScore = Math.min(100, analysis.riskScore + Math.round(malformedFeature.score * 100));
+                if (analysis.riskScore >= 50) analysis.classification = 'danger';
+            }
+        }
+
         function convertMLResultToDisplay(mlResult, normalizedUrl) {
             // Convert ML model result format to display format
             const features = mlResult.email_features || {};
@@ -1168,11 +1282,6 @@
                     risk: features.domain_length > 50 ? 'danger' : features.domain_length > 30 ? 'warning' : 'safe',
                     value: `Domain length: ${features.domain_length || 0} chars`,
                     score: features.domain_length > 50 ? 0.5 : features.domain_length > 30 ? 0.3 : 0
-                },
-                domainAge: {
-                    risk: 'safe',
-                    value: 'Analyzed by ML model',
-                    score: 0
                 },
                 suspiciousCharacters: {
                     risk: features.hyphen_count > 3 ? 'danger' : features.hyphen_count > 1 ? 'warning' : 'safe',
@@ -1220,13 +1329,15 @@
                 }
             };
 
-            // Feature warnings/dangers add a bonus on top of the ML risk score
-            let featureBonus = 0;
+            // Calculate risk score by summing all feature scores
+            let featureScoreSum = 0;
             Object.values(displayFeatures).forEach(f => {
-                if (f.risk === 'danger') featureBonus += 5;
-                else if (f.risk === 'warning') featureBonus += 3;
+                featureScoreSum += f.score || 0;
             });
-            let riskScore = Math.min(100, mlResult.risk_score + featureBonus);
+            // Convert sum to percentage (max possible ~4.5 from all features)
+            let featureRiskScore = Math.min(100, Math.round((featureScoreSum / 4.0) * 100));
+            // Use the higher of ML score or feature-based score
+            let riskScore = Math.max(mlResult.risk_score, featureRiskScore);
 
             let classification = riskScore >= 50 ? 'danger' : riskScore >= 25 ? 'warning' : 'safe';
             // Respect ML override if it's higher risk
@@ -1288,8 +1399,8 @@
             }
 
             const featureLabels = {
+                malformedURL: 'URL Structure',
                 urlLength: 'URL Length',
-                domainAge: 'Domain Age',
                 suspiciousCharacters: 'Special Characters',
                 httpsEnabled: 'HTTPS Security',
                 subdomainCount: 'Subdomain Analysis',
@@ -1297,7 +1408,7 @@
                 ipAddress: 'Domain Type',
                 urlShortener: 'URL Type',
                 tldRisk: 'Top-Level Domain',
-                homographAttack: 'Homograph Check'
+                homographAttack: 'Impersonating Letters'
             };
 
             Object.entries(features).forEach(([key, feature]) => {
@@ -1324,132 +1435,180 @@
             'https://example-very-long-suspicious-url-with-many-dashes-and-numbers-12345.xyz'
         ];
 
-        // ── Auth Management ────────────────────────────────────────────────────────
-        const USERS_KEY = 'cyberhunter_users';
-        const SESSION_KEY = 'cyberhunter_session';
+        // Extension Download Handler
+        const downloadExtensionBtn = document.getElementById('downloadExtensionBtn');
+        const extensionModal = document.getElementById('extensionModal');
+        const modalClose = document.getElementById('modalClose');
 
-        const getUsers = () => JSON.parse(localStorage.getItem(USERS_KEY) || '[]');
-        const saveUsers = (u) => localStorage.setItem(USERS_KEY, JSON.stringify(u));
-        const getSession = () => JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
-        const saveSession = (u) => localStorage.setItem(SESSION_KEY, JSON.stringify(u));
-        const clearSession = () => localStorage.removeItem(SESSION_KEY);
-        const getInitial = (user) => (user.name || user.email)[0].toUpperCase();
+        downloadExtensionBtn.addEventListener('click', async () => {
+            try {
+                // Show loading state
+                downloadExtensionBtn.disabled = true;
+                downloadExtensionBtn.innerHTML = '<span class="download-icon">⏳</span> Preparing Download...';
 
-        function syncProfileBadge() {
-            const session = getSession();
-            const badge = document.getElementById('profileBadge');
-            if (session) {
-                badge.classList.add('show');
-                document.getElementById('profileAvatar').textContent = getInitial(session);
-                document.getElementById('profileNameBadge').textContent = session.name || session.email;
-            } else {
-                badge.classList.remove('show');
+                // Download the ZIP file from API
+                const response = await fetch('http://localhost:5000/api/download-extension');
+
+                if (!response.ok) {
+                    throw new Error('Failed to download extension');
+                }
+
+                // Get the blob
+                const blob = await response.blob();
+
+                // Create download link
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = 'cyberhunter-extension.zip';
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                window.URL.revokeObjectURL(url);
+
+                // Show success state
+                downloadExtensionBtn.innerHTML = '<span class="download-icon">✓</span> Downloaded!';
+
+                // Show installation instructions after download
+                setTimeout(() => {
+                    extensionModal.classList.add('show');
+                    renderModalAuth();
+                    downloadExtensionBtn.disabled = false;
+                    downloadExtensionBtn.innerHTML = '<span class="download-icon">⬇</span> Download Browser Extension';
+                }, 1000);
+
+            } catch (error) {
+                console.error('Download error:', error);
+                alert('Failed to download extension. Make sure the API server is running:\npython ml-model/api_server.py');
+                downloadExtensionBtn.disabled = false;
+                downloadExtensionBtn.innerHTML = '<span class="download-icon">⬇</span> Download Browser Extension';
             }
-        }
-
-        function openModal() {
-            const session = getSession();
-            if (session) {
-                document.getElementById('authView').style.display = 'none';
-                document.getElementById('loggedInView').style.display = 'block';
-                document.getElementById('loggedInAvatar').textContent = getInitial(session);
-                document.getElementById('loggedInName').textContent = `Welcome, ${session.name || 'back'}!`;
-                document.getElementById('loggedInEmail').textContent = session.email;
-            } else {
-                document.getElementById('authView').style.display = 'block';
-                document.getElementById('loggedInView').style.display = 'none';
-                showLoginTab();
-            }
-            document.getElementById('authModal').classList.add('show');
-        }
-
-        function closeModal() {
-            document.getElementById('authModal').classList.remove('show');
-        }
-
-        function showLoginTab() {
-            document.getElementById('loginTab').classList.add('active');
-            document.getElementById('signupTab').classList.remove('active');
-            document.getElementById('loginForm').style.display = 'block';
-            document.getElementById('signupForm').style.display = 'none';
-            document.getElementById('loginMsg').className = 'auth-msg';
-        }
-
-        function showSignupTab() {
-            document.getElementById('signupTab').classList.add('active');
-            document.getElementById('loginTab').classList.remove('active');
-            document.getElementById('loginForm').style.display = 'none';
-            document.getElementById('signupForm').style.display = 'block';
-            document.getElementById('signupMsg').className = 'auth-msg';
-        }
-
-        document.getElementById('downloadExtBtn').addEventListener('click', openModal);
-        document.getElementById('profileBadge').addEventListener('click', openModal);
-        document.getElementById('modalClose').addEventListener('click', closeModal);
-        document.getElementById('authModal').addEventListener('click', (e) => {
-            if (e.target === document.getElementById('authModal')) closeModal();
         });
-        document.getElementById('loginTab').addEventListener('click', showLoginTab);
-        document.getElementById('signupTab').addEventListener('click', showSignupTab);
 
-        document.getElementById('loginSubmit').addEventListener('click', () => {
-            const email = document.getElementById('loginEmail').value.trim();
+        modalClose.addEventListener('click', () => {
+            extensionModal.classList.remove('show');
+        });
+
+        // Close modal when clicking outside
+        extensionModal.addEventListener('click', (e) => {
+            if (e.target === extensionModal) {
+                extensionModal.classList.remove('show');
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape' && extensionModal.classList.contains('show')) {
+                extensionModal.classList.remove('show');
+            }
+        });
+
+        // ── Auth (server-backed) ─────────────────────────────────────────
+        const AUTH_API = 'http://localhost:5000/api/auth';
+        const SESSION_KEY = 'cyberhunter_session';
+        const getSession = () => JSON.parse(localStorage.getItem(SESSION_KEY) || 'null');
+        const saveSession = u => {
+            localStorage.setItem(SESSION_KEY, JSON.stringify(u));
+            window.postMessage({ type: 'cyberhunter_auth', user: u }, '*');
+        };
+        const clearSession = () => {
+            localStorage.removeItem(SESSION_KEY);
+            window.postMessage({ type: 'cyberhunter_auth', user: null }, '*');
+        };
+
+        function renderModalAuth() {
+            const user = getSession();
+            const loggedInEl = document.getElementById('modalLoggedIn');
+            const formsEl = document.getElementById('modalAuthForms');
+            if (user) {
+                loggedInEl.classList.add('show');
+                formsEl.style.display = 'none';
+                document.getElementById('modalAvatar').textContent = user.name.charAt(0).toUpperCase();
+                document.getElementById('modalUserName').textContent = user.name;
+                document.getElementById('modalUserEmail').textContent = user.email;
+            } else {
+                loggedInEl.classList.remove('show');
+                formsEl.style.display = '';
+            }
+        }
+
+        // Tab switching
+        document.getElementById('tabLogin').addEventListener('click', () => {
+            document.getElementById('tabLogin').classList.add('active');
+            document.getElementById('tabSignup').classList.remove('active');
+            document.getElementById('loginForm').classList.add('active');
+            document.getElementById('signupForm').classList.remove('active');
+        });
+        document.getElementById('tabSignup').addEventListener('click', () => {
+            document.getElementById('tabSignup').classList.add('active');
+            document.getElementById('tabLogin').classList.remove('active');
+            document.getElementById('signupForm').classList.add('active');
+            document.getElementById('loginForm').classList.remove('active');
+        });
+
+        // Login
+        document.getElementById('loginForm').addEventListener('submit', async e => {
+            e.preventDefault();
+            const email = document.getElementById('loginEmail').value.trim().toLowerCase();
             const password = document.getElementById('loginPassword').value;
             const msg = document.getElementById('loginMsg');
-
-            if (!email || !password) {
-                msg.textContent = 'Please fill in all fields.';
-                msg.className = 'auth-msg error';
-                return;
+            try {
+                const res = await fetch(`${AUTH_API}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+                const data = await res.json();
+                if (!data.success) {
+                    msg.textContent = data.error;
+                    msg.className = 'modal-auth-msg error';
+                    return;
+                }
+                saveSession(data.user);
+                msg.textContent = '';
+                renderModalAuth();
+            } catch {
+                msg.textContent = 'Server unavailable. Make sure the API server is running.';
+                msg.className = 'modal-auth-msg error';
             }
-            const user = getUsers().find(u => u.email === email && u.password === password);
-            if (!user) {
-                msg.textContent = 'Incorrect email or password.';
-                msg.className = 'auth-msg error';
-                return;
-            }
-            saveSession(user);
-            syncProfileBadge();
-            openModal();
         });
 
-        document.getElementById('signupSubmit').addEventListener('click', () => {
+        // Sign up
+        document.getElementById('signupForm').addEventListener('submit', async e => {
+            e.preventDefault();
             const name = document.getElementById('signupName').value.trim();
-            const email = document.getElementById('signupEmail').value.trim();
+            const email = document.getElementById('signupEmail').value.trim().toLowerCase();
             const password = document.getElementById('signupPassword').value;
             const msg = document.getElementById('signupMsg');
-
-            if (!name || !email || !password) {
-                msg.textContent = 'Please fill in all fields.';
-                msg.className = 'auth-msg error';
-                return;
+            try {
+                const res = await fetch(`${AUTH_API}/register`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ name, email, password })
+                });
+                const data = await res.json();
+                if (!data.success) {
+                    msg.textContent = data.error;
+                    msg.className = 'modal-auth-msg error';
+                    return;
+                }
+                saveSession(data.user);
+                msg.textContent = '';
+                renderModalAuth();
+            } catch {
+                msg.textContent = 'Server unavailable. Make sure the API server is running.';
+                msg.className = 'modal-auth-msg error';
             }
-            if (password.length < 6) {
-                msg.textContent = 'Password must be at least 6 characters.';
-                msg.className = 'auth-msg error';
-                return;
-            }
-            const users = getUsers();
-            if (users.find(u => u.email === email)) {
-                msg.textContent = 'An account with this email already exists.';
-                msg.className = 'auth-msg error';
-                return;
-            }
-            const newUser = { name, email, password, joinedDate: new Date().toISOString() };
-            users.push(newUser);
-            saveUsers(users);
-            saveSession(newUser);
-            syncProfileBadge();
-            openModal();
         });
 
-        document.getElementById('logoutBtn').addEventListener('click', () => {
+        // Sign out
+        document.getElementById('modalSignOut').addEventListener('click', () => {
             clearSession();
-            syncProfileBadge();
-            closeModal();
+            renderModalAuth();
         });
 
-        syncProfileBadge();
+        // Render auth state on page load
+        renderModalAuth();
     </script>
 </body>
 </html>
