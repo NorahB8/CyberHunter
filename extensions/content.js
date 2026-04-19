@@ -77,6 +77,9 @@ class EmailPhishingDetector {
         this.scannedEmails = new Set();
         this.scanResults = new Map(); // Store scan results for re-display
         this.siteEnabled = true;
+        chrome.storage.local.get('scanningEnabled', ({ scanningEnabled }) => {
+            if (scanningEnabled === false) this.siteEnabled = false;
+        });
         this.init();
 
     }

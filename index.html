@@ -1173,6 +1173,23 @@
             if (e.key === 'Enter') handleScan();
         });
 
+        // Detects incomplete/malformed URL schemes before normalization
+        function checkMalformedURL(raw) {
+            // Missing colon: "http//", "https//"
+            if (/^https?\/\//i.test(raw)) {
+                return { risk: 'danger', value: 'Malformed URL — missing colon after scheme', score: 0.9 };
+            }
+            // Scheme only with no host: "http:", "http:/", "https:", "https:/"
+            if (/^https?:\/{0,1}$/i.test(raw)) {
+                return { risk: 'danger', value: 'Incomplete URL — no hostname after scheme', score: 0.9 };
+            }
+            // Scheme + slashes but no host: "https://"
+            if (/^https?:\/\/\s*$/i.test(raw)) {
+                return { risk: 'danger', value: 'Incomplete URL — empty hostname', score: 0.9 };
+            }
+            return { risk: 'safe', value: 'URL structure looks complete', score: 0 };
+        }
+
         async function handleScan() {
             let url = urlInput.value.trim();
 
@@ -1180,6 +1197,9 @@
                 alert('Please enter a URL to scan');
                 return;
             }
+
+            // Check for malformed URL BEFORE normalization
+            const malformedFeature = checkMalformedURL(url);
 
             // Normalize URL scheme
             if (url.match(/^https?:\/[^\/]/i)) {
@@ -1218,6 +1238,7 @@
 
                 // Convert ML result to display format
                 const analysis = convertMLResultToDisplay(result, url);
+                injectMalformedFeature(analysis, malformedFeature);
                 displayResults(analysis);
 
             } catch (error) {
@@ -1228,6 +1249,7 @@
                     alert('ML API server is not running. Please start it with: python ml-model/api_server.py\n\nFalling back to client-side detection...');
                     try {
                         const analysis = await detector.analyzeURL(url);
+                        injectMalformedFeature(analysis, malformedFeature);
                         displayResults(analysis);
                     } catch (e) {
                         alert(e.message);
@@ -1238,6 +1260,15 @@
             } finally {
                 scanBtn.disabled = false;
                 loading.classList.remove('show');
+            }
+        }
+
+        function injectMalformedFeature(analysis, malformedFeature) {
+            analysis.features.malformedURL = malformedFeature;
+            if (malformedFeature.score > 0) {
+                // Boost overall risk score
+                analysis.riskScore = Math.min(100, analysis.riskScore + Math.round(malformedFeature.score * 100));
+                if (analysis.riskScore >= 50) analysis.classification = 'danger';
             }
         }
 
@@ -1368,6 +1399,7 @@
             }
 
             const featureLabels = {
+                malformedURL: 'URL Structure',
                 urlLength: 'URL Length',
                 suspiciousCharacters: 'Special Characters',
                 httpsEnabled: 'HTTPS Security',
