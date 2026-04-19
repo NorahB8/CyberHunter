@@ -6,12 +6,15 @@
   "permissions": [
     "activeTab",
     "storage",
-    "tabs"
+    "tabs",
+    "contextMenus",
+    "notifications"
   ],
   "host_permissions": [
     "*://mail.google.com/*",
     "*://outlook.live.com/*",
     "*://outlook.office.com/*",
+    "*://web.whatsapp.com/*",
     "http://localhost:5000/*"
   ],
   "background": {
@@ -26,6 +29,11 @@
       ],
       "js": ["content.js"],
       "css": ["styles.css"],
+      "run_at": "document_idle"
+    },
+    {
+      "matches": ["*://web.whatsapp.com/*"],
+      "js": ["whatsapp.js"],
       "run_at": "document_idle"
     },
     {
@@ -50,7 +58,7 @@
   "web_accessible_resources": [
     {
       "resources": ["warning-banner.html", "cyberhunter_ext.png"],
-      "matches": ["*://mail.google.com/*", "*://outlook.live.com/*", "*://outlook.office.com/*"]
+      "matches": ["*://mail.google.com/*", "*://outlook.live.com/*", "*://outlook.office.com/*", "*://web.whatsapp.com/*"]
     }
   ]
 }

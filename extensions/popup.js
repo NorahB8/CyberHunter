@@ -185,3 +185,33 @@ function initAuth() {
         renderExtAuth();
     });
 }
+
+// Global scanning toggle (enable / disable extension entirely)
+async function initSiteToggle() {
+    const toggle = document.getElementById('siteToggle');
+    const label = document.getElementById('siteToggleLabel');
+    const thumb = document.getElementById('siteToggleThumb');
+    const track = document.getElementById('siteToggleTrack');
+
+    const { scanningEnabled = true } = await chrome.storage.local.get('scanningEnabled');
+
+    function applyState(enabled) {
+        toggle.checked = enabled;
+        thumb.style.left = enabled ? '23px' : '3px';
+        track.style.background = enabled ? '#d4a200' : '#4a3c00';
+        label.textContent = enabled ? 'Scanning enabled' : 'Scanning disabled';
+        label.style.color = enabled ? '#c8a800' : '#888';
+    }
+
+    applyState(scanningEnabled);
+
+    toggle.addEventListener('change', async () => {
+        await chrome.storage.local.set({ scanningEnabled: toggle.checked });
+        applyState(toggle.checked);
+        // Notify all content scripts
+        const tabs = await chrome.tabs.query({ url: ['http://*/*', 'https://*/*'] });
+        tabs.forEach(t => chrome.tabs.sendMessage(t.id, { action: 'setSiteEnabled', enabled: toggle.checked }).catch(() => {}));
+    });
+}
+
+initSiteToggle();

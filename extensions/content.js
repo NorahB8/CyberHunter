@@ -76,7 +76,12 @@ class EmailPhishingDetector {
 
         this.scannedEmails = new Set();
         this.scanResults = new Map(); // Store scan results for re-display
+        this.siteEnabled = true;
+        chrome.storage.local.get('scanningEnabled', ({ scanningEnabled }) => {
+            if (scanningEnabled === false) this.siteEnabled = false;
+        });
         this.init();
+
     }
 
     init() {
@@ -156,7 +161,7 @@ class EmailPhishingDetector {
             }
 
             // New email, analyze it
-            if (!this.scannedEmails.has(emailId)) {
+            if (!this.scannedEmails.has(emailId) && this.siteEnabled) {
                 this.scannedEmails.add(emailId);
                 this.analyzeEmail(email, emailId);
             }
@@ -1206,3 +1211,11 @@ class EmailPhishingDetector {
 
 // Initialize detector
 const detector = new EmailPhishingDetector();
+
+// FR13 — Listen for site toggle from popup
+chrome.runtime.onMessage.addListener((request) => {
+    if (request.action === 'setSiteEnabled') {
+        detector.siteEnabled = request.enabled;
+        console.log('CyberHunter: Scanning', request.enabled ? 'enabled' : 'disabled', 'on this site');
+    }
+});
