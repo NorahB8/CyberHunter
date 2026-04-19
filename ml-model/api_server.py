@@ -3,13 +3,46 @@ CyberHunter API Server
 Flask-based REST API for phishing detection using Random Forest ML
 """
 
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, send_file
 from flask_cors import CORS
 from phishing_detector_ml import PhishingMLDetector
 import logging
 from datetime import datetime
-app = Flask(__name__)
-CORS(app)  # Enable CORS for browser extension and web interface
+import os
+import zipfile
+import io
+import sqlite3
+
+_ML_DIR = os.path.dirname(os.path.abspath(__file__))  # .../files/ml-model
+BASE_DIR = os.path.dirname(_ML_DIR)                   # .../files
+DB_FILE = os.path.join(BASE_DIR, 'users.db')
+print(f"[Auth] SQLite database -> {DB_FILE}")
+
+app = Flask(__name__, static_folder=BASE_DIR, static_url_path='')
+CORS(app, origins='*')  # Enable CORS for browser extension and web interface
+
+
+def get_db():
+    conn = sqlite3.connect(DB_FILE)
+    conn.row_factory = sqlite3.Row
+    return conn
+
+
+def init_db():
+    with get_db() as conn:
+        conn.execute('''
+            CREATE TABLE IF NOT EXISTS users (
+                id        INTEGER PRIMARY KEY AUTOINCREMENT,
+                name      TEXT    NOT NULL,
+                email     TEXT    NOT NULL UNIQUE,
+                password  TEXT    NOT NULL,
+                created_at TEXT   DEFAULT (datetime('now'))
+            )
+        ''')
+    print(f"[Auth] Database ready: {DB_FILE}")
+
+
+init_db()
 
 # Initialize ML model
 print("Loading Random Forest ML model...")
@@ -32,6 +65,57 @@ stats = {
     'safe_urls': 0,
     'start_time': datetime.now()
 }
+
+
+@app.route('/')
+def index():
+    return app.send_static_file('index.html')
+
+
+@app.route('/api/auth/register', methods=['POST'])
+def register():
+    data = request.get_json()
+    name = (data.get('name') or '').strip()
+    email = (data.get('email') or '').strip().lower()
+    password = data.get('password') or ''
+    if not name or not email or not password:
+        return jsonify({'success': False, 'error': 'All fields are required'}), 400
+    if len(password) < 6:
+        return jsonify({'success': False, 'error': 'Password must be at least 6 characters'}), 400
+    try:
+        with get_db() as conn:
+            conn.execute(
+                'INSERT INTO users (name, email, password) VALUES (?, ?, ?)',
+                (name, email, password)
+            )
+        print(f"[Auth] New user registered: {email}")
+        return jsonify({'success': True, 'user': {'name': name, 'email': email}})
+    except sqlite3.IntegrityError:
+        return jsonify({'success': False, 'error': 'An account with this email already exists'}), 409
+
+
+@app.route('/api/auth/login', methods=['POST'])
+def login():
+    data = request.get_json()
+    email = (data.get('email') or '').strip().lower()
+    password = data.get('password') or ''
+    with get_db() as conn:
+        row = conn.execute(
+            'SELECT name, email FROM users WHERE email = ? AND password = ?',
+            (email, password)
+        ).fetchone()
+    if not row:
+        return jsonify({'success': False, 'error': 'Invalid email or password'}), 401
+    print(f"[Auth] Login: {email}")
+    return jsonify({'success': True, 'user': {'name': row['name'], 'email': row['email']}})
+
+
+@app.route('/api/auth/users', methods=['GET'])
+def list_users():
+    """View all registered users (for debugging)"""
+    with get_db() as conn:
+        rows = conn.execute('SELECT id, name, email, created_at FROM users ORDER BY id').fetchall()
+    return jsonify({'users': [dict(r) for r in rows], 'count': len(rows)})
 
 
 @app.route('/api/health', methods=['GET'])
@@ -244,6 +328,51 @@ def get_features():
         'cv_score': model.cv_score,
         'description': 'Features learned by Random Forest classifier from training data'
     })
+
+
+@app.route('/api/download-extension', methods=['GET'])
+def download_extension():
+    """Download browser extension as ZIP file"""
+    try:
+        # Get the extensions folder path (one level up from ml-model)
+        current_dir = os.path.dirname(os.path.abspath(__file__))
+        project_root = os.path.dirname(current_dir)
+        extensions_dir = os.path.join(project_root, 'extensions')
+
+        if not os.path.exists(extensions_dir):
+            return jsonify({
+                'error': 'Extensions folder not found'
+            }), 404
+
+        # Create ZIP file in memory
+        memory_file = io.BytesIO()
+        with zipfile.ZipFile(memory_file, 'w', zipfile.ZIP_DEFLATED) as zf:
+            # Walk through the extensions directory
+            for root, dirs, files in os.walk(extensions_dir):
+                for file in files:
+                    file_path = os.path.join(root, file)
+                    # Calculate the archive name (relative path from extensions_dir)
+                    arcname = os.path.relpath(file_path, extensions_dir)
+                    zf.write(file_path, arcname)
+
+        # Seek to the beginning of the BytesIO buffer
+        memory_file.seek(0)
+
+        logger.info("Extension ZIP file created successfully")
+
+        return send_file(
+            memory_file,
+            mimetype='application/zip',
+            as_attachment=True,
+            download_name='cyberhunter-extension.zip'
+        )
+
+    except Exception as e:
+        logger.error(f"Error creating extension ZIP: {str(e)}")
+        return jsonify({
+            'error': 'Failed to create extension ZIP',
+            'message': str(e)
+        }), 500
 
 
 @app.errorhandler(404)

@@ -107,7 +107,10 @@
 }
 
 .cyberhunter-rec {
-    padding: 8px 12px;
+    display: flex;
+    align-items: flex-start;
+    gap: 8px;
+    padding: 9px 12px;
     background: rgba(255, 255, 255, 0.6);
     border-radius: 6px;
     font-size: 13px;
@@ -121,6 +124,23 @@
 
 .cyberhunter-medium .cyberhunter-rec {
     border-left: 3px solid #ffaa00;
+}
+
+.ch-badge {
+    font-size: 15px;
+    flex-shrink: 0;
+    margin-top: 1px;
+}
+
+.ch-badge-critical ~ * { font-weight: 600; }
+.cyberhunter-rec:has(.ch-badge-critical) {
+    background: rgba(255, 51, 102, 0.1);
+    border-left: 3px solid #ff3366;
+}
+
+.cyberhunter-rec:has(.ch-badge-safe) {
+    background: rgba(0, 200, 100, 0.08);
+    border-left: 3px solid #00c864;
 }
 
 /* Footer */

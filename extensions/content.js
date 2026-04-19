@@ -76,7 +76,12 @@ class EmailPhishingDetector {
 
         this.scannedEmails = new Set();
         this.scanResults = new Map(); // Store scan results for re-display
+        this.siteEnabled = true;
+        chrome.storage.local.get('scanningEnabled', ({ scanningEnabled }) => {
+            if (scanningEnabled === false) this.siteEnabled = false;
+        });
         this.init();
+
     }
 
     init() {
@@ -156,7 +161,7 @@ class EmailPhishingDetector {
             }
 
             // New email, analyze it
-            if (!this.scannedEmails.has(emailId)) {
+            if (!this.scannedEmails.has(emailId) && this.siteEnabled) {
                 this.scannedEmails.add(emailId);
                 this.analyzeEmail(email, emailId);
             }
@@ -1058,7 +1063,25 @@ class EmailPhishingDetector {
                 <span class="cyberhunter-score">${analysis.riskScore}% Risk</span>
             </div>
             <div class="cyberhunter-recommendations">
-                ${analysis.recommendations.map(rec => `<div class="cyberhunter-rec">${rec}</div>`).join('')}
+                ${analysis.recommendations.map(rec => {
+                    let icon = '⚠️';
+                    let badgeClass = 'ch-badge-warn';
+                    let text = rec;
+                    if (rec.startsWith('[CRITICAL]')) {
+                        icon = '🚨';
+                        badgeClass = 'ch-badge-critical';
+                        text = rec.replace('[CRITICAL]', '').trim();
+                    } else if (rec.startsWith('[WARNING]')) {
+                        icon = '⚠️';
+                        badgeClass = 'ch-badge-warn';
+                        text = rec.replace('[WARNING]', '').trim();
+                    } else if (rec.startsWith('[SAFE]')) {
+                        icon = '✅';
+                        badgeClass = 'ch-badge-safe';
+                        text = rec.replace('[SAFE]', '').trim();
+                    }
+                    return `<div class="cyberhunter-rec"><span class="ch-badge ${badgeClass}">${icon}</span> ${text}</div>`;
+                }).join('')}
             </div>
             ${analysis.phishingLinks && analysis.phishingLinks.length > 0 ? `
                 <div class="cyberhunter-phishing-links" style="margin: 10px 0; padding: 10px; background: rgba(255, 0, 0, 0.1); border-left: 3px solid #ff3366; border-radius: 4px;">
@@ -1188,3 +1211,11 @@ class EmailPhishingDetector {
 
 // Initialize detector
 const detector = new EmailPhishingDetector();
+
+// FR13 — Listen for site toggle from popup
+chrome.runtime.onMessage.addListener((request) => {
+    if (request.action === 'setSiteEnabled') {
+        detector.siteEnabled = request.enabled;
+        console.log('CyberHunter: Scanning', request.enabled ? 'enabled' : 'disabled', 'on this site');
+    }
+});
