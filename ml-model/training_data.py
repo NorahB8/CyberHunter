@@ -3,9 +3,9 @@ CyberHunter Training Data
 Separated into URL and Email datasets
 """
 
-# === EMAIL DATASET ===
+# EMAIL DATASET
 EMAIL_TRAINING_DATA = [
-    # === PHISHING EMAILS (label=1) ===
+    # PHISHING EMAILS (label=1)
 
     # DHL Phishing example Gibberish domain
     {
@@ -17,7 +17,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'shipping_scam'
     },
 
-    # FedEx Phishing #1 - Sophisticated spam domain
+    # FedEx Phishing 
     {
         'sender_email': 'label623435@494540.oceanpark.trip.entryway.giantreward.choresrecords.com',
         'sender_name': 'FedEx',
@@ -27,7 +27,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'brand_impersonation'
     },
 
-    # FedEx Phishing #2 - Arabic mixed
+    # with Arabic mixed
     {
         'sender_email': 'label657841@540101.oceanpark.trip.entryway.giantreward.choresrecords.com',
         'sender_name': 'FedEx فيدكس',
@@ -37,7 +37,6 @@ EMAIL_TRAINING_DATA = [
         'category': 'brand_impersonation'
     },
 
-    # FedEx Phishing #3 - New spam keywords
     {
         'sender_email': 'proof643380@706419.junglerealm.pathway.gatehouse.superwin.antiwalmart.com',
         'sender_name': 'FedEx Delivery',
@@ -57,7 +56,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'account_suspended'
     },
 
-    # Bank Phishing - Urgency tactics
+    # Bank Phishing - using urgent keyword
     {
         'sender_email': 'security@bank-verification.xyz',
         'sender_name': 'Chase Bank',
@@ -67,6 +66,15 @@ EMAIL_TRAINING_DATA = [
         'category': 'financial_threat'
     },
 
+# Arabic Bank Phishing
+    {
+        'sender_email': 'security@alrajhi-verify.com',
+        'sender_name': 'الراجحي',
+        'subject': 'تحذير أمني',
+        'body': 'نشاط غير عادي في حسابك. يرجى تحديث معلوماتك الشخصية فوراً. آخر فرصة.',
+        'label': 1,
+        'category': 'bank_phishing'
+    },
     # Arabic DHL Phishing
     {
         'sender_email': 'noreply@dhl-ksa-tracking.com',
@@ -77,15 +85,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'shipping_scam'
     },
 
-    # Arabic Bank Phishing
-    {
-        'sender_email': 'security@alrajhi-verify.com',
-        'sender_name': 'الراجحي',
-        'subject': 'تحذير أمني',
-        'body': 'نشاط غير عادي في حسابك. يرجى تحديث معلوماتك الشخصية فوراً. آخر فرصة.',
-        'label': 1,
-        'category': 'bank_phishing'
-    },
+    
 
     # Microsoft Phishing - Account verification
     {
@@ -157,119 +157,9 @@ EMAIL_TRAINING_DATA = [
         'category': 'security_alert'
     },
 
-    # === ADVANCE-FEE FRAUD / DONATION & PAYMENT SCAMS (label=1) 
+    #LEGITIMATE EMAILS (label=0)
 
-    # Inheritance / donation scam 
-    {
-        'sender_email': 'nenkin.hyogo@ruby.plala.or.jp',
-        'sender_name': 'Charles Koch',
-        'subject': 'DONATION NOTICE.REF:MDD9926',
-        'body': 'my late brother Mr. David Hamilton Koch decided to give USD2,000,000.00 Million Dollars to randomly selected individuals worldwide. On receipt of this email you should count yourself as the lucky individual. Kindly get back to me so that I will know your email address is valid.',
-        'label': 1,
-        'category': 'money_scam'
-    },
-
-    # Lottery scam 
-    {
-        'sender_email': 'award.notification2024@gmail.com',
-        'sender_name': 'International Lottery Foundation',
-        'subject': 'You Have Won $5,000,000.00 - Claim Now',
-        'body': 'You have been randomly selected as a winner of our international lottery. Your email was picked from millions of addresses. To claim your prize of five million dollars send your full name, address and phone number immediately.',
-        'label': 1,
-        'category': 'money_scam'
-    },
-{
-        'sender_email': 'hfyueo7@aw.ard24891@gmail.com',
-        'sender_name': 'International Lottery Foundation',
-        'subject': '$600000 Prize - Claim Now',
-        'body': 'You have been randomly selected as a winner of our international lottery. Your email was picked from millions. Send Full name and credit card information to receive.',
-        'label': 1,
-        'category': 'money_scam'
-    },
-
-    # Dying widow donation scam
-    {
-        'sender_email': 'athf@mon.com',
-        'sender_name': 'Mrs Grace Williams',
-        'subject': 'Donate My Wealth To You Before I Die',
-        'body': 'I am a dying widow with no children. I have USD8.5 million in a bank account and I want to donate it, you were selected. I found your email and believe you are trustworthy. Please reply with your bank details so I can transfer the funds.',
-        'label': 1,
-        'category': 'money_scam'
-    },
-
-    # Overpayment / refund scam - suspicious domain
-    {
-        'sender_email': 'refund-dept@payment-claims-center.tk',
-        'sender_name': 'Payment Claims Center',
-        'subject': 'Your Unclaimed Refund of $3,450.00 Awaits',
-        'body': 'Our records show you are owed an unclaimed refund. Visit our secure portal to verify your identity and receive your payment. You must claim within 48 hours or forfeit the amount.',
-        'label': 1,
-        'category': 'money_scam'
-    },
-
-    # UN compensation fund scam
-    {
-        'sender_email': 'un.compensation2024@yahoo.com',
-        'sender_name': 'United Nations Compensation Fund',
-        'subject': 'UN Compensation Payment USD750,000',
-        'body': 'The United Nations has approved a compensation payment of USD750,000 to scam victims worldwide. Your email was selected. Contact us immediately with your full name and banking information to process your compensation.',
-        'label': 1,
-        'category': 'money_scam'
-    },
-
-    # Bitcoin inheritance scam - plala.or.jp style domain
-    {
-        'sender_email': 'attorney.james@legal-estates.co.za',
-        'sender_name': 'Barrister James Morgan',
-        'subject': 'Deceased Client Estate - Same Surname',
-        'body': 'I am a solicitor handling the estate of a deceased client who shares your surname. He left behind 12.5 million USD with no next of kin. I propose you stand as beneficiary. This is 100% risk free and legal. Reply urgently.',
-        'label': 1,
-        'category': 'money_scam'
-    },
-
-    # Crypto giveaway scam
-    {
-        'sender_email': 'giveaway@elon-crypto-fund.net',
-        'sender_name': 'Elon Musk Foundation',
-        'subject': 'You Have Been Selected for Our Crypto Giveaway',
-        'body': 'Elon Musk is giving back to the community. Send 0.1 BTC to our wallet and receive 1 BTC in return. This is a limited time event. Visit http://elon-crypto-fund.net/claim to register your wallet address now.',
-        'label': 1,
-        'category': 'money_scam'
-    },
-
-    # Government grant scam - free domain
-    {
-        'sender_email': 'federal.grant.office@gmail.com',
-        'sender_name': 'Federal Grant Administration',
-        'subject': 'Government Grant Approved: $45,000 For You',
-        'body': 'You have been approved for a government small business grant of $45,000. No repayment required. You were randomly selected. To receive funds provide your Social Security Number and bank account details at http://federal-grants-claim.xyz',
-        'label': 1,
-        'category': 'money_scam'
-    },
-
-    # Suspicious payment notification - random domain
-    {
-        'sender_email': 'payments@secure-wire-transfer-office.ru',
-        'sender_name': 'Wire Transfer Office',
-        'subject': 'Urgent: Incoming Wire Transfer Pending Your Verification',
-        'body': 'A wire transfer of $120,000 USD is pending to your account. You must verify your identity within 24 hours. Click here http://secure-wire-transfer-office.ru/verify to confirm receipt and release funds.',
-        'label': 1,
-        'category': 'money_scam'
-    },
-
-    # Charity donation with upfront fee
-    {
-        'sender_email': 'donations@koch-family-foundation.co',
-        'sender_name': 'Koch Family Foundation',
-        'subject': 'You Are Selected to Receive a $2,000,000 Donation',
-        'body': 'The Koch Family Foundation has selected you to receive a donation of two million dollars. Before we can release the funds you must pay a small processing fee of $500. Please send payment via Western Union to activate your donation.',
-        'label': 1,
-        'category': 'money_scam'
-    },
-
-    # === LEGITIMATE EMAILS (label=0) ===
-
-    # PSU domain
+    # PSU
     {
         'sender_email': 'noreply@psu.edu.sa',
         'sender_name': 'PSU',
@@ -279,7 +169,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'legitimate'
     },
 
-    # Real FedEx
+    #FedEx
     {
         'sender_email': 'support@fedex.com',
         'sender_name': 'FedEx',
@@ -289,7 +179,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'legitimate'
     },
 
-    # Real Google
+    #Google
     {
         'sender_email': 'no-reply@google.com',
         'sender_name': 'Google',
@@ -299,7 +189,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'legitimate'
     },
 
-    # Real Amazon
+    #Amazon
     {
         'sender_email': 'auto-confirm@amazon.com',
         'sender_name': 'Amazon.com',
@@ -309,7 +199,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'legitimate'
     },
 
-    # Real Microsoft
+    #Microsoft
     {
         'sender_email': 'no-reply@microsoft.com',
         'sender_name': 'Microsoft Account Team',
@@ -319,7 +209,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'legitimate'
     },
 
-    # Real PayPal
+    #PayPal
     {
         'sender_email': 'service@paypal.com',
         'sender_name': 'PayPal',
@@ -329,7 +219,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'legitimate'
     },
 
-    # Real DHL
+    #DHL
     {
         'sender_email': 'noreply@dhl.com',
         'sender_name': 'DHL',
@@ -339,7 +229,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'legitimate'
     },
 
-    # Real Apple
+    #Apple
     {
         'sender_email': 'no_reply@email.apple.com',
         'sender_name': 'Apple',
@@ -349,7 +239,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'legitimate'
     },
 
-    # Real Netflix
+    #Netflix
     {
         'sender_email': 'info@mailer.netflix.com',
         'sender_name': 'Netflix',
@@ -359,7 +249,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'legitimate'
     },
 
-    # Real Arabic Bank - Al Rajhi
+    #Arabic Bank - Al Rajhi
     {
         'sender_email': 'noreply@alrajhibank.com.sa',
         'sender_name': 'مصرف الراجحي',
@@ -369,7 +259,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'legitimate'
     },
 
-    # Real STC
+    #STC
     {
         'sender_email': 'noreply@stc.com.sa',
         'sender_name': 'STC',
@@ -379,7 +269,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'legitimate'
     },
 
-    # Real GitHub
+    #GitHub
     {
         'sender_email': 'noreply@github.com',
         'sender_name': 'GitHub',
@@ -389,7 +279,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'legitimate'
     },
 
-    # Real LinkedIn
+    #LinkedIn
     {
         'sender_email': 'messages-noreply@linkedin.com',
         'sender_name': 'LinkedIn',
@@ -399,7 +289,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'legitimate'
     },
 
-    # Real Bank - Chase
+    # Bank - Chase
     {
         'sender_email': 'no.reply.alerts@chase.com',
         'sender_name': 'Chase',
@@ -439,7 +329,7 @@ EMAIL_TRAINING_DATA = [
         'category': 'name_domain_mismatch'
     },
 
-    # Phishing - Donation/inheritance scam from Japanese ISP
+    # Phishing - Donation scam from Japanese ISP
     {
         'sender_email': 'nenkin.hyogo@ruby.plala.or.jp',
         'sender_name': 'Charles Koch',
@@ -448,144 +338,12 @@ EMAIL_TRAINING_DATA = [
         'label': 1,
         'category': 'donation_scam'
     },
-
-    # Phishing - Lottery jackpot donation scam (Mark K. Harder style)
-    {
-        'sender_email': 'sayama_komuro@olive.plala.or.jp',
-        'sender_name': 'Mark K. Harder',
-        'subject': '$10 Million Donation Award For You, Confirmation Required',
-        'body': 'My name is Mark K. Harder, legal representative of The Breakfast Club. We have won the $842.4 million Powerball jackpot. We have chosen to donate $10 million each to five selected individuals worldwide. You have been selected as one of these recipients. Please reach out to Mr. Paul Carey, Chief Financial Officer, to confirm your acceptance. Contact Person: Mr. Paul Carey. Email: paulcarey@contactcibc.org. Please provide Full Name, Age, Gender, Country and Full Address, Occupation, WhatsApp Number, and a recent photograph and copy of your ID or passport. Payment code: TBC-97121USA.',
-        'label': 1,
-        'category': 'donation_scam'
-    },
-
-    # Phishing - Lottery jackpot donation scam variant 2
-    {
-        'sender_email': 'tanaka_yuki@nifty.com',
-        'sender_name': 'James R. Wellington',
-        'subject': 'You Have Been Selected To Receive $5 Million USD',
-        'body': 'I am the legal representative of a deceased billionaire who has chosen you as a beneficiary. You have been selected to receive $5,000,000 USD from his estate. This transaction is monitored by the government. Contact our representative Mr. Robert Mills at robertmills@claimfunds.org with your full name, age, occupation, bank details, and copy of passport to initiate the payment process. Payment reference code: WLT-44821INT.',
-        'label': 1,
-        'category': 'donation_scam'
-    },
-
-    # Phishing - Charity lottery winner donating millions
-    {
-        'sender_email': 'ishikawa_reiko@biglobe.ne.jp',
-        'sender_name': 'Sarah M. Richardson',
-        'subject': 'Congratulations - You Are Chosen To Receive A Donation Of $8 Million',
-        'body': 'Greetings to you. I am a lottery jackpot winner and I have committed myself to philanthropy. I have chosen you to receive a donation of $8 million USD. You have been randomly selected from a global database. To facilitate the secure processing of this donation please contact my financial officer at donations@paymentrelease.com and provide your full name, gender, age, country, occupation, phone number, and a copy of your identification. God-fearing individuals who wish to make a difference are encouraged to apply.',
-        'label': 1,
-        'category': 'donation_scam'
-    },
-
-    # Phishing - UN compensation donation scam
-    {
-        'sender_email': 'ogawa_hideo@so-net.ne.jp',
-        'sender_name': 'Dr. William Foster',
-        'subject': 'UN Compensation Award - You Are A Selected Beneficiary',
-        'body': 'On behalf of the United Nations Compensation Committee I am pleased to inform you that you have been selected as a compensation payment recipient. You are entitled to receive $2.5 million USD. This is not a scam. The transaction is monitored by the United States Government. Contact our payment officer to confirm your acceptance. You must provide bank account details, full name, address, occupation, and passport copy. Western Union or bank wire transfer available.',
-        'label': 1,
-        'category': 'donation_scam'
-    },
-
-    # Phishing - Dying widow donating via legal rep from Asian ISP
-    {
-        'sender_email': 'matsumoto_ai@dti.ne.jp',
-        'sender_name': 'Rev. Patricia Coleman',
-        'subject': 'Dying Widow Wishes To Donate $4 Million To You',
-        'body': 'I am a dying widow with no next of kin. I have decided to donate my life savings of $4,000,000 to you as God has chosen you. I found your email address through a divine revelation. My doctor says I have only months to live. Please contact my legal representative to release the funds before I pass. You must provide your bank details and processing fee to initiate the transfer of funds. Next of kin information required.',
-        'label': 1,
-        'category': 'donation_scam'
-    },
-
-    # === LEGITIMATE EMAILS (label=0) ===
-
-    # Legitimate - Arabic brand Eid promotion (sokkat-alteeb style)
-    {
-        'sender_email': 'info@sokkat-alteeb.com',
-        'sender_name': 'سقاط الطيب',
-        'subject': 'عرض العيد الكبير - خصم 75%',
-        'body': 'عيد مبارك! استمتع بأكبر عروضنا على العطور والبخور السعودية الأصيلة. خصم 75% على جميع المنتجات. سارع بالطلب قبل انتهاء العرض. تسوق الآن عبر موقعنا sokkat-alteeb.com.',
-        'label': 0,
-        'category': 'legitimate'
-    },
-
-    # Legitimate - Arabic clothing brand Eid sale
-    {
-        'sender_email': 'info@thobes-alriyadh.com',
-        'sender_name': 'ثياب الرياض',
-        'subject': 'عروض العيد - تخفيضات حتى 60%',
-        'body': 'بمناسبة عيد الفطر المبارك نقدم لكم أفضل العروض على الأثواب والعبايات السعودية الأصيلة. خصم حتى 60% على مجموعتنا المميزة. اطلب الآن وسنوصل إليك في كل أنحاء المملكة.',
-        'label': 0,
-        'category': 'legitimate'
-    },
-
-    # Legitimate - Arabic sweets brand Ramadan campaign
-    {
-        'sender_email': 'newsletter@halawiyat-saudiya.com',
-        'sender_name': 'حلاويات سعودية',
-        'subject': 'رمضان كريم - اطلب بسبوسة وكنافة طازجة',
-        'body': 'رمضان كريم وكل عام وأنتم بخير! استمتع بأشهى الحلويات الشرقية في رمضان. اطلب كنافة وبسبوسة وقطايف طازجة توصل لباب بيتك. تسوق الآن.',
-        'label': 0,
-        'category': 'legitimate'
-    },
-
-    # Legitimate - Arabic perfume brand regular promotion
-    {
-        'sender_email': 'marketing@oud-arabiyya.com',
-        'sender_name': 'عود عربية',
-        'subject': 'جديد - عطر العود الملكي الأصيل',
-        'body': 'يسعدنا أن نقدم لكم عطر العود الملكي الجديد من مجموعتنا الحصرية. مصنوع من أجود أنواع العود الكمبودي. متوفر الآن على موقعنا وفي متجرنا في الرياض وجدة. اطلب الآن.',
-        'label': 0,
-        'category': 'legitimate'
-    },
-
-    # Legitimate - Arabic food delivery app promotion
-    {
-        'sender_email': 'noreply@hungerstation.com',
-        'sender_name': 'HungerStation هنقرستيشن',
-        'subject': 'عرض اليوم - توصيل مجاني على طلبك',
-        'body': 'استمتع بتوصيل مجاني على أول طلبك اليوم! اطلب من مطاعمك المفضلة عبر هنقرستيشن. العرض محدود ليوم واحد فقط. استخدم الكود FREEDELIVER عند الطلب.',
-        'label': 0,
-        'category': 'legitimate'
-    },
-
-    # Legitimate - Arabic beauty brand newsletter
-    {
-        'sender_email': 'newsletter@noon.com',
-        'sender_name': 'نون Noon',
-        'subject': 'أحدث منتجات التجميل بخصم 30%',
-        'body': 'اكتشف أحدث منتجات التجميل والعناية بالبشرة على نون. خصم 30% على ماركات عالمية مختارة. تسوق الآن واستمتع بالتوصيل السريع لباب بيتك في المملكة العربية السعودية والإمارات.',
-        'label': 0,
-        'category': 'legitimate'
-    },
-
-    # Legitimate - Saudi retail chain sale announcement
-    {
-        'sender_email': 'info@extra.com.sa',
-        'sender_name': 'Extra إكسترا',
-        'subject': 'تخفيضات نهاية الموسم - أجهزة إلكترونية',
-        'body': 'لا تفوت تخفيضات نهاية الموسم من إكسترا! خصومات رائعة على الأجهزة الإلكترونية والهواتف والأجهزة المنزلية. العرض متاح في جميع فروعنا وعلى موقع extra.com.sa.',
-        'label': 0,
-        'category': 'legitimate'
-    },
-
-    # Legitimate - Arabic brand with hyphenated domain (important: not suspicious)
-    {
-        'sender_email': 'info@al-baik.com',
-        'sender_name': 'البيك Al-Baik',
-        'subject': 'وجبة العائلة السعيدة - عروض خاصة',
-        'body': 'احتفلوا مع العائلة بوجبة البيك الشهية. عروض خاصة على وجبات العائلة طوال الأسبوع. تفضل بزيارة أقرب فرع أو اطلب عبر تطبيق البيك.',
-        'label': 0,
-        'category': 'legitimate'
-    },
 ]
 
 
-# === URL DATASET ===
+#URL DATASET
 URL_TRAINING_DATA = [
-    # === PHISHING URLS (label=1) ===
+    #PHISHING URLS (label=1)
 
     # Cloud Storage Abuse - Phishing page on Google Cloud Storage
     {
@@ -594,50 +352,46 @@ URL_TRAINING_DATA = [
         'category': 'cloud_hosted_phishing'
     },
 
-    # Typosquatting - PayPal
-    {
-        'url': 'http://paypa1-security-verify.tk/login',
-        'label': 1,
-        'category': 'typosquatting'
-    },
+    
 
-    # Typosquatting - eBay (a→4)
+    # Typosquatting - eBay 
     {
         'url': 'http://eb4y.com',
         'label': 1,
         'category': 'typosquatting'
     },
 
-    # Typosquatting - eBay (a→ai)
     {
         'url': 'http://ebai.com',
         'label': 1,
         'category': 'typosquatting'
     },
 
-    # Typosquatting - eBay (e→3)
     {
         'url': 'http://3bay.com',
         'label': 1,
         'category': 'typosquatting'
     },
 
-    # Typosquatting - Sephora 
+    # Typosquatting - Sephora
     {
         'url': 'http://seph0ra.com',
         'label': 1,
         'category': 'typosquatting'
     },
+
     {
         'url': 'http://sephura.com',
         'label': 1,
         'category': 'typosquatting'
     },
+
     {
         'url': 'http://sephoora.com',
         'label': 1,
         'category': 'typosquatting'
     },
+
     {
         'url': 'http://sephu0ra.com',
         'label': 1,
@@ -656,29 +410,16 @@ URL_TRAINING_DATA = [
         'category': 'typosquatting'
     },
 
-    # Typosquatting - Netflix 
-    {
-        'url': 'http://netfl1x.com',
-        'label': 1,
-        'category': 'typosquatting'
-    },
 
+
+    # Typosquatting - Netflix 
     {
         'url': 'http://netf1ix.com',
         'label': 1,
         'category': 'typosquatting'
     },
-    {
-        'url': 'http://neetf1ix.com',
-        'label': 1,
-        'category': 'typosquatting'
-    },
-{
-        'url': 'http://ne1f1ix.com',
-        'label': 1,
-        'category': 'typosquatting'
-    },
-    # Typosquatting - Apple 
+
+    # Typosquatting - Apple
     {
         'url': 'http://appl3.com',
         'label': 1,
@@ -690,16 +431,6 @@ URL_TRAINING_DATA = [
         'label': 1,
         'category': 'typosquatting'
     },
-    {
-        'url': 'http://appl1e.com',
-        'label': 1,
-        'category': 'typosquatting'
-    },
-    {
-        'url': 'http://4pple.com',
-        'label': 1,
-        'category': 'typosquatting'
-    },
 
     # Typosquatting - Amazon 
     {
@@ -708,34 +439,16 @@ URL_TRAINING_DATA = [
         'category': 'typosquatting'
     },
 
+    # Typosquatting - Amazon
     {
         'url': 'http://amaz0n.com',
         'label': 1,
         'category': 'typosquatting'
     },
-{
-        'url': 'http://4maz0n.com',
-        'label': 1,
-        'category': 'typosquatting'
-    },
-    {
-        'url': 'http://amaz0on.com',
-        'label': 1,
-        'category': 'typosquatting'
-    },
-    # Typosquatting - DHL 
+
+    # Typosquatting - DHL
     {
         'url': 'http://dh1.com',
-        'label': 1,
-        'category': 'typosquatting'
-    },
-    {
-        'url': 'http://dhi.com',
-        'label': 1,
-        'category': 'typosquatting'
-    },
-    {
-        'url': 'http://dh1l.com',
         'label': 1,
         'category': 'typosquatting'
     },
@@ -752,7 +465,13 @@ URL_TRAINING_DATA = [
         'label': 1,
         'category': 'typosquatting'
     },
-     
+
+    # Brand in subdomain
+    {
+        'url': 'http://paypal.evil-site.xyz/secure/login',
+        'label': 1,
+        'category': 'brand_subdomain'
+    },
 
     # IP address URL
     {
@@ -782,7 +501,12 @@ URL_TRAINING_DATA = [
         'category': 'long_suspicious'
     },
 
-    # PayPal Phishing URLs 
+    #PayPal Phishing URLs
+    {
+        'url': 'http://paypa1-security-verify.tk/login',
+        'label': 1,
+        'category': 'typosquatting'
+    },
     {
         'url': 'http://paypa1-login-security.com/verify',
         'label': 1, 'category': 'typosquatting'
@@ -803,11 +527,7 @@ URL_TRAINING_DATA = [
         'url': 'http://paypal.verify-user-access.tk',
         'label': 1, 'category': 'brand_subdomain'
     },
-    {   'url': 'http://paypal.evil-site.xyz/secure/login',
-        'label': 1,
-        'category': 'brand_subdomain'
-    },
-    {
+{
         'url': 'http://secure-paypaI-reset-password.xyz/login',
         'label': 1, 'category': 'suspicious_tld'
     },
@@ -828,7 +548,7 @@ URL_TRAINING_DATA = [
         'label': 1, 'category': 'suspicious_tld'
     },
 
-    # Amazon Phishing URLs
+    # --- Amazon Phishing URLs ---
     {
         'url': 'http://amaz0n-security-check.com/update',
         'label': 1, 'category': 'typosquatting'
@@ -849,28 +569,8 @@ URL_TRAINING_DATA = [
         'url': 'http://amazon.customer.verify-now.top',
         'label': 1, 'category': 'brand_subdomain'
     },
-    {
-        'url': 'http://amaz0n-order-problem-confirm.xyz/update',
-        'label': 1, 'category': 'typosquatting'
-    },
-    {
-        'url': 'http://amazon-security-team-alert.top/login',
-        'label': 1, 'category': 'suspicious_tld'
-    },
-    {
-        'url': 'http://amazon-user-verification.help/auth',
-        'label': 1, 'category': 'suspicious_keywords'
-    },
-    {
-        'url': 'http://secure-amazon-session-warning.ga/verify',
-        'label': 1, 'category': 'suspicious_tld'
-    },
-    {
-        'url': 'http://amazon-login-unusual-activity.ru/check',
-        'label': 1, 'category': 'suspicious_tld'
-    },
 
-    #Microsoft Phishing URLs
+    # --- Microsoft Phishing URLs ---
     {
         'url': 'http://micr0soft-account-security.com/login',
         'label': 1, 'category': 'typosquatting'
@@ -890,29 +590,9 @@ URL_TRAINING_DATA = [
     {
         'url': 'http://microsoft-authentication-warning.top',
         'label': 1, 'category': 'suspicious_tld'
-    },{
-        'url': 'http://micros0ft-account-warning.xyz/reset',
-        'label': 1, 'category': 'typosquatting'
-    },
-    {
-        'url': 'http://microsoft-session-expired.top/login',
-        'label': 1, 'category': 'suspicious_tld'
-    },
-    {
-        'url': 'http://secure-office365-confirm.help/auth',
-        'label': 1, 'category': 'suspicious_keywords'
-    },
-    {
-        'url': 'http://office-login-security-alert.ga/reset',
-        'label': 1, 'category': 'suspicious_tld'
-    },
-    {
-        'url': 'http://microsoft-user-verification.ru/login',
-        'label': 1, 'category': 'suspicious_tld'
     },
 
-
-    # Google Phishing URLs 
+    # --- Google Phishing URLs ---
     {
         'url': 'http://goog1e-account-recovery.com/signin',
         'label': 1, 'category': 'typosquatting'
@@ -933,29 +613,8 @@ URL_TRAINING_DATA = [
         'url': 'http://drive-google-secure-access.top',
         'label': 1, 'category': 'suspicious_tld'
     },
-    {
-        'url': 'http://goog1e-login-suspicious-activity.xyz/auth',
-        'label': 1, 'category': 'typosquatting'
-    },
-    {
-        'url': 'http://google-account-warning.top/verify',
-        'label': 1, 'category': 'suspicious_tld'
-    },
-    {
-        'url': 'http://secure-google-confirm-session.help/reset',
-        'label': 1, 'category': 'suspicious_keywords'
-    },
-    {
-        'url': 'http://google-user-authentication.ga/login',
-        'label': 1, 'category': 'suspicious_tld'
-    },
-    {
-        'url': 'http://google-password-reset-alert.ru/auth',
-        'label': 1, 'category': 'suspicious_tld'
-    },
 
-
-    #Facebook Phishing URLs
+    # --- Facebook Phishing URLs ---
     {
         'url': 'http://faceb00k-security-alert.com/login',
         'label': 1, 'category': 'typosquatting'
@@ -988,6 +647,176 @@ URL_TRAINING_DATA = [
         'url': 'http://fb-account-protection.top',
         'label': 1, 'category': 'suspicious_tld'
     },
+
+    # --- Banking Phishing URLs ---
+    {
+        'url': 'http://bank-secure-login-update.xyz/auth',
+        'label': 1, 'category': 'suspicious_tld'
+    },
+    {
+        'url': 'http://chase.verify-account-alert.ru/login',
+        'label': 1, 'category': 'brand_subdomain'
+    },
+    {
+        'url': 'http://secure-bank-authentication.ga/verify',
+        'label': 1, 'category': 'suspicious_tld'
+    },
+    {
+        'url': 'http://account-warning-bank.top/update',
+        'label': 1, 'category': 'suspicious_tld'
+    },
+    {
+        'url': 'http://bank-login-confirm.help',
+        'label': 1, 'category': 'suspicious_keywords'
+    },
+
+    # --- Shipping/Courier Phishing URLs ---
+    {
+        'url': 'http://dhl-tracking-confirmation.xyz/update',
+        'label': 1, 'category': 'suspicious_tld'
+    },
+    {
+        'url': 'http://fedex-delivery-problem.top/verify',
+        'label': 1, 'category': 'suspicious_tld'
+    },
+    {
+        'url': 'http://ups-shipping-alert.ga/confirm',
+        'label': 1, 'category': 'suspicious_tld'
+    },
+    {
+        'url': 'http://package-delivery-missing-info.help',
+        'label': 1, 'category': 'suspicious_keywords'
+    },
+    {
+        'url': 'http://courier-tracking-warning.ru/check',
+        'label': 1, 'category': 'suspicious_tld'
+    },
+
+    # --- IP Address Phishing URLs ---
+    {
+        'url': 'http://192.168.0.55/paypal/login',
+        'label': 1, 'category': 'ip_address'
+    },
+    {
+        'url': 'http://45.88.120.3/secure-bank/auth',
+        'label': 1, 'category': 'ip_address'
+    },
+    {
+        'url': 'http://103.21.244.1/google/verify',
+        'label': 1, 'category': 'ip_address'
+    },
+
+    # --- Credential Attack URLs (@ in URL) ---
+    {
+        'url': 'http://google.com@evil-site.xyz/login',
+        'label': 1, 'category': 'credential_attack'
+    },
+    {
+        'url': 'http://paypal.com@phish-domain.ru/auth',
+        'label': 1, 'category': 'credential_attack'
+    },
+    {
+        'url': 'http://amazon.com@malicious-site.top/signin',
+        'label': 1, 'category': 'credential_attack'
+    },
+
+    # --- Long Suspicious URLs ---
+    {
+        'url': 'http://important-security-notice-login.xyz/secure',
+        'label': 1, 'category': 'long_suspicious'
+    },
+    {
+        'url': 'http://user-verification-required-now.top/login',
+        'label': 1, 'category': 'long_suspicious'
+    },
+    {
+        'url': 'http://account-suspension-warning.ga/auth',
+        'label': 1, 'category': 'long_suspicious'
+    },
+    {
+        'url': 'http://last-chance-account-verify.help/login',
+        'label': 1, 'category': 'long_suspicious'
+    },
+# Typosquatting - Netflix 
+    {
+        'url': 'http://netfl1x.com',
+        'label': 1,
+        'category': 'typosquatting'
+    },
+    # --- Sephora Phishing URL ---
+    {
+        'url': 'http://s0ephora1.com',
+        'label': 1, 'category': 'typosquatting'
+    },
+
+    
+    # --- More Amazon Phishing ---
+    {
+        'url': 'http://amaz0n-order-problem-confirm.xyz/update',
+        'label': 1, 'category': 'typosquatting'
+    },
+    {
+        'url': 'http://amazon-security-team-alert.top/login',
+        'label': 1, 'category': 'suspicious_tld'
+    },
+    {
+        'url': 'http://amazon-user-verification.help/auth',
+        'label': 1, 'category': 'suspicious_keywords'
+    },
+    {
+        'url': 'http://secure-amazon-session-warning.ga/verify',
+        'label': 1, 'category': 'suspicious_tld'
+    },
+    {
+        'url': 'http://amazon-login-unusual-activity.ru/check',
+        'label': 1, 'category': 'suspicious_tld'
+    },
+
+    # --- More Microsoft Phishing ---
+    {
+        'url': 'http://micros0ft-account-warning.xyz/reset',
+        'label': 1, 'category': 'typosquatting'
+    },
+    {
+        'url': 'http://microsoft-session-expired.top/login',
+        'label': 1, 'category': 'suspicious_tld'
+    },
+    {
+        'url': 'http://secure-office365-confirm.help/auth',
+        'label': 1, 'category': 'suspicious_keywords'
+    },
+    {
+        'url': 'http://office-login-security-alert.ga/reset',
+        'label': 1, 'category': 'suspicious_tld'
+    },
+    {
+        'url': 'http://microsoft-user-verification.ru/login',
+        'label': 1, 'category': 'suspicious_tld'
+    },
+
+    # --- More Google Phishing ---
+    {
+        'url': 'http://goog1e-login-suspicious-activity.xyz/auth',
+        'label': 1, 'category': 'typosquatting'
+    },
+    {
+        'url': 'http://google-account-warning.top/verify',
+        'label': 1, 'category': 'suspicious_tld'
+    },
+    {
+        'url': 'http://secure-google-confirm-session.help/reset',
+        'label': 1, 'category': 'suspicious_keywords'
+    },
+    {
+        'url': 'http://google-user-authentication.ga/login',
+        'label': 1, 'category': 'suspicious_tld'
+    },
+    {
+        'url': 'http://google-password-reset-alert.ru/auth',
+        'label': 1, 'category': 'suspicious_tld'
+    },
+
+    # --- More Facebook Phishing ---
     {
         'url': 'http://faceb00k-login-confirm.xyz/security',
         'label': 1, 'category': 'typosquatting'
@@ -1009,27 +838,7 @@ URL_TRAINING_DATA = [
         'label': 1, 'category': 'suspicious_tld'
     },
 
-    # Banking Phishing URLs 
-    {
-        'url': 'http://bank-secure-login-update.xyz/auth',
-        'label': 1, 'category': 'suspicious_tld'
-    },
-    {
-        'url': 'http://chase.verify-account-alert.ru/login',
-        'label': 1, 'category': 'brand_subdomain'
-    },
-    {
-        'url': 'http://secure-bank-authentication.ga/verify',
-        'label': 1, 'category': 'suspicious_tld'
-    },
-    {
-        'url': 'http://account-warning-bank.top/update',
-        'label': 1, 'category': 'suspicious_tld'
-    },
-    {
-        'url': 'http://bank-login-confirm.help',
-        'label': 1, 'category': 'suspicious_keywords'
-    },
+    # --- More Banking Phishing ---
     {
         'url': 'http://bank-account-security-warning.xyz/login',
         'label': 1, 'category': 'suspicious_tld'
@@ -1051,27 +860,7 @@ URL_TRAINING_DATA = [
         'label': 1, 'category': 'suspicious_tld'
     },
 
-    # Shipping/Courier Phishing URLs
-    {
-        'url': 'http://dhl-tracking-confirmation.xyz/update',
-        'label': 1, 'category': 'suspicious_tld'
-    },
-    {
-        'url': 'http://fedex-delivery-problem.top/verify',
-        'label': 1, 'category': 'suspicious_tld'
-    },
-    {
-        'url': 'http://ups-shipping-alert.ga/confirm',
-        'label': 1, 'category': 'suspicious_tld'
-    },
-    {
-        'url': 'http://package-delivery-missing-info.help',
-        'label': 1, 'category': 'suspicious_keywords'
-    },
-    {
-        'url': 'http://courier-tracking-warning.ru/check',
-        'label': 1, 'category': 'suspicious_tld'
-    },
+    # --- More Shipping Phishing ---
     {
         'url': 'http://dhl-delivery-problem-confirm.xyz/track',
         'label': 1, 'category': 'suspicious_tld'
@@ -1093,83 +882,7 @@ URL_TRAINING_DATA = [
         'label': 1, 'category': 'suspicious_tld'
     },
 
-    # IP Address Phishing URLs
-    {
-        'url': 'http://192.168.0.55/paypal/login',
-        'label': 1, 'category': 'ip_address'
-    },
-    {
-        'url': 'http://45.88.120.3/secure-bank/auth',
-        'label': 1, 'category': 'ip_address'
-    },
-    {
-        'url': 'http://103.21.244.1/google/verify',
-        'label': 1, 'category': 'ip_address'
-    },
-    {
-        'url': 'http://172.16.5.44/bank/login',
-        'label': 1, 'category': 'ip_address'
-    },
-    {
-        'url': 'http://88.214.193.17/google/auth',
-        'label': 1, 'category': 'ip_address'
-    },
-    {
-        'url': 'http://31.13.77.102/facebook/security',
-        'label': 1, 'category': 'ip_address'
-    },
-
-    # Credential Attack URLs (@ in URL) 
-    {
-        'url': 'http://google.com@evil-site.xyz/login',
-        'label': 1, 'category': 'credential_attack'
-    },
-    {
-        'url': 'http://paypal.com@phish-domain.ru/auth',
-        'label': 1, 'category': 'credential_attack'
-    },
-    {
-        'url': 'http://amazon.com@malicious-site.top/signin',
-        'label': 1, 'category': 'credential_attack'
-    },
-    {
-        'url': 'http://paypal.com@secure-authenticate.xyz/login',
-        'label': 1, 'category': 'credential_attack'
-    },
-    {
-        'url': 'http://google.com@account-warning.top/auth',
-        'label': 1, 'category': 'credential_attack'
-    },
-    {
-        'url': 'http://amazon.com@session-check.help/login',
-        'label': 1, 'category': 'credential_attack'
-    },
-    {
-        'url': 'http://microsoft.com@verify-user.ga/auth',
-        'label': 1, 'category': 'credential_attack'
-    },
-    {
-        'url': 'http://bank.com@security-alert.ru/login',
-        'label': 1, 'category': 'credential_attack'
-    },
-
-    #Long Suspicious URLs
-    {
-        'url': 'http://important-security-notice-login.xyz/secure',
-        'label': 1, 'category': 'long_suspicious'
-    },
-    {
-        'url': 'http://user-verification-required-now.top/login',
-        'label': 1, 'category': 'long_suspicious'
-    },
-    {
-        'url': 'http://account-suspension-warning.ga/auth',
-        'label': 1, 'category': 'long_suspicious'
-    },
-    {
-        'url': 'http://last-chance-account-verify.help/login',
-        'label': 1, 'category': 'long_suspicious'
-    },
+    # --- More Long Suspicious ---
     {
         'url': 'http://secure-login-confirm-user-account-update.xyz/auth',
         'label': 1, 'category': 'long_suspicious'
@@ -1191,17 +904,41 @@ URL_TRAINING_DATA = [
         'label': 1, 'category': 'long_suspicious'
     },
 
-    #Sephora Phishing URL
+    # --- More IP Address Phishing ---
     {
-        'url': 'http://s0ephora1.com',
-        'label': 1, 'category': 'typosquatting'
+        'url': 'http://172.16.5.44/bank/login',
+        'label': 1, 'category': 'ip_address'
     },
     {
-        'url': 'http://sephora.us@advent2025.com',
-        'label': 1, 'category': 'special_characters'
+        'url': 'http://88.214.193.17/google/auth',
+        'label': 1, 'category': 'ip_address'
+    },
+    {
+        'url': 'http://31.13.77.102/facebook/security',
+        'label': 1, 'category': 'ip_address'
     },
 
-    
+    # --- More Credential Attacks ---
+    {
+        'url': 'http://paypal.com@secure-authenticate.xyz/login',
+        'label': 1, 'category': 'credential_attack'
+    },
+    {
+        'url': 'http://google.com@account-warning.top/auth',
+        'label': 1, 'category': 'credential_attack'
+    },
+    {
+        'url': 'http://amazon.com@session-check.help/login',
+        'label': 1, 'category': 'credential_attack'
+    },
+    {
+        'url': 'http://microsoft.com@verify-user.ga/auth',
+        'label': 1, 'category': 'credential_attack'
+    },
+    {
+        'url': 'http://bank.com@security-alert.ru/login',
+        'label': 1, 'category': 'credential_attack'
+    },
 
     # --- Cloud-Hosted Phishing (legitimate services abused) ---
     {
@@ -1209,7 +946,7 @@ URL_TRAINING_DATA = [
         'label': 1, 'category': 'cloud_hosted_phishing'
     },
 
-    # REAL URLS (label=0) 
+    # === LEGITIMATE URLS (label=0) ===
 
     {
         'url': 'https://www.google.com',
@@ -1242,7 +979,7 @@ URL_TRAINING_DATA = [
         'category': 'legitimate'
     },
 
-    # Google
+    # --- Google ---
     {
         'url': 'https://mail.google.com',
         'label': 0, 'category': 'legitimate'
@@ -1260,7 +997,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #Amazon
+    # --- Amazon ---
     {
         'url': 'https://www.amazon.com',
         'label': 0, 'category': 'legitimate'
@@ -1282,7 +1019,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #Microsoft
+    # --- Microsoft ---
     {
         'url': 'https://www.microsoft.com',
         'label': 0, 'category': 'legitimate'
@@ -1304,7 +1041,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    # PayPal
+    # --- PayPal ---
     {
         'url': 'https://www.paypal.com',
         'label': 0, 'category': 'legitimate'
@@ -1322,7 +1059,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    # GitHub 
+    # --- GitHub ---
     {
         'url': 'https://github.com',
         'label': 0, 'category': 'legitimate'
@@ -1344,7 +1081,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    # Other Tech
+    # --- Other Tech ---
     {
         'url': 'https://stackoverflow.com',
         'label': 0, 'category': 'legitimate'
@@ -1366,7 +1103,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    # Apple
+    # --- Apple ---
     {
         'url': 'https://www.apple.com',
         'label': 0, 'category': 'legitimate'
@@ -1384,7 +1121,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    # Entertainment & Social
+    # --- Entertainment & Social ---
     {
         'url': 'https://www.netflix.com',
         'label': 0, 'category': 'legitimate'
@@ -1418,7 +1155,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    # News & Education 
+    # --- News & Education ---
     {
         'url': 'https://www.wikipedia.org',
         'label': 0, 'category': 'legitimate'
@@ -1440,7 +1177,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    # Sephora 
+    # --- Sephora ---
     {
         'url': 'https://sephora.com',
         'label': 0, 'category': 'legitimate'
@@ -1458,7 +1195,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    # More Google 
+    # --- More Google ---
     {
         'url': 'https://www.google.com/search?q=machine+learning',
         'label': 0, 'category': 'legitimate'
@@ -1500,7 +1237,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #More Amazon
+    # --- More Amazon ---
     {
         'url': 'https://www.amazon.com/gp/cart/view.html',
         'label': 0, 'category': 'legitimate'
@@ -1542,7 +1279,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #More Microsoft 
+    # --- More Microsoft ---
     {
         'url': 'https://support.microsoft.com/en-us',
         'label': 0, 'category': 'legitimate'
@@ -1584,7 +1321,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    # More PayPal
+    # --- More PayPal ---
     {
         'url': 'https://www.paypal.com/us/signin',
         'label': 0, 'category': 'legitimate'
@@ -1606,7 +1343,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    # More GitHub
+    # --- More GitHub ---
     {
         'url': 'https://github.com/explore',
         'label': 0, 'category': 'legitimate'
@@ -1648,7 +1385,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #StackOverflow & StackExchange
+    # --- StackOverflow & StackExchange ---
     {
         'url': 'https://stackoverflow.com/tags',
         'label': 0, 'category': 'legitimate'
@@ -1674,7 +1411,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #OpenAI
+    # --- More OpenAI ---
     {
         'url': 'https://openai.com/research',
         'label': 0, 'category': 'legitimate'
@@ -1696,7 +1433,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    # Apple
+    # --- More Apple ---
     {
         'url': 'https://www.apple.com/iphone',
         'label': 0, 'category': 'legitimate'
@@ -1738,7 +1475,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #More Netflix
+    # --- More Netflix ---
     {
         'url': 'https://www.netflix.com/browse',
         'label': 0, 'category': 'legitimate'
@@ -1760,7 +1497,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #More LinkedIn
+    # --- More LinkedIn ---
     {
         'url': 'https://www.linkedin.com/feed',
         'label': 0, 'category': 'legitimate'
@@ -1782,7 +1519,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    # Twitter
+    # --- More Twitter ---
     {
         'url': 'https://twitter.com/home',
         'label': 0, 'category': 'legitimate'
@@ -1804,7 +1541,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #YouTube
+    # --- More YouTube ---
     {
         'url': 'https://www.youtube.com/feed/subscriptions',
         'label': 0, 'category': 'legitimate'
@@ -1826,7 +1563,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #  Wikipedia 
+    # --- More Wikipedia ---
     {
         'url': 'https://www.wikipedia.org/wiki/Artificial_intelligence',
         'label': 0, 'category': 'legitimate'
@@ -1848,7 +1585,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    # News 
+    # --- More News ---
     {
         'url': 'https://www.bbc.com/news',
         'label': 0, 'category': 'legitimate'
@@ -1870,7 +1607,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #Education
+    # --- More Education ---
     {
         'url': 'https://www.coursera.org/learn/machine-learning',
         'label': 0, 'category': 'legitimate'
@@ -1892,6 +1629,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
+    # --- More NYT & Business News ---
     {
         'url': 'https://www.nytimes.com/section/technology',
         'label': 0, 'category': 'legitimate'
@@ -1913,7 +1651,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #Cloud Storage
+    # --- Cloud Storage ---
     {
         'url': 'https://www.dropbox.com/login',
         'label': 0, 'category': 'legitimate'
@@ -1935,7 +1673,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #Slack
+    # --- Slack ---
     {
         'url': 'https://slack.com/signin',
         'label': 0, 'category': 'legitimate'
@@ -1957,7 +1695,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    # Project Management
+    # --- Project Management ---
     {
         'url': 'https://trello.com/home',
         'label': 0, 'category': 'legitimate'
@@ -1979,7 +1717,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #Zoom
+    # --- Zoom ---
     {
         'url': 'https://zoom.us/signin',
         'label': 0, 'category': 'legitimate'
@@ -2001,7 +1739,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #Reddit
+    # --- Reddit ---
     {
         'url': 'https://www.reddit.com/r/programming',
         'label': 0, 'category': 'legitimate'
@@ -2023,7 +1761,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #Dev Blogs & Communities
+    # --- Dev Blogs & Communities ---
     {
         'url': 'https://medium.com/topic/technology',
         'label': 0, 'category': 'legitimate'
@@ -2045,7 +1783,7 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #Python Ecosystem
+    # --- Python Ecosystem ---
     {
         'url': 'https://pypi.org/project/numpy',
         'label': 0, 'category': 'legitimate'
@@ -2067,13 +1805,13 @@ URL_TRAINING_DATA = [
         'label': 0, 'category': 'legitimate'
     },
 
-    #Misk
+    # --- Misk ---
     {
         'url': 'https://hub.misk.org.sa/',
         'label': 0, 'category': 'legitimate'
     },
 
-    #More Google Docs
+    # --- More Google Docs ---
     {
         'url': 'https://docs.google.com/document/u/',
         'label': 0, 'category': 'legitimate'
