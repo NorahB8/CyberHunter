@@ -3,6 +3,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     loadStats();
     loadRecentScans();
     initAuth();
+    initDetailPanel();
 
     document.getElementById('websiteLink').addEventListener('click', (e) => {
         e.preventDefault();
@@ -27,39 +28,82 @@ async function loadStats() {
     }
 }
 
+function escapeHtml(str) {
+    return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+}
+
 async function loadRecentScans() {
     try {
         const result = await chrome.storage.local.get(['scanHistory']);
         const history = result.scanHistory || [];
         const scanList = document.getElementById('scanList');
+        const toggleBtn = document.getElementById('historyToggle');
+        const wrapper = document.getElementById('scanListWrapper');
 
         if (history.length === 0) {
             scanList.innerHTML = '<div class="no-scans">No scans yet. Open an email to see protection in action!</div>';
             return;
         }
 
-        scanList.innerHTML = '';
-        const recentScans = history.slice(0, 5);
+        const PREVIEW = 5;
+        let showingAll = false;
 
-        recentScans.forEach(scan => {
-            const scanItem = document.createElement('div');
-            scanItem.className = 'scan-item';
-            
-            const icon = scan.riskLevel === 'high' ? '🛑' : 
-                        scan.riskLevel === 'medium' ? '⚠️' : '✓';
-            
-            const timeAgo = getTimeAgo(new Date(scan.timestamp));
-            
-            scanItem.innerHTML = `
-                <div class="scan-icon">${icon}</div>
-                <div class="scan-details">
-                    <div class="scan-time">${timeAgo}</div>
-                </div>
-                <div class="scan-risk risk-${scan.riskLevel}">${scan.riskLevel}</div>
-            `;
-            
-            scanList.appendChild(scanItem);
-        });
+        function renderScans(items) {
+            scanList.innerHTML = '';
+            items.forEach(scan => {
+                const scanItem = document.createElement('div');
+                scanItem.className = 'scan-item';
+
+                const icon = scan.riskLevel === 'high' ? '🛑' :
+                             scan.riskLevel === 'medium' ? '⚠️' : '✓';
+                const timeAgo = getTimeAgo(new Date(scan.timestamp));
+                const subject = escapeHtml(scan.subject || 'Email scanned');
+                const sender  = escapeHtml(scan.sender  || '');
+                const score   = scan.riskScore != null ? `${Math.round(scan.riskScore)}%` : '';
+                const level   = escapeHtml(scan.riskLevel || 'low');
+
+                scanItem.innerHTML = `
+                    <div class="scan-icon">${icon}</div>
+                    <div class="scan-details">
+                        <div class="scan-subject">${subject}</div>
+                        ${sender ? `<div class="scan-sender">${sender}</div>` : ''}
+                        <div class="scan-time">${timeAgo}</div>
+                    </div>
+                    <div class="scan-meta">
+                        <div class="scan-risk risk-${level}">${level}</div>
+                        ${score ? `<div class="scan-score">${score} risk</div>` : ''}
+                    </div>
+                `;
+                scanItem.style.cursor = 'pointer';
+                scanItem.addEventListener('click', () => showScanDetail(scan));
+                scanList.appendChild(scanItem);
+            });
+        }
+
+        renderScans(history.slice(0, PREVIEW));
+
+        if (history.length > PREVIEW) {
+            toggleBtn.style.display = 'block';
+            toggleBtn.textContent = `Show all ${history.length} scans ▼`;
+            wrapper.style.maxHeight = '220px';
+
+            toggleBtn.onclick = () => {
+                showingAll = !showingAll;
+                if (showingAll) {
+                    renderScans(history);
+                    wrapper.style.maxHeight = 'none'; // let body scroll handle it
+                    toggleBtn.textContent = 'Show less ▲';
+                } else {
+                    renderScans(history.slice(0, PREVIEW));
+                    wrapper.style.maxHeight = '220px';
+                    toggleBtn.textContent = `Show all ${history.length} scans ▼`;
+                }
+            };
+        }
     } catch (error) {
         console.error('Error loading recent scans:', error);
     }
@@ -215,3 +259,41 @@ async function initSiteToggle() {
 }
 
 initSiteToggle();
+
+// ── Scan detail panel ─────────────────────────────────────────────────
+function initDetailPanel() {
+    document.getElementById('detailBack').addEventListener('click', hideScanDetail);
+}
+
+function showScanDetail(scan) {
+    const score = scan.riskScore != null ? Math.round(scan.riskScore) : null;
+    const level = scan.riskLevel || 'low';
+
+    // Score value + colour
+    const scoreEl = document.getElementById('detailScore');
+    scoreEl.textContent = score != null ? `${score}%` : '—';
+    scoreEl.style.color = level === 'high' ? '#ff5577' : level === 'medium' ? '#ffbb33' : '#00c864';
+
+    // Badge
+    const badge = document.getElementById('detailBadge');
+    badge.textContent = level.toUpperCase();
+    badge.style.background = level === 'high' ? 'rgba(255,51,102,0.2)'
+                           : level === 'medium' ? 'rgba(255,170,0,0.2)'
+                           : 'rgba(0,255,136,0.2)';
+    badge.style.color = level === 'high' ? '#ff5577' : level === 'medium' ? '#ffbb33' : '#00c864';
+
+    document.getElementById('detailSubject').textContent = scan.subject || 'No subject';
+    document.getElementById('detailUrl').textContent     = scan.senderEmail || scan.sender || '—';
+    document.getElementById('detailTime').textContent    = scan.timestamp
+        ? new Date(scan.timestamp).toLocaleString()
+        : '—';
+
+    // Switch views
+    document.getElementById('scanDetail').classList.add('visible');
+    document.querySelector('.content').style.display = 'none';
+}
+
+function hideScanDetail() {
+    document.getElementById('scanDetail').classList.remove('visible');
+    document.querySelector('.content').style.display = '';
+}

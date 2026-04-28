@@ -255,7 +255,7 @@ class EmailPhishingDetector {
             }
 
             // Log to storage
-            this.logScan(emailId, analysis);
+            this.logScan(emailId, analysis, emailData.subject, emailData.sender, emailData.senderEmail);
         } catch (error) {
             console.error('CyberHunter: Error analyzing email', error);
         }
@@ -325,12 +325,27 @@ class EmailPhishingDetector {
 
         console.log(`CyberHunter: Scanning ${links.length} links with ML API...`);
 
+        const safeDomains = [
+            'tiktok.com', 'instagram.com', 'twitter.com', 'x.com',
+            'youtube.com', 'facebook.com', 'snapchat.com', 'linkedin.com',
+            'google.com', 'gmail.com', 'microsoft.com', 'apple.com',
+            'amazon.com', 'wikipedia.org', 'github.com', 'reddit.com'
+        ];
+
         for (const link of links) {
             try {
                 // Skip non-http links
                 if (!link.href || (!link.href.startsWith('http://') && !link.href.startsWith('https://'))) {
                     continue;
                 }
+
+                // Skip links that are actually email addresses (e.g. http://user@gmail.com/)
+                const parsedUrl = new URL(link.href);
+                if (parsedUrl.username) continue;
+
+                // Skip known safe social/platform domains
+                const hostname = parsedUrl.hostname.replace('www.', '');
+                if (safeDomains.some(d => hostname === d || hostname.endsWith('.' + d))) continue;
 
                 const controller = new AbortController();
                 const timeoutId = setTimeout(() => controller.abort(), this.API_TIMEOUT);
@@ -1080,22 +1095,25 @@ class EmailPhishingDetector {
                         badgeClass = 'ch-badge-safe';
                         text = rec.replace('[SAFE]', '').trim();
                     }
-                    return `<div class="cyberhunter-rec"><span class="ch-badge ${badgeClass}">${icon}</span> ${text}</div>`;
+                    const safeText = text.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                    return `<div class="cyberhunter-rec"><span class="ch-badge ${badgeClass}">${icon}</span> ${safeText}</div>`;
                 }).join('')}
             </div>
             ${analysis.phishingLinks && analysis.phishingLinks.length > 0 ? `
                 <div class="cyberhunter-phishing-links" style="margin: 10px 0; padding: 10px; background: rgba(255, 0, 0, 0.1); border-left: 3px solid #ff3366; border-radius: 4px;">
                     <div style="font-weight: bold; margin-bottom: 5px;">🚨 ${analysis.phishingLinks.length} Phishing Link(s) Detected:</div>
-                    ${analysis.phishingLinks.map((link, index) => `
+                    ${analysis.phishingLinks.map((link, index) => {
+                        const safeText = (link.text || 'Suspicious Link').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                        const safeUrl  = (link.url || '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+                        const safeNote = link.analysis?.[0] ? link.analysis[0].replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;') : '';
+                        return `
                         <div style="margin: 5px 0; padding: 5px; background: rgba(0, 0, 0, 0.05); border-radius: 3px; font-size: 0.9em;">
-                            <div style="font-weight: bold; color: #ff3366;">${index + 1}. ${link.text || 'Suspicious Link'}</div>
-                            <div style="color: #666; word-break: break-all; margin: 2px 0;">${link.url}</div>
-                            <div style="color: #ff3366; font-weight: bold;">Risk: ${link.riskScore}%</div>
-                            ${link.analysis && link.analysis.length > 0 ? `
-                                <div style="margin-top: 3px; font-size: 0.85em;">${link.analysis[0]}</div>
-                            ` : ''}
-                        </div>
-                    `).join('')}
+                            <div style="font-weight: bold; color: #ff3366;">${index + 1}. ${safeText}</div>
+                            <div style="color: #666; word-break: break-all; margin: 2px 0;">${safeUrl}</div>
+                            <div style="color: #ff3366; font-weight: bold;">Risk: ${Math.round(link.riskScore || 0)}%</div>
+                            ${safeNote ? `<div style="margin-top: 3px; font-size: 0.85em;">${safeNote}</div>` : ''}
+                        </div>`;
+                    }).join('')}
                 </div>
             ` : ''}
             <div class="cyberhunter-footer">
@@ -1124,7 +1142,7 @@ class EmailPhishingDetector {
         emailElement.insertBefore(indicator, emailElement.firstChild);
     }
 
-    async logScan(emailId, analysis) {
+    async logScan(emailId, analysis, subject, sender, senderEmail) {
         try {
             const result = await chrome.storage.local.get(['scanHistory']);
             const history = result.scanHistory || [];
@@ -1133,7 +1151,10 @@ class EmailPhishingDetector {
                 id: emailId,
                 timestamp: new Date().toISOString(),
                 riskLevel: analysis.riskLevel,
-                riskScore: analysis.riskScore
+                riskScore: analysis.riskScore,
+                subject: (subject || 'No subject').slice(0, 60),
+                sender: (sender || 'Unknown sender').slice(0, 40),
+                senderEmail: (senderEmail || '').slice(0, 200)
             });
 
             // Keep only last 100 scans

@@ -947,7 +947,7 @@
                 return {
                     risk: hasHTTPS ? 'safe' : 'warning',
                     value: hasHTTPS ? 'HTTPS enabled' : 'HTTP only (no encryption)',
-                    score: hasHTTPS ? 0 : 0.3
+                    score: hasHTTPS ? -0.2 : 0.3
                 };
             }
 
@@ -1144,7 +1144,7 @@
                 });
 
                 // Convert sum to percentage (max possible ~4.5 from all features)
-                let riskScore = Math.min(100, Math.round((totalScore / 4.0) * 100));
+                let riskScore = Math.max(0, Math.min(100, Math.round((totalScore / 4.0) * 100)));
 
                 return riskScore;
             }
@@ -1186,6 +1186,10 @@
             // Scheme + slashes but no host: "https://"
             if (/^https?:\/\/\s*$/i.test(raw)) {
                 return { risk: 'danger', value: 'Incomplete URL — empty hostname', score: 0.9 };
+            }
+            // Single slash after scheme: "http:/hostname" (should be http://hostname)
+            if (/^https?:\/[^\/]/i.test(raw)) {
+                return { risk: 'danger', value: 'Malformed URL — single slash after scheme (should be ://)', score: 0.9 };
             }
             return { risk: 'safe', value: 'URL structure looks complete', score: 0 };
         }
@@ -1291,7 +1295,7 @@
                 httpsEnabled: {
                     risk: isHTTPS ? 'safe' : 'warning',
                     value: isHTTPS ? 'HTTPS enabled' : 'HTTP only (no encryption)',
-                    score: isHTTPS ? 0 : 0.3
+                    score: isHTTPS ? -0.2 : 0.3
                 },
                 subdomainCount: {
                     risk: features.subdomain_count > 3 ? 'danger' :
@@ -1322,11 +1326,15 @@
                 },
                 homographAttack: {
                     risk: (features.brand_impersonation || features.typosquatting) ? 'danger' : 'safe',
-                    value: features.typosquatting ? 'Typosquatting attack detected' :
-                           features.brand_impersonation ? 'Brand impersonation detected' :
-                           'No impersonation detected',
-                    score: features.typosquatting ? 1 : features.brand_impersonation ? 1 : 0
-                }
+                    value: features.typosquatting && features.brand_impersonation
+                        ? 'Brand impersonation with look-alike characters detected'
+                        : features.typosquatting
+                        ? 'Look-alike characters detected (e.g. paypa1 → paypal)'
+                        : features.brand_impersonation
+                        ? 'Sender claims to be a known brand but uses a different domain'
+                        : 'No brand or character impersonation detected',
+                    score: (features.brand_impersonation || features.typosquatting) ? 1 : 0
+                },
             };
 
             // Calculate risk score by summing all feature scores
@@ -1337,7 +1345,7 @@
             // Convert sum to percentage (max possible ~4.5 from all features)
             let featureRiskScore = Math.min(100, Math.round((featureScoreSum / 4.0) * 100));
             // Use the higher of ML score or feature-based score
-            let riskScore = Math.max(mlResult.risk_score, featureRiskScore);
+            let riskScore = Math.max(mlResult.risk_score || 0, featureRiskScore);
 
             let classification = riskScore >= 50 ? 'danger' : riskScore >= 25 ? 'warning' : 'safe';
             // Respect ML override if it's higher risk
@@ -1399,24 +1407,22 @@
             }
 
             const featureLabels = {
-                malformedURL: 'URL Structure',
-                urlLength: 'URL Length',
-                suspiciousCharacters: 'Special Characters',
                 httpsEnabled: 'HTTPS Security',
-                subdomainCount: 'Subdomain Analysis',
-                suspiciousKeywords: 'Keyword Analysis',
-                ipAddress: 'Domain Type',
-                urlShortener: 'URL Type',
+                suspiciousKeywords: 'Suspicious Keywords',
+                ipAddress: 'IP Address',
                 tldRisk: 'Top-Level Domain',
-                homographAttack: 'Impersonating Letters'
+                homographAttack: 'Impersonation Detection',
+                malformedURL: 'URL Structure'
             };
 
-            Object.entries(features).forEach(([key, feature]) => {
+            Object.entries(featureLabels).forEach(([key, label]) => {
+                const feature = features[key];
+                if (!feature) return;
                 const card = document.createElement('div');
                 card.className = 'feature-card';
                 card.innerHTML = `
                     <div class="feature-header">
-                        <div class="feature-title">${featureLabels[key]}</div>
+                        <div class="feature-title">${label}</div>
                         <div class="feature-status status-${feature.risk}">${feature.risk}</div>
                     </div>
                     <div class="feature-value">${feature.value}</div>

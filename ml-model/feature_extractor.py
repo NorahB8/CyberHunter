@@ -87,7 +87,7 @@ class FeatureExtractor:
             'amazon': ['amazon.com', 'amazon.sa', 'amazon.co.uk'],
             'microsoft': ['microsoft.com', 'outlook.com', 'live.com'],
             'apple': ['apple.com', 'icloud.com', 'email.apple.com'],
-            'google': ['google.com', 'gmail.com'],
+            'google': ['google.com', 'gmail.com', 'googleapis.com', 'googleusercontent.com', 'gstatic.com', 'googlevideo.com'],
             'netflix': ['netflix.com', 'mailer.netflix.com'],
             'ebay': ['ebay.com'],
             'chase': ['chase.com'],
@@ -96,7 +96,16 @@ class FeatureExtractor:
             'sephora': ['sephora.com', 'sephora.sa', 'sephora-info-fr.com', 'sephora-info-me.com'],
             'loccitane': ['loccitane.com', 'email-loccitane.com'],
             'stc': ['stc.com.sa'],
-            'موبايلي': ['mobily.com.sa']
+            'موبايلي': ['mobily.com.sa'],
+            'tiktok': ['tiktok.com'],
+            'instagram': ['instagram.com'],
+            'twitter': ['twitter.com', 'x.com'],
+            'youtube': ['youtube.com', 'youtu.be'],
+            'facebook': ['facebook.com', 'fb.com', 'messenger.com'],
+            'snapchat': ['snapchat.com'],
+            'linkedin': ['linkedin.com'],
+            'github': ['github.com'],
+            'wikipedia': ['wikipedia.org']
         }
 
         # Suspicious username patterns
@@ -117,7 +126,7 @@ class FeatureExtractor:
         - full_path: Full URL path WITHOUT query parameters
         """
         if not input_string:
-            return {'domain': '', 'username': '', 'is_url': False, 'full_path': ''}
+            return {'domain': '', 'username': '', 'is_url': False, 'full_path': '', 'scheme': ''}
 
         input_lower = input_string.lower()
 
@@ -135,7 +144,8 @@ class FeatureExtractor:
                     'domain': domain,
                     'username': path,
                     'is_url': True,
-                    'full_path': path  # Exclude query params from analysis
+                    'full_path': path,  # Exclude query params from analysis
+                    'scheme': parsed.scheme  # 'http' or 'https'
                 }
             except:
                 pass
@@ -147,11 +157,12 @@ class FeatureExtractor:
                 'domain': parts[1] if len(parts) > 1 else '',
                 'username': parts[0],
                 'is_url': False,
-                'full_path': ''
+                'full_path': '',
+                'scheme': ''
             }
 
         # Fallback: treat as domain only
-        return {'domain': input_lower, 'username': '', 'is_url': False, 'full_path': ''}
+        return {'domain': input_lower, 'username': '', 'is_url': False, 'full_path': '', 'scheme': ''}
 
     def extract_features(self, email_data):
         """Extract feature vector from email or URL entry"""
@@ -236,6 +247,9 @@ class FeatureExtractor:
             sender_email, sender_name
         )
 
+        # Feature 22: Uses HTTPS (1 = secure HTTPS, 0 = HTTP or not a URL)
+        features['uses_https'] = self._check_https(sender_email)
+
         return features
 
     def _check_username(self, email):
@@ -313,6 +327,14 @@ class FeatureExtractor:
         parsed = self._parse_input(email)
         domain = parsed['domain'].lower() if parsed['domain'] else email.lower()
         full_text = f"{sender_name} {body}".lower()
+
+        # Cloud storage hosting HTML = impersonating Google/AWS brand
+        email_lower = email.lower()
+        url_no_frag = email_lower.split('#')[0].split('?')[0]
+        if 'storage.googleapis.com' in email_lower and any(url_no_frag.endswith(ext) for ext in ['.html', '.htm', '.php', '.aspx']):
+            return 1
+        if ('amazonaws.com' in email_lower or 's3.' in email_lower) and any(url_no_frag.endswith(ext) for ext in ['.html', '.htm', '.php']):
+            return 1
 
         for brand, legitimate_domains in self.legitimate_brands.items():
             # Check if brand is mentioned in sender name, body, OR the domain/path
@@ -543,6 +565,13 @@ class FeatureExtractor:
             return 1
 
         return 0
+
+    def _check_https(self, email):
+        """Returns 1 if URL uses HTTPS (secure), 0 if HTTP or not a URL.
+        HTTP-only URLs carry higher phishing risk; HTTPS is expected on legitimate sites."""
+        if '://' not in email.lower():
+            return 0  # Not a URL — neutral
+        return 1 if email.lower().startswith('https://') else 0
 
     def _is_gibberish_string(self, text):
         """Check if a string appears to be randomly generated gibberish

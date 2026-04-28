@@ -97,10 +97,14 @@ class PhishingMLDetector:
             is_legitimate = any(domain in sender_email.lower() for domain in legitimate_domains)
 
             if not is_legitimate:  # Only flag if NOT a whitelisted domain
-                # Check if it has a suspicious gibberish path (detected by suspicious_username feature)
-                if features_dict.get('suspicious_username', 0) == 1 or features_dict.get('gibberish_score', 0) == 1:
+                # Flag any HTML file hosted on cloud storage — legitimate sites don't do this
+                url_no_frag = sender_email.lower().split('#')[0].split('?')[0]
+                if any(url_no_frag.endswith(ext) for ext in ['.html', '.htm', '.php', '.aspx']):
                     critical_override = True
-                    override_score = 90  # Very high risk - cloud storage abuse with random path
+                    override_score = 92
+                elif features_dict.get('suspicious_username', 0) == 1 or features_dict.get('gibberish_score', 0) == 1:
+                    critical_override = True
+                    override_score = 88
 
         if critical_override:
             # Override ML prediction with critical security score
@@ -118,6 +122,19 @@ class PhishingMLDetector:
 
             # Convert to risk score (0-100)
             risk_score = prob_phishing * 100
+
+        # Protocol-based risk adjustment for URLs:
+        # HTTP (no SSL) is a strong phishing signal — legitimate sites use HTTPS.
+        # HTTPS does NOT guarantee safety (cloud-hosted phishing abuses HTTPS).
+        if '://' in sender_email.lower():
+            if features_dict.get('uses_https', 0) == 0:
+                # HTTP URL: add 15 points to risk score
+                risk_score = min(100, risk_score + 15)
+            else:
+                # HTTPS URL: slight safety bonus (capped so it cannot clear other red flags)
+                risk_score = max(0, risk_score - 5)
+            prob_phishing = risk_score / 100
+            prob_legitimate = 1 - prob_phishing
 
         # Classification
         if risk_score >= 70:
@@ -165,17 +182,29 @@ class PhishingMLDetector:
             analysis.append("[CRITICAL] Typosquatting attack detected - impersonating legitimate brand")
 
         # Cloud storage abuse detection
-        if ('storage.googleapis.com' in sender_email.lower() or
-            'amazonaws.com' in sender_email.lower() or
-            's3.' in sender_email.lower()):
-            if features.get('suspicious_username', 0) == 1 or features.get('gibberish_score', 0) == 1:
-                analysis.append("[CRITICAL] Cloud storage abuse - suspicious file hosted on legitimate cloud service")
+        url_lower = sender_email.lower()
+        if 'storage.googleapis.com' in url_lower:
+            url_no_frag = url_lower.split('#')[0].split('?')[0]
+            if any(url_no_frag.endswith(ext) for ext in ['.html', '.htm', '.php', '.aspx']):
+                analysis.append("[CRITICAL] Phishing page hosted on Google Cloud Storage — scammers upload fake login pages to legitimate cloud services to bypass spam filters. The random bucket name and HTML file are strong indicators this is not a real website.")
+            else:
+                analysis.append("[WARNING] URL points to Google Cloud Storage — verify this is an expected file download before proceeding.")
+        elif 'amazonaws.com' in url_lower or 's3.' in url_lower:
+            if any(url_lower.endswith(ext) for ext in ['.html', '.htm', '.php']):
+                analysis.append("[CRITICAL] Phishing page hosted on Amazon S3 — scammers use legitimate cloud storage to host fake pages and evade detection.")
 
         if features.get('brand_impersonation', 0) == 1:
             analysis.append("[CRITICAL] Brand impersonation - sender claims to be known company but uses wrong domain")
 
         if features.get('has_ip_address', 0) == 1:
             analysis.append("[CRITICAL] Using IP address instead of domain name - highly suspicious")
+
+        # Protocol check
+        if '://' in sender_email.lower():
+            if features.get('uses_https', 0) == 0:
+                analysis.append("[WARNING] URL uses HTTP instead of HTTPS — no encryption, connection can be intercepted")
+            else:
+                analysis.append("[INFO] URL uses HTTPS — encrypted connection (does not guarantee legitimacy)")
 
         # Check each feature for suspicious values
         if features.get('suspicious_username', 0) == 1:

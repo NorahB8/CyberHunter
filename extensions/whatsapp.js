@@ -4,14 +4,16 @@ class WhatsAppPhishingDetector {
         this.API_URL = 'http://localhost:5000/api/analyze';
         this.API_TIMEOUT = 5000;
         this.scannedMessages = new Set();
+        this.analysisCache = new Map(); // msgId → {riskScore, reasons, isWarning}
 
         this.suspiciousPatterns = {
-            urgency:     /urgent|immediately|act now|expires|limited time|today only|24 hours|verify now|confirm now|click here now|عاجل|فوري|الآن|اليوم فقط|خلال 24 ساعة/i,
-            prizes:      /winner|won|prize|congratulations|claim|free gift|selected|reward|lottery|jackpot|فائز|جائزة|مبروك|مجاني|هدية|يانصيب/i,
-            credentials: /password|pin|otp|verification code|credit card|bank account|national id|copy of id|send your id|photo of your id|picture of id|كلمة المرور|رقم سري|بيانات البنك|الهوية/i,
-            financial:   /send money|wire transfer|western union|bitcoin|crypto|wallet address|payment required|advance fee|أرسل مبلغ|تحويل|عملة رقمية|رسوم/i,
-            socialEngineering: /جربه|جرب الرابط|جالي فعلاً|وصلني فعلاً|try it|try the link|it actually worked|i got paid|i received|share this link|forward this|أنا استلمت|وصلني مبلغ|كسبت فعلاً/i,
-            threats:     /suspended|blocked|account will be closed|unauthorized access|security breach|تعليق|محظور|إغلاق الحساب|اختراق/i
+            urgency:        /urgent|immediately|act now|expires|limited time|today only|24 hours|verify now|confirm now|click here now|pay now|you have to pay|must pay|payment due|delivery fee|customs fee|shipping fee|release your|final notice|last chance|عاجل|فوري|اليوم فقط|خلال 24 ساعة/i,
+            prizes:         /winner|won|prize|congratulations|claim|free gift|selected|reward|lottery|jackpot|فائز|جائزة|مبروك|مجاني|هدية|يانصيب/i,
+            credentials:    /password|pin|otp|one.?time password|verification code|credit card|bank account|national id|copy of id|send your id|photo of your id|picture of id|confirm your identity|كلمة المرور|رقم سري|بيانات البنك|الهوية/i,
+            financial:      /send money|wire transfer|western union|bitcoin|crypto|wallet address|payment required|advance fee|pay the fee|pay to receive|invoice overdue|complete payment|أرسل مبلغ|تحويل|عملة رقمية|رسوم/i,
+            deliveryScam:   /delivery fee|customs fee|shipping fee|you have to pay.*deliver|pay.*to receive.*package|pay.*release.*parcel|missed delivery.*fee|لديك طرد.*ادفع|رسوم.*شحن/i,
+            accountThreats: /account will be (closed|suspended|locked|terminated)|suspended due to|login from (a new|new|unknown) device|unauthorized (login|access|sign.?in)|verify your account|confirm your (account|identity|number)|new sign.?in detected|security breach|حسابك سيُغلق|تسجيل دخول جديد|نشاط مشبوه|اختراق/i,
+            socialEngineering: /جربه|جرب الرابط|جالي فعلاً|وصلني فعلاً|try it|try the link|it actually worked|i got paid|i received|share this link|forward this|أنا استلمت|وصلني مبلغ|كسبت فعلاً/i
         };
 
         this.shortUrlDomains = [
@@ -107,12 +109,21 @@ class WhatsAppPhishingDetector {
         return match ? match[1].trim() : raw.trim() || 'Unknown';
     }
 
-    countSuspiciousKeywords(text) {
-        let count = 0;
-        Object.values(this.suspiciousPatterns).forEach(p => {
-            if (p.test(text)) count++;
+    matchSuspiciousKeywords(text) {
+        const categoryLabels = {
+            urgency: 'urgency',
+            prizes: 'prize/lottery',
+            credentials: 'credential request',
+            financial: 'financial demand',
+            deliveryScam: 'delivery payment scam',
+            accountThreats: 'account threat',
+            socialEngineering: 'social engineering'
+        };
+        const matched = [];
+        Object.entries(this.suspiciousPatterns).forEach(([key, pattern]) => {
+            if (pattern.test(text)) matched.push(categoryLabels[key] || key);
         });
-        return count;
+        return matched;
     }
 
     hasShortUrl(links) {
@@ -127,15 +138,34 @@ class WhatsAppPhishingDetector {
     hasSuspiciousUrl(links) {
         return links.some(link => {
             try {
-                const host = new URL(link).hostname;
+                const url = new URL(link);
+                const host = url.hostname;
                 if (/^\d{1,3}(\.\d{1,3}){3}$/.test(host)) return true;  // IP address
                 if (host.split('.').length > 4) return true;              // too many subdomains
                 if (host.length > 50) return true;                        // very long domain
                 if (this.suspiciousTLDs.some(tld => host.endsWith(tld))) return true; // scam TLD
                 if (this.isGibberishDomain(host)) return true;            // random chars
+                if (this.isCloudStorageAbuse(url)) return true;           // cloud storage hosting HTML
                 return false;
             } catch { return false; }
         });
+    }
+
+    isCloudStorageAbuse(url) {
+        const cloudStorageHosts = [
+            'storage.googleapis.com',
+            'firebasestorage.googleapis.com',
+            's3.amazonaws.com',
+            'blob.core.windows.net',
+            'storage.cloud.google.com'
+        ];
+        const host = url.hostname;
+        const path = url.pathname.toLowerCase();
+        // Cloud storage hosting an HTML page is a common phishing technique
+        if (cloudStorageHosts.some(h => host === h || host.endsWith('.' + h))) {
+            if (path.endsWith('.html') || path.endsWith('.htm') || path.endsWith('.php')) return true;
+        }
+        return false;
     }
 
     isGibberishDomain(host) {
@@ -165,18 +195,16 @@ class WhatsAppPhishingDetector {
         let reasons   = [];
 
         // Rule-based first (always runs)
-        const keywordHits = this.countSuspiciousKeywords(body);
+        const matchedKeywords = this.matchSuspiciousKeywords(body);
+        const keywordHits = matchedKeywords.length;
         riskScore += keywordHits * 20;
-        if (keywordHits > 0) reasons.push(`Contains ${keywordHits} suspicious keyword(s)`);
+        if (keywordHits > 0) reasons.push(`Suspicious keywords detected: ${matchedKeywords.join(', ')}`);
 
-        if (this.suspiciousPatterns.credentials.test(body)) {
-            riskScore = Math.min(riskScore + 30, 100);
-            reasons.push('Asks for personal information or ID');
-        }
-        if (this.suspiciousPatterns.financial.test(body)) {
-            riskScore = Math.min(riskScore + 25, 100);
-            reasons.push('Contains financial request or money transfer');
-        }
+        // Extra score weight for high-risk categories (on top of keyword count)
+        if (this.suspiciousPatterns.credentials.test(body))    riskScore = Math.min(riskScore + 30, 100);
+        if (this.suspiciousPatterns.financial.test(body))      riskScore = Math.min(riskScore + 25, 100);
+        if (this.suspiciousPatterns.deliveryScam.test(body))   riskScore = Math.min(riskScore + 25, 100);
+        if (this.suspiciousPatterns.accountThreats.test(body)) riskScore = Math.min(riskScore + 25, 100);
         if (this.hasShortUrl(links)) {
             riskScore = Math.min(riskScore + 20, 100);
             reasons.push('Contains shortened URL — destination hidden');
@@ -214,17 +242,22 @@ class WhatsAppPhishingDetector {
             if (res.ok) {
                 const result = await res.json();
                 const mlScore = result.risk_score || 0;
-                // Blend rule-based and ML
+                // Blend rule-based and ML scores only — don't show ML label reasons
+                // ML labels like "brand impersonation" may not match the actual message content
                 riskScore = Math.max(riskScore, mlScore * 0.6 + riskScore * 0.4);
-                if (result.feature_analysis?.length) {
-                    reasons = [...new Set([...reasons, ...result.feature_analysis])];
-                }
             }
         } catch (e) {
             console.log('CyberHunter: ML API unavailable, using rule-based only');
         }
 
         console.log('CyberHunter: Risk score:', riskScore, 'Reasons:', reasons);
+
+        // Cache result so banners can be re-attached if WhatsApp re-renders the chat
+        this.analysisCache.set(msgId, {
+            riskScore,
+            reasons,
+            isWarning: riskScore >= 35
+        });
 
         if (riskScore >= 35) {
             this.showWarning(msgElement, riskScore, reasons);
@@ -235,7 +268,20 @@ class WhatsAppPhishingDetector {
 
     processMessage(msgElement) {
         const msgId = this.getMessageId(msgElement);
-        if (this.scannedMessages.has(msgId)) return;
+
+        if (this.scannedMessages.has(msgId)) {
+            // Message was already analyzed — re-attach banner if WhatsApp re-rendered it away
+            const cached = this.analysisCache.get(msgId);
+            if (cached && !msgElement.querySelector('.ch-wa-badge, .ch-wa-warning')) {
+                if (cached.isWarning) {
+                    this.showWarning(msgElement, cached.riskScore, cached.reasons);
+                } else {
+                    this.showSafeBadge(msgElement, cached.riskScore);
+                }
+            }
+            return;
+        }
+
         this.scannedMessages.add(msgId);
         this.analyzeMessage(msgElement, msgId);
     }
@@ -287,7 +333,7 @@ class WhatsAppPhishingDetector {
         `;
 
         const reasonsHtml = reasons.slice(0, 3)
-            .map(r => `<div style="margin-top:3px;color:#555;font-size:11px;">• ${r}</div>`)
+            .map(r => `<div style="margin-top:3px;color:#ccc;font-size:11px;">• ${r}</div>`)
             .join('');
 
         banner.innerHTML = `

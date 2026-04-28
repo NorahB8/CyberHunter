@@ -13,6 +13,8 @@
 
         body {
             width: 360px;
+            max-height: 580px;
+            overflow-y: auto;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
             background: linear-gradient(135deg, #0d0900 0%, #0d0900 100%);
             color: #e8eaed;
@@ -137,37 +139,87 @@
             margin-bottom: 10px;
         }
 
+        .scan-list-wrapper {
+            max-height: 220px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: #4a3c00 transparent;
+        }
+
+        .scan-list-wrapper::-webkit-scrollbar {
+            width: 4px;
+        }
+
+        .scan-list-wrapper::-webkit-scrollbar-track { background: transparent; }
+        .scan-list-wrapper::-webkit-scrollbar-thumb { background: #4a3c00; border-radius: 4px; }
+
         .scan-item {
             background: #221c00;
             border-radius: 8px;
             padding: 10px 12px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             display: flex;
             align-items: center;
             gap: 10px;
             border: 1px solid #4a3c00;
+            min-width: 0;
         }
 
         .scan-icon {
-            font-size: 18px;
+            font-size: 16px;
+            flex-shrink: 0;
         }
 
         .scan-details {
             flex: 1;
             font-size: 12px;
+            min-width: 0;
+        }
+
+        .scan-subject {
+            font-weight: 600;
+            color: #e8eaed;
+            font-size: 12px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .scan-sender {
+            color: #9aa0a6;
+            font-size: 10px;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 1px;
         }
 
         .scan-time {
-            color: #9aa0a6;
+            color: #6b7280;
             font-size: 10px;
+            margin-top: 2px;
+        }
+
+        .scan-meta {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+            gap: 4px;
+            flex-shrink: 0;
         }
 
         .scan-risk {
-            padding: 2px 8px;
+            padding: 2px 7px;
             border-radius: 4px;
             font-size: 10px;
             font-weight: 600;
             text-transform: uppercase;
+            white-space: nowrap;
+        }
+
+        .scan-score {
+            font-size: 10px;
+            color: #9aa0a6;
         }
 
         .risk-high {
@@ -182,7 +234,116 @@
 
         .risk-low {
             background: rgba(0, 255, 136, 0.2);
-            color: #d4a200;
+            color: #00c864;
+        }
+
+        .history-toggle {
+            width: 100%;
+            margin-top: 8px;
+            padding: 6px;
+            background: none;
+            border: 1px solid #4a3c00;
+            border-radius: 7px;
+            color: #9aa0a6;
+            font-size: 11px;
+            cursor: pointer;
+            text-align: center;
+        }
+
+        .history-toggle:hover { border-color: #d4a200; color: #d4a200; }
+
+        /* Scan detail panel */
+        .scan-detail {
+            display: none;
+            flex-direction: column;
+            gap: 12px;
+            padding: 16px 20px;
+        }
+
+        .scan-detail.visible { display: flex; }
+
+        .detail-back {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            background: none;
+            border: none;
+            color: #9aa0a6;
+            font-size: 12px;
+            cursor: pointer;
+            padding: 0;
+            margin-bottom: 4px;
+        }
+
+        .detail-back:hover { color: #d4a200; }
+
+        .detail-card {
+            background: #221c00;
+            border-radius: 12px;
+            padding: 16px;
+            border: 1px solid #4a3c00;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .detail-risk-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .detail-risk-badge {
+            padding: 4px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .detail-score-ring {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .detail-score-value {
+            font-size: 32px;
+            font-weight: 800;
+            line-height: 1;
+        }
+
+        .detail-score-label {
+            font-size: 10px;
+            color: #9aa0a6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 2px;
+        }
+
+        .detail-field {
+            display: flex;
+            flex-direction: column;
+            gap: 3px;
+        }
+
+        .detail-field-label {
+            font-size: 10px;
+            color: #9aa0a6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .detail-field-value {
+            font-size: 13px;
+            color: #e8eaed;
+            word-break: break-all;
+        }
+
+        .detail-divider {
+            border: none;
+            border-top: 1px solid #4a3c00;
+            margin: 0;
         }
 
         .footer {
@@ -372,8 +533,38 @@
 
         <div class="recent-scans">
             <div class="section-title">Recent Scans</div>
-            <div id="scanList">
-                <div class="no-scans">No scans yet. Open an email to see protection in action!</div>
+            <div class="scan-list-wrapper" id="scanListWrapper">
+                <div id="scanList">
+                    <div class="no-scans">No scans yet. Open an email to see protection in action!</div>
+                </div>
+            </div>
+            <button class="history-toggle" id="historyToggle" style="display:none;">Show more</button>
+        </div>
+    </div>
+
+    <!-- Scan detail panel (shown when a scan item is clicked) -->
+    <div class="scan-detail" id="scanDetail">
+        <button class="detail-back" id="detailBack">&#8592; Back to scans</button>
+        <div class="detail-card">
+            <div class="detail-risk-row">
+                <div class="detail-score-ring">
+                    <div class="detail-score-value" id="detailScore">—</div>
+                    <div class="detail-score-label">Risk Score</div>
+                </div>
+                <span class="detail-risk-badge" id="detailBadge">—</span>
+            </div>
+            <hr class="detail-divider">
+            <div class="detail-field">
+                <div class="detail-field-label">Subject</div>
+                <div class="detail-field-value" id="detailSubject">—</div>
+            </div>
+            <div class="detail-field">
+                <div class="detail-field-label">Sender / URL</div>
+                <div class="detail-field-value" id="detailUrl">—</div>
+            </div>
+            <div class="detail-field">
+                <div class="detail-field-label">Scanned</div>
+                <div class="detail-field-value" id="detailTime">—</div>
             </div>
         </div>
     </div>

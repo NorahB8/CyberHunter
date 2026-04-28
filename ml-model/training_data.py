@@ -319,6 +319,88 @@ EMAIL_TRAINING_DATA = [
         'category': 'legitimate'
     },
 
+    # === DELIVERY + URGENCY SCAMS (no explicit brand) ===
+
+    # Cloud storage link delivery scam
+    {
+        'sender_email': 'delivery-notice@parcel-info.xyz',
+        'sender_name': 'Delivery Service',
+        'subject': 'Your package is on hold',
+        'body': 'You have a delivery. You have to pay now at: https://storage.googleapis.com/localbuckjaw456/hreflyjaw.html',
+        'label': 1,
+        'category': 'delivery_scam'
+    },
+    {
+        'sender_email': 'noreply@courier-update.top',
+        'sender_name': 'Courier Notification',
+        'subject': 'Action required: delivery fee',
+        'body': 'Your shipment is awaiting customs clearance. Pay the fee now to release your package.',
+        'label': 1,
+        'category': 'delivery_scam'
+    },
+    {
+        'sender_email': 'update@parcel-hold.ga',
+        'sender_name': 'Package Tracking',
+        'subject': 'Missed delivery — pay to reschedule',
+        'body': 'We attempted to deliver your parcel. A customs fee of $2.99 is required. Pay now or your package will be returned.',
+        'label': 1,
+        'category': 'delivery_scam'
+    },
+    {
+        'sender_email': 'shipment@delivery-fee-confirm.xyz',
+        'sender_name': 'Shipment Team',
+        'subject': 'Your parcel requires payment',
+        'body': 'Your package is held at customs. You must pay the shipping fee immediately to receive your delivery.',
+        'label': 1,
+        'category': 'delivery_scam'
+    },
+
+    # Arabic delivery scam
+    {
+        'sender_email': 'noreply@توصيل-سريع.com',
+        'sender_name': 'خدمة التوصيل',
+        'subject': 'طردك في انتظار الدفع',
+        'body': 'لديك طرد في الانتظار. يجب عليك الدفع الآن لاستلامه. اضغط على الرابط.',
+        'label': 1,
+        'category': 'delivery_scam'
+    },
+
+    # Payment urgency without brand
+    {
+        'sender_email': 'billing@payment-required-now.xyz',
+        'sender_name': 'Billing Department',
+        'subject': 'Invoice overdue — pay now',
+        'body': 'Your invoice is overdue. You must pay now to avoid service suspension. Click the link to complete payment.',
+        'label': 1,
+        'category': 'payment_urgency'
+    },
+    {
+        'sender_email': 'alert@account-payment-due.top',
+        'sender_name': 'Account Team',
+        'subject': 'Final notice: payment required',
+        'body': 'This is your final notice. Your account will be closed if payment is not received within 24 hours.',
+        'label': 1,
+        'category': 'payment_urgency'
+    },
+
+    # OTP / verification scam via link
+    {
+        'sender_email': 'verify@secure-otp-confirm.xyz',
+        'sender_name': 'Security Team',
+        'subject': 'Your OTP has expired — verify now',
+        'body': 'Your one-time password has expired. Click here to verify your account and generate a new OTP.',
+        'label': 1,
+        'category': 'otp_scam'
+    },
+    {
+        'sender_email': 'noreply@account-verify-secure.ga',
+        'sender_name': 'Account Verification',
+        'subject': 'Confirm your identity',
+        'body': 'We detected a login from a new device. Confirm your identity immediately or your account will be suspended.',
+        'label': 1,
+        'category': 'account_verification'
+    },
+
     # Phishing - Western name from Japanese ISP domain (generic)
     {
         'sender_email': 'nenkin.hyogo@ruby.plala.or.jp',
@@ -1815,6 +1897,129 @@ URL_TRAINING_DATA = [
     {
         'url': 'https://docs.google.com/document/u/',
         'label': 0, 'category': 'legitimate'
+    },
+
+    # === CLOUD STORAGE ABUSE - PHISHING (label=1) ===
+
+    # Google Cloud Storage hosting phishing HTML pages
+    {
+        'url': 'https://storage.googleapis.com/localbuckjaw456/hreflyjaw.html#?Z289MSZzMT0yMjUwNDAwJnMyPTUxMjA2NDYzOCZzMz1HTEI=',
+        'label': 1, 'category': 'cloud_hosted_phishing'
+    },
+    {
+        'url': 'https://storage.googleapis.com/bucket-xkq92/pay-now.html',
+        'label': 1, 'category': 'cloud_hosted_phishing'
+    },
+    {
+        'url': 'https://storage.googleapis.com/delivery-fee-43x/customs.html',
+        'label': 1, 'category': 'cloud_hosted_phishing'
+    },
+    {
+        'url': 'https://storage.googleapis.com/pklzbucket/login.html',
+        'label': 1, 'category': 'cloud_hosted_phishing'
+    },
+    {
+        'url': 'https://storage.googleapis.com/rndm-bkt-7742/verify.html',
+        'label': 1, 'category': 'cloud_hosted_phishing'
+    },
+    {
+        'url': 'https://firebasestorage.googleapis.com/v0/b/phish-app-x/o/index.html',
+        'label': 1, 'category': 'cloud_hosted_phishing'
+    },
+    {
+        'url': 'https://firebasestorage.googleapis.com/v0/b/delivery-scam99/o/pay.html',
+        'label': 1, 'category': 'cloud_hosted_phishing'
+    },
+
+    # AWS S3 hosting phishing pages
+    {
+        'url': 'https://s3.amazonaws.com/bucket-phish-44/paypal-login.html',
+        'label': 1, 'category': 'cloud_hosted_phishing'
+    },
+    {
+        'url': 'https://s3.amazonaws.com/random-bucket-77x/verify-account.html',
+        'label': 1, 'category': 'cloud_hosted_phishing'
+    },
+    {
+        'url': 'https://s3.amazonaws.com/delivery-fee-confirm/payment.html',
+        'label': 1, 'category': 'cloud_hosted_phishing'
+    },
+
+    # Azure Blob Storage phishing
+    {
+        'url': 'https://scambucket.blob.core.windows.net/pages/login.html',
+        'label': 1, 'category': 'cloud_hosted_phishing'
+    },
+    {
+        'url': 'https://phishstore99.blob.core.windows.net/public/verify.html',
+        'label': 1, 'category': 'cloud_hosted_phishing'
+    },
+
+    # === MALFORMED URLs (label=1) ===
+    {
+        'url': 'http:/paypal.com/login',
+        'label': 1, 'category': 'malformed_url'
+    },
+    {
+        'url': 'http:/google.com@evil.xyz',
+        'label': 1, 'category': 'malformed_url'
+    },
+    {
+        'url': 'http://amazon.com',
+        'label': 1, 'category': 'malformed_url'
+    },
+    {
+        'url': 'https://account-verify.xyz',
+        'label': 1, 'category': 'malformed_url'
+    },
+    {
+        'url': 'http:/secure-bank.com/auth',
+        'label': 1, 'category': 'malformed_url'
+    },
+
+    # === DELIVERY SCAM URLs (label=1) ===
+    {
+        'url': 'http://delivery-fee-payment.xyz/confirm',
+        'label': 1, 'category': 'delivery_scam'
+    },
+    {
+        'url': 'http://parcel-customs-fee.top/pay',
+        'label': 1, 'category': 'delivery_scam'
+    },
+    {
+        'url': 'http://shipment-hold-payment.ga/release',
+        'label': 1, 'category': 'delivery_scam'
+    },
+    {
+        'url': 'http://missed-delivery-reschedule.xyz/update',
+        'label': 1, 'category': 'delivery_scam'
+    },
+    {
+        'url': 'http://track-package-verify-address.top/confirm',
+        'label': 1, 'category': 'delivery_scam'
+    },
+
+    # HTTP phishing (no SSL = higher risk)
+    {'url': 'http://paypa1-secure-login.com/verify', 'label': 1, 'category': 'http_phishing'},
+    {'url': 'http://amazon-account-suspended.net/restore', 'label': 1, 'category': 'http_phishing'},
+    {'url': 'http://apple-id-verify.com/signin', 'label': 1, 'category': 'http_phishing'},
+    {'url': 'http://bankofamerica-secure.net/login', 'label': 1, 'category': 'http_phishing'},
+    {'url': 'http://microsoft-account-alert.com/confirm', 'label': 1, 'category': 'http_phishing'},
+    {'url': 'http://netflix-billing-update.com/payment', 'label': 1, 'category': 'http_phishing'},
+    {'url': 'http://google-security-alert.net/verify', 'label': 1, 'category': 'http_phishing'},
+    {'url': 'http://ebay-seller-suspended.com/appeal', 'label': 1, 'category': 'http_phishing'},
+    {'url': 'http://fedex-delivery-failed.net/reschedule', 'label': 1, 'category': 'http_phishing'},
+    {'url': 'http://irs-tax-refund-claim.com/submit', 'label': 1, 'category': 'http_phishing'},
+
+    # HTTPS legitimate URLs (secure = lower risk)
+    {'url': 'https://www.paypal.com/signin', 'label': 0, 'category': 'legitimate'},
+    {'url': 'https://www.amazon.com/gp/cart/view.html', 'label': 0, 'category': 'legitimate'},
+    {'url': 'https://appleid.apple.com/sign-in', 'label': 0, 'category': 'legitimate'},
+    {'url': 'https://account.microsoft.com/security', 'label': 0, 'category': 'legitimate'},
+    {'url': 'https://www.netflix.com/login', 'label': 0, 'category': 'legitimate'},
+    {'url': 'https://accounts.google.com/signin', 'label': 0, 'category': 'legitimate'},
+    {'url': 'https://www.ebay.com/mye/myebay/summary', 'label': 0, 'category': 'legitimate'},
+    {'url': 'https://www.fedex.com/en-us/tracking.html', 'label': 0, 'category': 'legitimate'
     },
 ]
 
