@@ -58,6 +58,7 @@ async function loadRecentScans() {
 
         if (history.length === 0) {
             scanList.innerHTML = '<div class="no-scans">No scans yet. Open an email to see protection in action!</div>';
+            toggleBtn.style.display = 'none';
             return;
         }
 
@@ -199,8 +200,13 @@ function initAuth() {
                 return;
             }
             await saveExtSession(data.user);
+            const userKey = `scanHistory_${data.user.email}`;
+            const saved = await chrome.storage.local.get([userKey]);
+            await chrome.storage.local.set({ scanHistory: saved[userKey] || [] });
             msg.textContent = '';
             renderExtAuth();
+            loadStats();
+            loadRecentScans();
         } catch {
             msg.textContent = 'Server unavailable. Start the API server first.';
             msg.className = 'auth-msg error';
@@ -237,7 +243,15 @@ function initAuth() {
 
     // Sign out
     document.getElementById('extSignOut').addEventListener('click', async () => {
+        const user = await getExtSession();
+        if (user) {
+            const { scanHistory } = await chrome.storage.local.get(['scanHistory']);
+            await chrome.storage.local.set({ [`scanHistory_${user.email}`]: scanHistory || [] });
+        }
         await clearExtSession();
+        await chrome.storage.local.remove('scanHistory');
+        loadStats();
+        loadRecentScans();
         renderExtAuth();
     });
 }
