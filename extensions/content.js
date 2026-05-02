@@ -230,14 +230,16 @@ class EmailPhishingDetector {
             // This prevents one suspicious tracking link from overriding a clean email
             if (phishingLinks.length > 0) {
                 analysis.phishingLinks = phishingLinks;
-                const linkBoost = Math.min(phishingLinks.length * 20, 40);
-                analysis.riskScore = Math.min(100, analysis.riskScore + linkBoost);
+                const maxLinkScore = Math.max(...phishingLinks.map(l => l.riskScore));
+                // A confirmed high-risk link makes the whole email high risk — use the link's
+                // own score as a floor so the email can never score lower than the worst link.
+                analysis.riskScore = Math.min(100, Math.max(analysis.riskScore, maxLinkScore));
                 analysis.riskLevel = analysis.riskScore >= 70 ? 'high' :
                                      analysis.riskScore >= 40 ? 'medium' : 'low';
 
                 if (!analysis.riskReasons) analysis.riskReasons = [];
                 analysis.riskReasons.push(`${phishingLinks.length} phishing link(s) detected in email`);
-                console.log(`CyberHunter: Link boost applied: +${linkBoost}% → ${analysis.riskScore}%`);
+                console.log(`CyberHunter: Link score applied: max(email, link) → ${analysis.riskScore}%`);
             }
 
             // Store the result for re-display later
@@ -323,7 +325,18 @@ class EmailPhishingDetector {
             return phishingLinks;
         }
 
-        console.log(`CyberHunter: Scanning ${links.length} links with ML API...`);
+        // Deduplicate links by hostname before scanning — many emails repeat the same domain
+        const seenHosts = new Set();
+        const uniqueLinks = links.filter(link => {
+            try {
+                const host = new URL(link.href).hostname.replace('www.', '');
+                if (seenHosts.has(host)) return false;
+                seenHosts.add(host);
+                return true;
+            } catch { return false; }
+        });
+
+        console.log(`CyberHunter: Scanning ${uniqueLinks.length} unique links (${links.length} total) with ML API...`);
 
         const safeDomains = [
             // Social media
@@ -360,61 +373,45 @@ class EmailPhishingDetector {
             'awstrack.me',
         ];
 
-        for (const link of links) {
+        // Filter to scannable links first
+        const toScan = uniqueLinks.filter(link => {
+            if (!link.href || (!link.href.startsWith('http://') && !link.href.startsWith('https://'))) return false;
             try {
-                // Skip non-http links
-                if (!link.href || (!link.href.startsWith('http://') && !link.href.startsWith('https://'))) {
-                    continue;
-                }
-
-                // Skip links that are actually email addresses (e.g. http://user@gmail.com/)
                 const parsedUrl = new URL(link.href);
-                if (parsedUrl.username) continue;
-
-                // Skip known safe social/platform domains
+                if (parsedUrl.username) return false;
                 const hostname = parsedUrl.hostname.replace('www.', '');
-                if (safeDomains.some(d => hostname === d || hostname.endsWith('.' + d))) continue;
+                if (safeDomains.some(d => hostname === d || hostname.endsWith('.' + d))) return false;
+                return true;
+            } catch { return false; }
+        }).slice(0, 8); // cap at 8 links — enough to catch threats, avoids long waits
 
+        // Scan all remaining links in parallel with a 2-second timeout each
+        const LINK_TIMEOUT = 2000;
+        const results = await Promise.all(toScan.map(async link => {
+            try {
                 const controller = new AbortController();
-                const timeoutId = setTimeout(() => controller.abort(), this.API_TIMEOUT);
-
+                const timeoutId = setTimeout(() => controller.abort(), LINK_TIMEOUT);
                 const response = await fetch(this.API_URL, {
                     method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        url: link.href,
-                        sender_name: '',
-                        email_body: ''
-                    }),
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url: link.href, sender_name: '', email_body: '' }),
                     signal: controller.signal
                 });
-
                 clearTimeout(timeoutId);
-
                 if (response.ok) {
                     const mlResult = await response.json();
-
-                    // If ML detects high risk (70%+), flag this link as phishing
                     if (mlResult.risk_score >= 70) {
-                        phishingLinks.push({
-                            url: link.href,
-                            text: link.text,
-                            riskScore: mlResult.risk_score,
-                            classification: mlResult.classification,
-                            analysis: mlResult.feature_analysis || []
-                        });
                         console.log(`CyberHunter: Phishing link detected: ${link.href} (${mlResult.risk_score}%)`);
+                        return { url: link.href, text: link.text, riskScore: mlResult.risk_score, classification: mlResult.classification, analysis: mlResult.feature_analysis || [] };
                     }
                 }
             } catch (error) {
-                // Silently continue if link scan fails
                 console.warn(`CyberHunter: Failed to scan link ${link.href}:`, error.message);
             }
-        }
+            return null;
+        }));
 
-        return phishingLinks;
+        return results.filter(r => r !== null);
     }
 
     convertMLFeatures(mlResult) {
@@ -1106,7 +1103,7 @@ class EmailPhishingDetector {
                 <span class="cyberhunter-score">${analysis.riskScore}% Risk</span>
             </div>
             <div class="cyberhunter-recommendations">
-                ${analysis.recommendations.map(rec => {
+                ${analysis.recommendations.filter(rec => !rec.startsWith('[SAFE]')).map(rec => {
                     let icon = '⚠️';
                     let badgeClass = 'ch-badge-warn';
                     let text = rec;

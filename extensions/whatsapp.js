@@ -226,11 +226,19 @@ class WhatsAppPhishingDetector {
         riskScore = Math.min(riskScore, 100);
 
         // URL signals
+        const hasIpUrl = links.some(url => {
+            try { return /^\d{1,3}(\.\d{1,3}){3}$/.test(new URL(url).hostname); }
+            catch { return false; }
+        });
+        if (hasIpUrl) {
+            riskScore = Math.min(riskScore + 45, 100);
+            reasons.push('Uses IP address instead of domain name — common phishing tactic');
+        }
         if (this.hasShortUrl(links)) {
             riskScore = Math.min(riskScore + 12, 100);
             reasons.push('Contains shortened URL — destination hidden');
         }
-        if (this.hasSuspiciousUrl(links)) {
+        if (this.hasSuspiciousUrl(links) && !hasIpUrl) {
             riskScore = Math.min(riskScore + 28, 100);
             reasons.push('Contains suspicious or scam-associated link');
         }
@@ -277,8 +285,8 @@ class WhatsAppPhishingDetector {
 
         // Only warn if a genuinely dangerous signal fired (not just mild urgency alone)
         const dangerSignalFired = weightedSignals
-            .slice(0, 8) // exclude the mild urgency-only signal at the end
-            .some(s => s.pattern.test(body)) || riskScore >= 70;
+            .slice(0, 8)
+            .some(s => s.pattern.test(body)) || riskScore >= 70 || hasIpUrl || this.hasShortUrl(links);
         const isWarning = dangerSignalFired && riskScore >= 35;
 
         // Cache result so banners can be re-attached if WhatsApp re-renders the chat

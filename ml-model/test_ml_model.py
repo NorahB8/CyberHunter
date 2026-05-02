@@ -63,10 +63,10 @@ test_cases = [
         'expected': 'low_risk'
     },
     {
-        'name': 'Legitimate - Substack Newsletter',
-        'email': 'emilyhenry@substack.com',
-        'sender': "Emily's Grocery List",
-        'body': 'The Great Big Beautiful Life paperback will be available on May 19th everywhere books are sold. Signed copies available.',
+        'name': 'Legitimate - Author Newsletter',
+        'email': 'author@substack.com',
+        'sender': 'Sarah Mitchell',
+        'body': 'My new book is available next month at all major bookstores. Pre-order now to get early access. Thank you for your continued support.',
         'expected': 'low_risk'
     },
     {
@@ -77,10 +77,10 @@ test_cases = [
         'expected': 'low_risk'
     },
     {
-        'name': 'Legitimate - HoYoverse Game Newsletter',
-        'email': 'noreply.news@e-mail.hoyoverse.com',
-        'sender': 'P.A.I.M.O.N',
-        'body': 'Version Luna VI is now live. Congratulations on unlocking Reunion Gifts. Earn Primogems from limited-time exploration rewards.',
+        'name': 'Legitimate - Game Studio Newsletter',
+        'email': 'noreply@updates.gamestudio.com',
+        'sender': 'GameStudio News',
+        'body': 'Version 3.0 is now live. Log in to claim your seasonal rewards. New content and events available this week.',
         'expected': 'low_risk'
     },
 ]
