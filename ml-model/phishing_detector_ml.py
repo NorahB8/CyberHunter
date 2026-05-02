@@ -128,13 +128,37 @@ class PhishingMLDetector:
         # HTTPS does NOT guarantee safety (cloud-hosted phishing abuses HTTPS).
         if '://' in sender_email.lower():
             if features_dict.get('uses_https', 0) == 0:
-                # HTTP URL: add 15 points to risk score
                 risk_score = min(100, risk_score + 15)
             else:
-                # HTTPS URL: slight safety bonus (capped so it cannot clear other red flags)
                 risk_score = max(0, risk_score - 5)
-            prob_phishing = risk_score / 100
-            prob_legitimate = 1 - prob_phishing
+
+        # Feature-based score boosts — each flagged feature adds to the risk score
+        # so every card that shows danger actually moves the number.
+        boost = 0
+        if features_dict.get('suspicious_tld', 0) == 1:
+            boost += 15
+        if features_dict.get('gibberish_score', 0) == 1:
+            boost += 15
+        if features_dict.get('free_email_company', 0) == 1:
+            boost += 15
+        if features_dict.get('suspicious_keyword_count', 0) >= 3:
+            boost += 10
+        if features_dict.get('domain_spam_keywords', 0) >= 2:
+            boost += 10
+        if features_dict.get('subdomain_count', 0) >= 3:
+            boost += 10
+        if features_dict.get('personal_info_request', 0) > 0:
+            boost += 10
+        if features_dict.get('urgency_count', 0) >= 2:
+            boost += 8
+        if features_dict.get('suspicious_username', 0) == 1:
+            boost += 8
+        if features_dict.get('name_domain_mismatch', 0) == 1:
+            boost += 8
+        risk_score = min(100, risk_score + boost)
+
+        prob_phishing = risk_score / 100
+        prob_legitimate = 1 - prob_phishing
 
         # Classification
         if risk_score >= 70:
@@ -228,11 +252,11 @@ class PhishingMLDetector:
             count = int(features['suspicious_keyword_count'])
             analysis.append(f"[WARNING] Contains {count} phishing-related keywords")
 
-        # Money/donation/lottery scam detection
+        # Money/donation/lottery scam detection — only specific terms unlikely in real transactional emails
         money_keywords = [
             'million', 'billion', 'donation', 'donate', 'lottery', 'jackpot',
-            'prize', 'award', 'inheritance', 'beneficiary', 'fund', 'transfer',
-            'wire', 'payment', 'compensation', 'grant', 'winning', 'won'
+            'prize', 'award', 'inheritance', 'beneficiary', 'wire transfer',
+            'compensation', 'winning', 'you have won', 'claim your'
         ]
         if any(kw in body_lower for kw in money_keywords):
             analysis.append("[CRITICAL] Email mentions large sums of money or financial rewards — common advance-fee fraud tactic")

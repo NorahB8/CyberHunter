@@ -84,7 +84,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     }
 
     if (request.action === 'openFullDashboard') {
-        chrome.tabs.create({ url: chrome.runtime.getURL('popup.html'), active: true });
+        chrome.tabs.create({ url: chrome.runtime.getURL('popup.html') + '?mode=fullpage', active: true });
         sendResponse({ success: true });
     }
 

@@ -5,10 +5,22 @@ document.addEventListener('DOMContentLoaded', async () => {
     initAuth();
     initDetailPanel();
 
-    document.getElementById('websiteLink').addEventListener('click', (e) => {
-        e.preventDefault();
-        chrome.runtime.sendMessage({ action: 'openFullDashboard' });
-    });
+    const isFullPage = new URLSearchParams(window.location.search).get('mode') === 'fullpage';
+    const websiteLink = document.getElementById('websiteLink');
+
+    if (isFullPage) {
+        websiteLink.textContent = 'Go to Home Page';
+        websiteLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            window.open('http://127.0.0.1:5500/index.html', '_blank');
+        });
+    } else {
+        websiteLink.textContent = 'Open Full Extension';
+        websiteLink.addEventListener('click', (e) => {
+            e.preventDefault();
+            chrome.runtime.sendMessage({ action: 'openFullDashboard' });
+        });
+    }
 });
 
 async function loadStats() {

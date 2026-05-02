@@ -421,7 +421,10 @@ class FeatureExtractor:
         domain = parsed['domain']
         if not domain:
             return 0.4
-        domain_name = domain.split('.')[0]
+        parts = domain.split('.')
+        # Use the registrable domain (before TLD), not the leftmost subdomain
+        # e.g. www.google.com → 'google', evil-site.xyz → 'evil-site'
+        domain_name = parts[-2] if len(parts) >= 2 else parts[0]
         vowels = sum(1 for c in domain_name if c.lower() in 'aeiou')
         letters = sum(1 for c in domain_name if c.isalpha())
         return vowels / max(letters, 1)
