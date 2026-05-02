@@ -164,7 +164,7 @@ class PhishingMLDetector:
         if risk_score >= 70:
             classification = 'high_risk'
             is_phishing = True
-        elif risk_score >= 40:
+        elif risk_score >= 60:
             classification = 'medium_risk'
             is_phishing = True
         else:
@@ -279,9 +279,6 @@ class PhishingMLDetector:
 
         if features.get('suspicious_tld', 0) == 1:
             analysis.append("[WARNING] Uses suspicious top-level domain")
-
-        if features.get('domain_vowel_ratio', 0) < 0.25:
-            analysis.append("[WARNING] Domain has unusual letter pattern")
 
         # If no specific warnings but high risk, add general warning
         if not analysis and risk_score >= 70:

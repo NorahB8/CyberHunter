@@ -5,10 +5,10 @@
 ![Version](https://img.shields.io/badge/Version-1.0.0-brightgreen?style=for-the-badge)
 
 A comprehensive phishing detection system featuring:
-- 🌐 **Web Dashboard** - Real-time URL scanning and analysis
-- 🔌 **Browser Extension** - Automatic email protection for Gmail/Outlook
-- 🤖 **ML Model** - Advanced machine learning-based detection
-- 🚀 **REST API** - Easy integration with your applications
+- **Web Dashboard** - Real-time URL scanning and analysis
+- **Browser Extension** - Automatic email protection for Gmail/Outlook
+- **ML Model** - Advanced machine learning-based detection
+- **REST API** - Easy integration with your applications
 
 ## 🎯 Features
 

@@ -21,14 +21,14 @@ class FeatureExtractor:
             'compromised', 'blocked', 'locked',
             # English rewards
             'winner', 'prize', 'congratulations', 'claim', 'free gift', 'selected',
-            # English financial
-            'payment', 'invoice', 'refund', 'transaction', 'wire transfer',
-            'bank account', 'credit card', 'cvv', 'pin',
+            # English financial (removed 'pin'/'cvv' — too short, checked separately in personal_info_request)
+            'payment required', 'payment failed', 'invoice', 'refund', 'transaction', 'wire transfer',
+            'bank account', 'credit card',
             # inheritance / donation scams
             'million dollars', 'million usd', 'usd2,000,000', 'usd 2,000,000',
-            'randomly selected', 'lucky individual', 'late brother', 'deceased',
+            'randomly selected', 'lucky individual', 'deceased',
             'next of kin', 'no next of kin', 'beneficiary', 'inheritance',
-            'dying widow', 'god-fearing', 'processing fee', 'western union',
+            'dying widow', 'god-fearing', 'processing fee',
             'transfer the funds', 'release the funds', 'bank details',
             'compensation payment', 'unclaimed refund', 'grant approved',
             'count yourself', 'email address is valid', 'kindly get back',
@@ -36,9 +36,9 @@ class FeatureExtractor:
             # Lottery donation scam patterns
             'selected as one', 'selected recipient', 'chosen to receive',
             'five selected individuals', 'selected individuals worldwide',
-            'powerball jackpot', 'lottery jackpot', 'jackpot winner',
+             'lottery jackpot', 'jackpot winner',
             'legal representative', 'contact person', 'payment code',
-            'confirm your acceptance', 'initiate the payment', 'release the funds',
+            'confirm your acceptance', 'initiate the payment',
             'facilitate the payment', 'payment reference', 'payment officer',
             'recent photograph', 
             #request of personal information
@@ -47,12 +47,11 @@ class FeatureExtractor:
             'send your passport', 'national id', 'attach your id',
             'provide your bank', 'provide bank account',
             'whatsapp number', 'text message only', 'transaction is monitored',
-            'united states government', 'full transparency', 'prevent fraudulent',
+            'united states government', 'full transparency',
             'five million', 'ten million', '$10 million', '$5 million',
             'global database', 'divine revelation', 
-            # English shipping
-            'parcel', 'delivery', 'tracking', 'warehouse', 'unable to deliver',
-            'missing information', 'business days',
+            # English shipping (kept only scam-specific; removed generic: parcel, delivery, tracking, business days)
+            'warehouse', 'unable to deliver', 'missing information',
             # Arabic urgency
             'عاجل', 'فوري', 'حالاً', 'ينتهي', 'تنتهي', 'معلق', 'تحقق الآن',
             'تصرف الآن', 'وقت محدود', 'اليوم فقط', 'أكد فوراً',
@@ -62,13 +61,11 @@ class FeatureExtractor:
             # Arabic personal info
             'كلمة المرور', 'كلمة السر', 'بطاقة ائتمان', 'حساب مصرفي',
             'رقم سري', 'رمز التحقق', 'الرقم السري', 'بيانات شخصية',
-            # Arabic general
-            'تحقق', 'حساب', 'تأكيد', 'تحديث', 'أمان', 'انقر', 'تسجيل الدخول',
-            'مصرفي', 'بنك', 'فائز', 'جائزة', 'مجاني', 'يدعي', 'محدود',
-            'طرد', 'شحنة', 'توصيل', 'تتبع', 'معلومات مفقودة'
+            # Arabic general (kept only scam-specific words; removed common marketing/banking words)
+            'فائز', 'جائزة', 'يدعي'
         ]
 
-        # Spam domain keywords
+        # Spam domain keywords to detect spam domains
         self.suspicious_domain_patterns = [
             'wildzone', 'ultraprize', 'entryport', 'megasnap', 'flashvault',
             'quickfire', 'zonejump', 'rapidlink', 'freezone', 'netgrab',
@@ -76,7 +73,6 @@ class FeatureExtractor:
             'spam', 'temp', 'fake', 'scam', 'phish', 'suspicious', 'malware',
             'oceanpark', 'trip', 'entryway', 'giantreward', 'choresrecords',
             'junglerealm', 'pathway', 'gatehouse', 'superwin', 'antiwalmart',
-            'verify', 'account', 'secure', 'update', 'confirm'
         ]
 
         # Legitimate brands and their domains
@@ -105,16 +101,28 @@ class FeatureExtractor:
             'snapchat': ['snapchat.com'],
             'linkedin': ['linkedin.com'],
             'github': ['github.com'],
-            'wikipedia': ['wikipedia.org']
-        }
+            'wikipedia': ['wikipedia.org'],
+            'substack': ['substack.com']
+            }
 
-        # Suspicious username patterns
+        # Suspicious username patterns (word+digits combos — NOT plain dictionary words)
         self.username_patterns = [
-            r'^[a-z]{3,8}\d{4,8}$',  # label623435
-            r'^[A-Za-z]{8,}$',       # MguTYrJq
-            r'^[a-z]{2,4}\d{2,4}$',
-            r'^\d+[a-z]+\d+$'
+            r'^[a-z]{3,8}\d{4,8}$',   # label623435, noreply123456
+            r'^[a-z]{2,4}\d{2,4}$',   # mg12, ab99
+            r'^\d+[a-z]+\d+$',        # 494540abc123
         ]
+
+        # Legitimate usernames that should never be flagged
+        self.safe_usernames = {
+            'noreply', 'no-reply', 'no_reply', 'donotreply', 'support', 'info',
+            'contact', 'hello', 'team', 'service', 'account', 'billing',
+            'newsletter', 'newsletters', 'news', 'notify', 'notification',
+            'notifications', 'alert', 'alerts', 'mailer', 'mail', 'email',
+            'feedback', 'help', 'security', 'privacy', 'admin', 'reply',
+            'automated', 'autoconfirm', 'auto-confirm', 'receipts', 'receipt',
+            'discover', 'welcome', 'updates', 'update', 'verify',
+            'store-news', 'order-update', 'messages-noreply', 'messages',
+        }
 
     def _parse_input(self, input_string):
         """Parse email or URL into components for feature extraction
@@ -175,79 +183,76 @@ class FeatureExtractor:
         body = email_data.get('body', '').lower()
         full_text = f"{sender_name} {subject} {body}"
 
-        # Feature 1: Suspicious keyword count
-        keyword_matches = sum(1 for kw in self.suspicious_keywords if kw in full_text)
+        # Feature 1: Suspicious keyword count (word-boundary match to avoid short-word false positives)
+        keyword_matches = sum(
+            1 for kw in self.suspicious_keywords
+            if re.search(r'(?<!\w)' + re.escape(kw) + r'(?!\w)', full_text)
+        )
         features['suspicious_keyword_count'] = min(keyword_matches, 10)
 
-        # Feature 2: Keyword density
-        word_count = len(full_text.split())
-        features['keyword_density'] = keyword_matches / max(word_count, 1)
-
-        # Feature 3: Has suspicious username pattern
+        # Feature 2: Has suspicious username pattern
         features['suspicious_username'] = self._check_username(sender_email)
 
-        # Feature 4: Domain spam keywords
+        # Feature 3: Domain spam keywords
         features['domain_spam_keywords'] = self._check_domain_spam(sender_email)
 
-        # Feature 5: Subdomain count
+        # Feature 4: Subdomain count
         features['subdomain_count'] = self._count_subdomains(sender_email)
 
-        # Feature 6: Domain length
+        # Feature 5: Domain length
         features['domain_length'] = self._get_domain_length(sender_email)
 
-        # Feature 7: Gibberish domain score
+        # Feature 6: Gibberish domain score
         features['gibberish_score'] = self._check_gibberish(sender_email)
 
-        # Feature 8: Brand impersonation
+        # Feature 7: Brand impersonation
         features['brand_impersonation'] = self._check_brand_impersonation(
             sender_email, sender_name, body
         )
 
-        # Feature 9: Free email provider with company name
+        # Feature 8: Free email provider with company name
         features['free_email_company'] = self._check_free_email(sender_email, sender_name)
 
-        # Feature 10: Suspicious TLD
+        # Feature 9: Suspicious TLD
         features['suspicious_tld'] = self._check_tld(sender_email)
 
-        # Feature 11: Has digits in username
-        features['username_digit_count'] = self._count_username_digits(sender_email)
-
-        # Feature 12: Email contains IP address
+        # Feature 10: Email contains IP address
         features['has_ip_address'] = self._check_ip_address(sender_email)
 
-        # Feature 13: Long digit sequence in domain
-        features['long_digit_sequence'] = self._check_long_digits(sender_email)
-
-        # Feature 14: Excessive hyphens
+        # Feature 11: Excessive hyphens
         features['hyphen_count'] = self._count_hyphens(sender_email)
 
-        # Feature 15: Arabic character ratio
-        features['arabic_ratio'] = self._arabic_ratio(full_text)
+        # Feature 12: Urgency level
+        # 'now' and 'today' removed — they appear in virtually every email and are not specific to phishing
+        urgency_words = ['urgent', 'immediate', 'asap', 'act now', 'عاجل', 'فوري', 'الآن']
+        features['urgency_count'] = sum(
+            1 for word in urgency_words
+            if re.search(r'(?<![a-zA-Z])' + re.escape(word) + r'(?![a-zA-Z])', full_text)
+        )
 
-        # Feature 16: Urgency level
-        urgency_words = ['urgent', 'immediate', 'now', 'today', 'asap', 'عاجل', 'فوري', 'الآن']
-        features['urgency_count'] = sum(1 for word in urgency_words if word in full_text)
-
-        # Feature 17: Personal info request
+        # Feature 13: Personal info request (word-boundary match prevents "popping"→"pin" false positives)
         personal_info = ['password', 'credit card', 'ssn', 'pin', 'cvv',
                         'كلمة المرور', 'بطاقة ائتمان', 'رقم سري']
-        features['personal_info_request'] = sum(1 for word in personal_info if word in full_text)
+        features['personal_info_request'] = sum(
+            1 for word in personal_info
+            if re.search(r'(?<![a-zA-Z])' + re.escape(word) + r'(?![a-zA-Z])', full_text)
+        )
 
-        # Feature 18: Vowel ratio in domain
+        # Feature 14: Vowel ratio in domain
         features['domain_vowel_ratio'] = self._domain_vowel_ratio(sender_email)
 
-        # Feature 19: Direct typosquatting detection in domain
+        # Feature 15: Direct typosquatting detection in domain
         features['typosquatting'] = self._check_typosquatting(sender_email)
 
-        # Feature 20: Legitimate email username pattern (negative = safe signal)
+        # Feature 16: Legitimate email username pattern (negative = safe signal)
         features['legitimate_username'] = self._check_legitimate_username(sender_email)
 
-        # Feature 21: Sender name vs domain mismatch
+        # Feature 17: Sender name vs domain mismatch
         features['name_domain_mismatch'] = self._check_name_domain_mismatch(
             sender_email, sender_name
         )
 
-        # Feature 22: Uses HTTPS (1 = secure HTTPS, 0 = HTTP or not a URL)
+        # Feature 18: Uses HTTPS (1 = secure HTTPS, 0 = HTTP or not a URL)
         features['uses_https'] = self._check_https(sender_email)
 
         return features
@@ -261,14 +266,16 @@ class FeatureExtractor:
 
         # For URLs, check if path contains gibberish
         if parsed['is_url']:
-            # Split path by /
             path_parts = username.split('/')
             for part in path_parts:
-                # Check if path segment is gibberish (random chars)
                 if len(part) > 5 and self._is_gibberish_string(part):
                     return 1
 
-        # For emails, check username patterns
+        # Skip known legitimate username patterns
+        if username.lower() in self.safe_usernames:
+            return 0
+
+        # For emails, check suspicious word+digits patterns
         for pattern in self.username_patterns:
             if re.match(pattern, username):
                 return 1
@@ -323,10 +330,13 @@ class FeatureExtractor:
                 return 1
         return 0
 
-    def _check_brand_impersonation(self, email, sender_name, body):
+    def _check_brand_impersonation(self, email, sender_name, body=None):
         parsed = self._parse_input(email)
         domain = parsed['domain'].lower() if parsed['domain'] else email.lower()
-        full_text = f"{sender_name} {body}".lower()
+        # Only check sender_name for brand mentions — body contains social media footer links
+        # in virtually every marketing email (Facebook/Instagram/YouTube/TikTok icons), which
+        # would trigger false positives for any email with a footer that isn't sent from those brands.
+        name_text = sender_name.lower()
 
         # Cloud storage hosting HTML = impersonating Google/AWS brand
         email_lower = email.lower()
@@ -337,8 +347,8 @@ class FeatureExtractor:
             return 1
 
         for brand, legitimate_domains in self.legitimate_brands.items():
-            # Check if brand is mentioned in sender name, body, OR the domain/path
-            brand_in_text = brand in full_text
+            # Check if brand is mentioned in sender name OR the domain/path
+            brand_in_text = brand in name_text
             brand_in_domain = brand in domain
 
             if brand_in_text or brand_in_domain:
@@ -358,9 +368,12 @@ class FeatureExtractor:
                     if not is_legitimate:
                         return 1
 
-        # Check for @ in URL (credential attack: http://google.com@evil.com)
-        if parsed['is_url'] and '@' in email:
-            return 1
+        # Check for @ in URL netloc only (credential attack: http://google.com@evil.com)
+        # Do NOT flag @ in path — substack.com/@username is a legitimate URL pattern
+        if parsed['is_url']:
+            raw_parsed = urlparse(email.lower())
+            if '@' in raw_parsed.netloc:
+                return 1
 
         return 0
 
@@ -524,7 +537,7 @@ class FeatureExtractor:
         legitimate_prefixes = [
             'info', 'contact', 'support', 'help', 'sales', 'team',
             'hello', 'admin', 'office', 'service', 'billing',
-            'noreply', 'no-reply', 'do-not-reply', 'donotreply',
+            'noreply', 'no-reply', 'no_reply', 'do-not-reply', 'donotreply',
             'newsletters', 'newsletter', 'news', 'updates', 'marketing',
             'notifications', 'notification', 'notify', 'alert', 'alerts',
             'customercare', 'customer-care', 'customerservice',

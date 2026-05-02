@@ -270,6 +270,103 @@ EMAIL_TRAINING_DATA = [
         'label': 0,
     },
 
+    # PayPal — legitimate legal agreement update
+    {
+        'sender_email': 'no_reply@communications.paypal.com',
+        'sender_name': 'PayPal Communications',
+        'subject': "We're making some changes to our PayPal legal agreements",
+        'body': 'We are making changes to our legal agreements. No action needed. Visit PayPal.com for details. PayPal is committed to preventing fraudulent emails.',
+        'label': 0,
+    },
+
+    # Microsoft — legitimate account security notification
+    {
+        'sender_email': 'account-security-noreply@accountprotection.microsoft.com',
+        'sender_name': 'Microsoft account team',
+        'subject': 'Microsoft account security info was added',
+        'body': 'Security info was recently added to your Microsoft account. A passkey was added. If this was you, ignore this email. If this was not you, review your recent activity.',
+        'label': 0,
+    },
+
+    # Move Dance — legitimate order shipping confirmation
+    {
+        'sender_email': 'system@tn3.netsuite.com',
+        'sender_name': 'Move Online Retail Ltd',
+        'subject': 'Move Online Retail Ltd: Your order #9923152 has shipped',
+        'body': 'Great news, your parcel is on its way. Track my order. Delivery address: Riyadh SA. Sales order 9923152. EVRi shipping.',
+        'label': 0,
+    },
+
+    # Additional legitimate emails with hyphens in subdomain (help model not penalize hyphens in legit domains)
+    {
+        'sender_email': 'no-reply@e-mail.hoyoverse.com',
+        'sender_name': 'HoYoverse',
+        'subject': 'Game update notification',
+        'body': 'A new version is now available. Log in to claim your rewards.',
+        'label': 0,
+    },
+    {
+        'sender_email': 'noreply@e-comm.apple.com',
+        'sender_name': 'Apple',
+        'subject': 'Your Apple order',
+        'body': 'Thank you for your purchase from Apple.',
+        'label': 0,
+    },
+
+    # HoYoverse (Genshin Impact) — legitimate game newsletter
+    {
+        'sender_email': 'noreply.news@e-mail.hoyoverse.com',
+        'sender_name': 'P.A.I.M.O.N',
+        'subject': 'Thanks for waiting! The temple above Mondstadt is finally open',
+        'body': 'Version Luna VI is now live. Congratulations on unlocking Reunion Gifts. Earn Primogems from limited-time exploration rewards. New character Linnea available for a limited time.',
+        'label': 0,
+    },
+
+    # Ballet with Isabella — legitimate fitness/dance newsletter
+    {
+        'sender_email': 'isabella@balletwithisabella.com',
+        'sender_name': 'Ballet with Isabella Ltd',
+        'subject': 'Your ankles have been asking for this',
+        'body': 'My Ankle Strength and Mobility class is already inside members accounts. The exercises train your strength at end range. Log in and give yourself this one this week. All levels welcome.',
+        'label': 0,
+    },
+
+    # Substack newsletter — legitimate author newsletter
+    {
+        'sender_email': 'emilyhenry@substack.com',
+        'sender_name': "Emily's Grocery List",
+        'subject': 'Good little pretty paperbacks out soon',
+        'body': 'The Great Big Beautiful Life paperback will be available on May 19th. Signed copies available. Thank you for your love and support.',
+        'label': 0,
+    },
+
+    # Hollister — legitimate order confirmation
+    {
+        'sender_email': 'customercare@hollisterco.sa',
+        'sender_name': 'Customer Services Team',
+        'subject': 'Order Confirmation FKSA-ON-13631947',
+        'body': 'Thanks for your order. Order number: FKSA-ON-13631947. Estimated delivery 1-3 business days. Order total SAR 298.00.',
+        'label': 0,
+    },
+
+    # Netflix — legitimate terms update email
+    {
+        'sender_email': 'info@account.netflix.com',
+        'sender_name': 'Netflix',
+        'subject': 'Updates to our Terms of Use & Privacy Statement',
+        'body': 'We are reaching out with updates to our Terms of Use and Privacy Statement about interactive features, advertising, and data from advertisers.',
+        'label': 0,
+    },
+
+    # Safwat Al-Jawf — Arabic marketing email (health products, discount offer)
+    {
+        'sender_email': 'hello@safwat-aljawf.com',
+        'sender_name': 'صفوة الجوف',
+        'subject': 'دام صحتك ما تتساوم… نقدم لكم خصم ما هو عادي',
+        'body': 'اطلب بكود vip20 ولك خصم 15% لمدة 24 ساعة فقط. عروض العودة للمدارس من صفوة الجوف. منتجاتنا الصحية: زيت الزيتون، الزعتر البري، قرانولا. مع كل طلب هدية مميزة.',
+        'label': 0,
+    },
+
     # Sephora marketing email
     {
         'sender_email': 'info@communication.sephora-info-me.com',
@@ -285,6 +382,243 @@ EMAIL_TRAINING_DATA = [
         'sender_name': "L'Occitane En Provence",
         'subject': 'New arrivals just for you',
         'body': 'Discover our latest skincare collection.',
+        'label': 0,
+    },
+
+    # Amazon.sa — Eid marketing
+    {
+        'sender_email': 'store-news@amazon.sa',
+        'sender_name': 'Amazon.sa',
+        'subject': 'عروض العيد على الأحذية بخصم 80%',
+        'body': 'تسوق أحذية نسائية ورجالية بخصم يصل إلى 80%. توصيل سريع ومجاني مع برايم.',
+        'label': 0,
+    },
+    # Amazon.sa — order delivery
+    {
+        'sender_email': 'order-update@amazon.sa',
+        'sender_name': 'Amazon.sa',
+        'subject': 'Delivered: your Amazon.sa order',
+        'body': 'Your package was delivered. It was handed directly to a resident. Track your order in the Amazon app.',
+        'label': 0,
+    },
+    # Amazon.sa — shipping
+    {
+        'sender_email': 'shipment-tracking@amazon.sa',
+        'sender_name': 'Amazon.sa',
+        'subject': 'Your order has shipped',
+        'body': 'Your Amazon.sa order is on its way. Expected delivery tomorrow.',
+        'label': 0,
+    },
+
+    # Aura loyalty program (subdomain + hyphen = normal for marketing)
+    {
+        'sender_email': 'discover@your.aura-mena.com',
+        'sender_name': 'Aura',
+        'subject': 'We would love to hear your feedback',
+        'body': 'Thank you for visiting us at The Cheesecake Factory. Let us know how we did.',
+        'label': 0,
+    },
+    {
+        'sender_email': 'rewards@my.aura-mena.com',
+        'sender_name': 'Aura Rewards',
+        'subject': 'Your points balance',
+        'body': 'You have 1713 points in your Aura rewards account. Redeem them at any partner brand.',
+        'label': 0,
+    },
+
+    # Twitter/X notification
+    {
+        'sender_email': 'notify@twitter.com',
+        'sender_name': 'Twitter',
+        'subject': 'Someone liked your Tweet',
+        'body': 'Your Tweet got a like. See who liked it on Twitter.',
+        'label': 0,
+    },
+
+    # Spotify
+    {
+        'sender_email': 'no-reply@spotify.com',
+        'sender_name': 'Spotify',
+        'subject': 'Your Spotify receipt',
+        'body': 'Thanks for your Spotify Premium subscription. Your next billing date is next month.',
+        'label': 0,
+    },
+
+    # Uber receipt
+    {
+        'sender_email': 'noreply@uber.com',
+        'sender_name': 'Uber',
+        'subject': 'Your Tuesday trip with Uber',
+        'body': 'Thanks for riding with Uber. Here is your trip receipt. Total charged: 25.00 SAR.',
+        'label': 0,
+    },
+
+    # Booking.com confirmation
+    {
+        'sender_email': 'noreply@booking.com',
+        'sender_name': 'Booking.com',
+        'subject': 'Booking confirmation — Riyadh Marriott Hotel',
+        'body': 'Your booking is confirmed. Check-in: 10 May. Check-out: 12 May. Manage your booking on Booking.com.',
+        'label': 0,
+    },
+
+    # Airbnb
+    {
+        'sender_email': 'automated@airbnb.com',
+        'sender_name': 'Airbnb',
+        'subject': 'Reservation confirmed',
+        'body': 'Your reservation is confirmed. Your host is expecting you. Check your itinerary in the Airbnb app.',
+        'label': 0,
+    },
+
+    # Noon.com (Saudi e-commerce)
+    {
+        'sender_email': 'noreply@noon.com',
+        'sender_name': 'noon',
+        'subject': 'Your order has been shipped',
+        'body': 'Great news! Your noon order is on its way. Track your shipment in the noon app.',
+        'label': 0,
+    },
+
+    # SADAD (Saudi payment system)
+    {
+        'sender_email': 'noreply@sadad.com.sa',
+        'sender_name': 'SADAD',
+        'subject': 'فاتورة جديدة بانتظارك',
+        'body': 'لديك فاتورة جديدة في نظام سداد. يمكنك سدادها من خلال تطبيق البنك أو الصراف الآلي.',
+        'label': 0,
+    },
+
+    # Careem
+    {
+        'sender_email': 'receipts@careem.com',
+        'sender_name': 'Careem',
+        'subject': 'Your Careem ride receipt',
+        'body': 'Thank you for riding with Careem. Your trip summary and receipt are attached.',
+        'label': 0,
+    },
+
+    # YouTube
+    {
+        'sender_email': 'noreply@youtube.com',
+        'sender_name': 'YouTube',
+        'subject': 'A new comment on your video',
+        'body': 'Someone commented on your YouTube video. Sign in to reply.',
+        'label': 0,
+    },
+
+    # Instagram
+    {
+        'sender_email': 'mail@mail.instagram.com',
+        'sender_name': 'Instagram',
+        'subject': 'You have a new follower',
+        'body': 'Someone started following you on Instagram. See their profile in the app.',
+        'label': 0,
+    },
+
+    # Zoom meeting invite
+    {
+        'sender_email': 'no-reply@zoom.us',
+        'sender_name': 'Zoom',
+        'subject': 'You have been invited to a Zoom meeting',
+        'body': 'You are invited to join a Zoom meeting. Join from your computer or mobile app using the meeting ID provided.',
+        'label': 0,
+    },
+
+    # University (Arabic - KAU)
+    {
+        'sender_email': 'noreply@kau.edu.sa',
+        'sender_name': 'جامعة الملك عبدالعزيز',
+        'subject': 'إعلان دراسي',
+        'body': 'يُعلم الطلاب بأن الجدول الدراسي للفصل القادم متاح الآن على البوابة الإلكترونية.',
+        'label': 0,
+    },
+
+    # STC Pay
+    {
+        'sender_email': 'noreply@stcpay.com.sa',
+        'sender_name': 'STC Pay',
+        'subject': 'تم استلام تحويلك',
+        'body': 'تم إيداع مبلغ في محفظة STC Pay الخاصة بك. افتح التطبيق لعرض التفاصيل.',
+        'label': 0,
+    },
+
+    # Slack workspace
+    {
+        'sender_email': 'feedback@slack.com',
+        'sender_name': 'Slack',
+        'subject': 'You have unread messages in Slack',
+        'body': 'You have new messages waiting in your Slack workspace. Open Slack to catch up.',
+        'label': 0,
+    },
+
+    # Coursera certificate
+    {
+        'sender_email': 'no-reply@coursera.org',
+        'sender_name': 'Coursera',
+        'subject': 'Congratulations on completing your course',
+        'body': 'You have successfully completed Machine Learning on Coursera. Your certificate is ready to download.',
+        'label': 0,
+    },
+
+    # Austrian Airlines — flight booking confirmation
+    {
+        'sender_email': 'booking@austrian.com',
+        'sender_name': 'Austrian Airlines',
+        'subject': 'Your booking confirmation',
+        'body': 'Thank you for booking with Austrian Airlines. Your flight details are confirmed. Check in online from 47 hours before departure. Follow us on Instagram, Facebook, and Twitter.',
+        'label': 0,
+    },
+    {
+        'sender_email': 'newsletter@austrian.com',
+        'sender_name': 'Austrian Airlines',
+        'subject': 'Special fares this week',
+        'body': 'Book your next trip with Austrian Airlines and enjoy special fares. Visit our website for details. Connect with us on social media.',
+        'label': 0,
+    },
+
+    # KFC Saudi Arabia — promotional offer
+    {
+        'sender_email': 'noreply@offers.saudi.kfc.me',
+        'sender_name': 'KFC Saudi Arabia',
+        'subject': 'Limited time offer just for you',
+        'body': 'Enjoy our new menu items at KFC Saudi Arabia. Order now via the app or website. Valid for a limited time only.',
+        'label': 0,
+    },
+
+    # Schuh — shoe retailer order update
+    {
+        'sender_email': 'customerservices@email.schuh.co.uk',
+        'sender_name': 'schuh',
+        'subject': 'Your order has been dispatched',
+        'body': 'Your schuh order is on its way. Expected delivery in 1-2 business days. Track your order using the link in this email.',
+        'label': 0,
+    },
+
+    # Bath & Body Works Saudi Arabia
+    {
+        'sender_email': 'no-reply@bathandbodyworks.com.sa',
+        'sender_name': 'Bath & Body Works',
+        'subject': 'New arrivals: candles and body care',
+        'body': 'Discover our latest candles, lotions, and shower gels. Shop online or visit your nearest Bath & Body Works store.',
+        'label': 0,
+    },
+
+    # Warner Music Group — artist newsletter
+    {
+        'sender_email': 'news@wmg.com',
+        'sender_name': 'Warner Music',
+        'subject': 'New music from your favorite artists',
+        'body': 'Check out the latest releases from Warner Music artists. Stream now on Spotify, Apple Music, and YouTube.',
+        'label': 0,
+    },
+
+    # Squatwolf — fitness apparel
+    {
+        'sender_email': 'hello@squatwolf.com',
+        'sender_name': 'SQUATWOLF',
+        'subject': 'New collection just dropped',
+        'body': 'Train hard in our new collection. Free shipping on orders over $100. Shop now on our website.',
         'label': 0,
     },
 
@@ -399,6 +733,82 @@ EMAIL_TRAINING_DATA = [
         'sender_name': 'Dr. Aminu Kano',
         'subject': 'Business Partnership - $15 Million Fund Transfer',
         'body': 'I need your assistance to transfer USD15,000,000 from an inactive account. You will receive 30% commission. Send your full name, address, and bank details to proceed.',
+        'label': 1,
+    },
+
+    # Job offer scam
+    {
+        'sender_email': 'hr@globalcareers-hiring.net',
+        'sender_name': 'Global Careers HR',
+        'subject': 'You have been selected for a remote position',
+        'body': 'Congratulations! You have been selected for a remote work opportunity paying $5,000/month. No experience needed. Reply with your full name, address, and bank details to receive your starter kit.',
+        'label': 1,
+    },
+    {
+        'sender_email': 'recruitment@jobs-online-hiring.xyz',
+        'sender_name': 'Online Jobs Team',
+        'subject': 'Work from home — $800/day guaranteed',
+        'body': 'We are hiring remote workers. Earn $800 per day working from home. Send your ID and bank account number to get started immediately.',
+        'label': 1,
+    },
+
+    # Crypto scam
+    {
+        'sender_email': 'support@crypto-wallet-verify.com',
+        'sender_name': 'Crypto Wallet Support',
+        'subject': 'Your Bitcoin wallet requires verification',
+        'body': 'Your cryptocurrency wallet has been flagged for suspicious activity. Verify your wallet now or your funds will be frozen. Enter your seed phrase to confirm your identity.',
+        'label': 1,
+    },
+    {
+        'sender_email': 'noreply@bitcoin-reward-claim.top',
+        'sender_name': 'Bitcoin Rewards',
+        'subject': 'You have unclaimed Bitcoin worth $9,400',
+        'body': 'Our system shows you have unclaimed Bitcoin in your account. Click here to claim your cryptocurrency reward before it expires.',
+        'label': 1,
+    },
+
+    # Tax refund scam
+    {
+        'sender_email': 'refund@irs-tax-refund.xyz',
+        'sender_name': 'IRS Tax Refund',
+        'subject': 'Your tax refund of $2,840 is ready',
+        'body': 'The IRS has processed your tax return. You are eligible for a refund of $2,840. Confirm your bank account details within 48 hours to receive your payment.',
+        'label': 1,
+    },
+
+    # Fake invoice scam
+    {
+        'sender_email': 'billing@invoice-payment-due.net',
+        'sender_name': 'Accounts Payable',
+        'subject': 'Invoice #INV-2094 payment overdue',
+        'body': 'Please find attached invoice #INV-2094 for $3,200. This payment is overdue. Wire the amount to our new bank account immediately to avoid late fees.',
+        'label': 1,
+    },
+
+    # Attachment phishing
+    {
+        'sender_email': 'noreply@document-secure-share.xyz',
+        'sender_name': 'Secure Document',
+        'subject': 'Important document shared with you',
+        'body': 'A confidential document has been shared with you. Please open the attached file and enter your credentials to view it. This link expires in 24 hours.',
+        'label': 1,
+    },
+
+    {
+        'sender_email': 'emily.johnson2024@mailhost.xyz',
+        'sender_name': 'Emily Johnson',
+        'subject': 'I found your profile and would love to connect',
+        'body': 'Hello dear, I came across your profile and I am very interested in getting to know you. I am a nurse working abroad. Please reply so we can talk more. I have something important to share with you.',
+        'label': 1,
+    },
+
+    # Arabic job scam
+    {
+        'sender_email': 'hr@وظائف-عن-بعد.com',
+        'sender_name': 'فرص العمل',
+        'subject': 'وظيفة عن بعد براتب 5000 ريال',
+        'body': 'تم اختيارك للعمل عن بعد براتب 5000 ريال شهرياً. لا خبرة مطلوبة. أرسل بياناتك الشخصية ورقم حسابك البنكي للتسجيل الآن.',
         'label': 1,
     },
 ]
@@ -873,7 +1283,7 @@ URL_TRAINING_DATA = [
         'url': 'http://bank.com@security-alert.ru/login',
         'label': 1,    },
 
-    # === LEGITIMATE URLS (label=0) ===
+    # LEGITIMATE URLS (label=0) 
 
     {
         'url': 'https://www.google.com',

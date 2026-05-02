@@ -45,14 +45,31 @@ def init_db():
 init_db()
 
 # Initialize ML model
-print("Loading Random Forest ML model...")
-try:
-    model = PhishingMLDetector()
-    print("ML model loaded successfully!")
-except FileNotFoundError as e:
-    print(f"ERROR: {e}")
-    print("Please run 'python train_model.py' first to train the model.")
-    model = None
+_MODEL_PATH = os.path.join(_ML_DIR, 'cyberhunter_ml_model.pkl')
+_model_mtime = 0.0
+
+def _load_model():
+    global model, _model_mtime
+    print("Loading Random Forest ML model...")
+    try:
+        model = PhishingMLDetector(_MODEL_PATH)
+        _model_mtime = os.path.getmtime(_MODEL_PATH)
+        print("ML model loaded successfully!")
+    except FileNotFoundError as e:
+        print(f"ERROR: {e}")
+        model = None
+
+def _maybe_reload():
+    """Reload model if the .pkl file has been updated since last load."""
+    try:
+        mtime = os.path.getmtime(_MODEL_PATH)
+        if mtime > _model_mtime:
+            print("[Auto-reload] Model file changed — reloading...")
+            _load_model()
+    except OSError:
+        pass
+
+_load_model()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -154,6 +171,7 @@ def analyze_url():
         "model_type": "random_forest_ml"
     }
     """
+    _maybe_reload()
     try:
         if model is None:
             return jsonify({
@@ -228,6 +246,7 @@ def batch_analyze():
         "count": 2
     }
     """
+    _maybe_reload()
     try:
         if model is None:
             return jsonify({

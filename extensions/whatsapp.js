@@ -194,72 +194,97 @@ class WhatsAppPhishingDetector {
         let riskScore = 0;
         let reasons   = [];
 
-        // Rule-based first (always runs)
-        const matchedKeywords = this.matchSuspiciousKeywords(body);
-        const keywordHits = matchedKeywords.length;
-        riskScore += keywordHits * 20;
-        if (keywordHits > 0) reasons.push(`Suspicious keywords detected: ${matchedKeywords.join(', ')}`);
+        // Weighted signals — each fires independently, scores sum naturally.
+        // Weights reflect actual danger level so the final score is meaningful.
+        const weightedSignals = [
+            { pattern: /password|pin\b|otp|one.?time.?password|verification code|credit card|bank account|national id|copy of id|send your id|photo of your id|كلمة المرور|رقم سري|بيانات البنك|الهوية الوطنية/i,
+              weight: 40, label: 'Credential/identity request' },
+            { pattern: /send money|wire transfer|western union|bitcoin|crypto|wallet address|أرسل مبلغ|تحويل مالي|عملة رقمية/i,
+              weight: 38, label: 'Money transfer demand' },
+            { pattern: /delivery fee|customs fee|shipping fee|you have to pay.*deliver|pay.*to receive.*package|pay.*release.*parcel|missed delivery.*fee|لديك طرد.*ادفع|رسوم.*شحن|شحن.*رسوم|الرسوم المتبقية|رسوم.*متبقية|رسوم.*الشحن/i,
+              weight: 32, label: 'Delivery payment scam' },
+            { pattern: /جربه|جرب الرابط|جالي فعلاً|وصلني فعلاً|try it|try the link|it actually worked|i got paid|i received|share this link|forward this|أنا استلمت|وصلني مبلغ|كسبت فعلاً/i,
+              weight: 30, label: 'Social engineering (forward this, I got paid)' },
+            { pattern: /account will be (closed|suspended|locked|terminated)|suspended due to|unauthorized (login|access|sign.?in)|security breach|حسابك سيُغلق|نشاط مشبوه|اختراق/i,
+              weight: 28, label: 'Account threat' },
+            { pattern: /pay now|must pay|payment due|advance fee|pay the fee|pay to receive|رسوم|ادفع الآن/i,
+              weight: 22, label: 'Payment demand' },
+            { pattern: /login from (a new|unknown) device|new sign.?in detected|verify your account|confirm your (account|identity|number)|تسجيل دخول جديد/i,
+              weight: 20, label: 'Suspicious sign-in / verify account' },
+            { pattern: /lottery|jackpot|you.?ve? won|claim your (prize|reward|money)|selected as.{0,10}winner|يانصيب|ربحت الجائزة/i,
+              weight: 18, label: 'Lottery or prize scam' },
+            { pattern: /urgent|immediately|asap|act now|last chance|final notice|عاجل|فوري/i,
+              weight: 8, label: 'Urgency language' },
+        ];
 
-        // Extra score weight for high-risk categories (on top of keyword count)
-        if (this.suspiciousPatterns.credentials.test(body))    riskScore = Math.min(riskScore + 30, 100);
-        if (this.suspiciousPatterns.financial.test(body))      riskScore = Math.min(riskScore + 25, 100);
-        if (this.suspiciousPatterns.deliveryScam.test(body))   riskScore = Math.min(riskScore + 25, 100);
-        if (this.suspiciousPatterns.accountThreats.test(body)) riskScore = Math.min(riskScore + 25, 100);
+        for (const signal of weightedSignals) {
+            if (signal.pattern.test(body)) {
+                riskScore += signal.weight;
+                reasons.push(signal.label);
+            }
+        }
+        riskScore = Math.min(riskScore, 100);
+
+        // URL signals
         if (this.hasShortUrl(links)) {
-            riskScore = Math.min(riskScore + 20, 100);
+            riskScore = Math.min(riskScore + 12, 100);
             reasons.push('Contains shortened URL — destination hidden');
         }
         if (this.hasSuspiciousUrl(links)) {
-            riskScore = Math.min(riskScore + 35, 100);
+            riskScore = Math.min(riskScore + 28, 100);
             reasons.push('Contains suspicious or scam-associated link');
         }
-        if (links.length > 0 && this.moneyPattern.test(body)) {
-            riskScore = Math.min(riskScore + 25, 100);
-            reasons.push('Message contains a link with a money amount — possible scam');
-        }
-        if (this.suspiciousPatterns.socialEngineering.test(body)) {
-            riskScore = Math.min(riskScore + 30, 100);
-            reasons.push('Uses social proof ("I got money, try it") — common scam tactic');
+        if (this.moneyPattern.test(body)) {
+            const moneyBoost = links.length > 0 ? 18 : 10;
+            riskScore = Math.min(riskScore + moneyBoost, 100);
+            reasons.push(links.length > 0 ? 'Link combined with money amount — possible scam' : 'Specific money amount mentioned');
         }
 
-        // Try ML API for additional scoring
-        try {
-            const controller = new AbortController();
-            const timer = setTimeout(() => controller.abort(), this.API_TIMEOUT);
-
-            const res = await fetch(this.API_URL, {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    url: `whatsapp_contact@whatsapp.net`,
-                    sender_name: sender,
-                    email_body: body + ' ' + links.join(' ')
-                }),
-                signal: controller.signal
-            });
-            clearTimeout(timer);
-
-            if (res.ok) {
-                const result = await res.json();
-                const mlScore = result.risk_score || 0;
-                // Blend rule-based and ML scores only — don't show ML label reasons
-                // ML labels like "brand impersonation" may not match the actual message content
-                riskScore = Math.max(riskScore, mlScore * 0.6 + riskScore * 0.4);
+        // ML URL scanning — scan each link directly with the ML API
+        for (const url of links) {
+            try {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), this.API_TIMEOUT);
+                const res = await fetch(this.API_URL, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ url, sender_name: '', email_body: '' }),
+                    signal: controller.signal
+                });
+                clearTimeout(timer);
+                if (res.ok) {
+                    const result = await res.json();
+                    const urlScore = result.risk_score || 0;
+                    if (urlScore >= 70) {
+                        riskScore = Math.max(riskScore, urlScore);
+                        try {
+                            const hostname = new URL(url).hostname;
+                            reasons.push(`Phishing link: ${hostname} (${Math.round(urlScore)}% risk)`);
+                        } catch (_) {}
+                        if (result.feature_analysis && result.feature_analysis.length > 0) {
+                            reasons.push(result.feature_analysis[0].replace(/\[.*?\]\s*/, ''));
+                        }
+                        break;
+                    }
+                }
+            } catch (e) {
+                console.log('CyberHunter: Could not scan link', e.message);
             }
-        } catch (e) {
-            console.log('CyberHunter: ML API unavailable, using rule-based only');
         }
 
+        riskScore = Math.min(Math.round(riskScore), 100);
         console.log('CyberHunter: Risk score:', riskScore, 'Reasons:', reasons);
 
-        // Cache result so banners can be re-attached if WhatsApp re-renders the chat
-        this.analysisCache.set(msgId, {
-            riskScore,
-            reasons,
-            isWarning: riskScore >= 35
-        });
+        // Only warn if a genuinely dangerous signal fired (not just mild urgency alone)
+        const dangerSignalFired = weightedSignals
+            .slice(0, 8) // exclude the mild urgency-only signal at the end
+            .some(s => s.pattern.test(body)) || riskScore >= 70;
+        const isWarning = dangerSignalFired && riskScore >= 35;
 
-        if (riskScore >= 35) {
+        // Cache result so banners can be re-attached if WhatsApp re-renders the chat
+        this.analysisCache.set(msgId, { riskScore, reasons, isWarning });
+
+        if (isWarning) {
             this.showWarning(msgElement, riskScore, reasons);
         } else {
             this.showSafeBadge(msgElement, riskScore);

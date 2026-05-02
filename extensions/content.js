@@ -7,7 +7,7 @@ class EmailPhishingDetector {
         this.API_TIMEOUT = 5000; // 5 second timeout for API calls
 
         this.suspiciousPatterns = {
-            urgentLanguage: /urgent|immediate|action required|suspended|verify now|confirm identity|update required|asap|act now|today only|confirm immediately|account will be closed|last chance|عاجل|ضروري|فوري|مطلوب|معلق|تعليق|الآن|اليوم|حالاً|ينتهي|تنتهي|تحقق الآن|تصرف الآن|وقت محدود|اليوم فقط|أكد فوراً|سيتم إغلاق الحساب|آخر فرصة|خلال 24 ساعة/i,
+            urgentLanguage: /urgent|immediate|action required|suspended|verify now|confirm identity|update required|asap|act now|today only|confirm immediately|account will be closed|last chance|عاجل|ضروري|فوري|مطلوب|معلق|تعليق|اليوم|حالاً|ينتهي|تنتهي|تحقق الآن|تصرف الآن|وقت محدود|اليوم فقط|أكد فوراً|سيتم إغلاق الحساب|آخر فرصة|خلال 24 ساعة/i,
             threatLanguage: /unauthorized|suspicious activity|security alert|unusual activity|compromised|blocked|locked|غير مصرح|نشاط مشبوه|تحذير|موقوف|حظر|محظور|مخترق|تنبيه أمني|نشاط غير عادي|مقفل|تم الحظر|إيقاف|تجميد/i,
             rewards: /winner|prize|congratulations|claim|free gift|selected|فائز|جائزة|مبروك|يدعي|مجاني|هدية/i,
             financialTerms: /payment|invoice|refund|transaction|wire transfer|bank account|دفع|فاتورة|استرداد|تحويل|حساب بنكي|مصرفي|حساب مصرفي/i,
@@ -226,18 +226,18 @@ class EmailPhishingDetector {
                 analysis.detectionMethod = 'rule-based';
             }
 
-            // If phishing links detected, upgrade risk level
+            // If phishing links detected, boost risk score rather than forcing to 85%
+            // This prevents one suspicious tracking link from overriding a clean email
             if (phishingLinks.length > 0) {
                 analysis.phishingLinks = phishingLinks;
-                analysis.riskScore = Math.max(analysis.riskScore, 85); // Upgrade to high risk
-                analysis.riskLevel = 'high';
+                const linkBoost = Math.min(phishingLinks.length * 20, 40);
+                analysis.riskScore = Math.min(100, analysis.riskScore + linkBoost);
+                analysis.riskLevel = analysis.riskScore >= 70 ? 'high' :
+                                     analysis.riskScore >= 40 ? 'medium' : 'low';
 
-                // Initialize riskReasons if it doesn't exist
-                if (!analysis.riskReasons) {
-                    analysis.riskReasons = [];
-                }
+                if (!analysis.riskReasons) analysis.riskReasons = [];
                 analysis.riskReasons.push(`${phishingLinks.length} phishing link(s) detected in email`);
-                console.log(`CyberHunter: Email flagged as high risk due to ${phishingLinks.length} phishing links`);
+                console.log(`CyberHunter: Link boost applied: +${linkBoost}% → ${analysis.riskScore}%`);
             }
 
             // Store the result for re-display later
@@ -326,10 +326,38 @@ class EmailPhishingDetector {
         console.log(`CyberHunter: Scanning ${links.length} links with ML API...`);
 
         const safeDomains = [
+            // Social media
             'tiktok.com', 'instagram.com', 'twitter.com', 'x.com',
             'youtube.com', 'facebook.com', 'snapchat.com', 'linkedin.com',
+            'discord.com', 'discord.gg', 'reddit.com',
+            // Big tech
             'google.com', 'gmail.com', 'microsoft.com', 'apple.com',
-            'amazon.com', 'wikipedia.org', 'github.com', 'reddit.com'
+            'amazon.com', 'wikipedia.org', 'github.com',
+            // E-commerce & payments
+            'paypal.com', 'netflix.com', 'ebay.com', 'shopify.com',
+            'stripe.com', 'checkout.com',
+            // Email platforms
+            'substack.com', 'mailchimp.com', 'mcsv.net', 'list-manage.com',
+            'mailerlite.com', 'klaviyo.com', 'sendgrid.net', 'sparkpostmail.com',
+            'netsuite.com', 'mlsend.com',
+            // Saudi / regional
+            'stc.com.sa', 'mobily.com.sa', 'alrajhibank.com.sa', 'sadad.com.sa',
+            'amazon.sa', 'noon.com', 'careem.com',
+            // Gaming
+            'hoyoverse.com', 'hoyo.link', 'hoyolab.com',
+            // Brands seen in false positives
+            'hollisterco.com', 'hollisterco.sa', 'savagex.com', 'savagex.co.uk',
+            'sephora.com', 'sephora.sa', 'loccitane.com',
+            'booking.com', 'airbnb.com', 'uber.com', 'spotify.com',
+            'coursera.org', 'zoom.us', 'slack.com',
+            // Additional brands from false positives
+            'austrian.com', 'austrian-airlines.com',
+            'kfc.com', 'kfc.me', 'kfc.sa',
+            'schuh.co.uk', 'email.schuh.co.uk',
+            'bathandbodyworks.com', 'bathandbodyworks.com.sa',
+            'wmg.com', 'warnermusic.com',
+            'squatwolf.com',
+            'awstrack.me',
         ];
 
         for (const link of links) {

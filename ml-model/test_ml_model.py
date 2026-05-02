@@ -2,7 +2,7 @@
 Test the trained ML model on real examples
 """
 
-from phishing_detector_ml import PhishingMLDetector
+from phishing_detector_ml import PhishingMLDetector 
 
 # Test cases
 test_cases = [
@@ -55,12 +55,38 @@ test_cases = [
         'body': 'Your order has shipped and will arrive in 2 days.',
         'expected': 'low_risk'
     },
+    {
+        'name': 'Legitimate - Netflix Terms Update',
+        'email': 'info@account.netflix.com',
+        'sender': 'Netflix',
+        'body': 'We are reaching out with updates to our Terms of Use and Privacy Statement about interactive features and advertising.',
+        'expected': 'low_risk'
+    },
+    {
+        'name': 'Legitimate - Substack Newsletter',
+        'email': 'emilyhenry@substack.com',
+        'sender': "Emily's Grocery List",
+        'body': 'The Great Big Beautiful Life paperback will be available on May 19th everywhere books are sold. Signed copies available.',
+        'expected': 'low_risk'
+    },
+    {
+        'name': 'Legitimate - Hollister Order Confirmation',
+        'email': 'customercare@hollisterco.sa',
+        'sender': 'Customer Services Team',
+        'body': 'Thanks for your order. Order number FKSA-ON-13631947. Estimated delivery 1-3 business days. Order total SAR 298.00.',
+        'expected': 'low_risk'
+    },
+    {
+        'name': 'Legitimate - HoYoverse Game Newsletter',
+        'email': 'noreply.news@e-mail.hoyoverse.com',
+        'sender': 'P.A.I.M.O.N',
+        'body': 'Version Luna VI is now live. Congratulations on unlocking Reunion Gifts. Earn Primogems from limited-time exploration rewards.',
+        'expected': 'low_risk'
+    },
 ]
 
 def run_tests():
-    print("=" * 90)
     print("CyberHunter ML Model - Test Suite")
-    print("=" * 90)
 
     try:
         detector = PhishingMLDetector()
@@ -69,9 +95,8 @@ def run_tests():
         print("Please run: python train_model.py")
         return
 
-    print("\n" + "=" * 90)
+    print("\n" + "--" * 90)
     print("Running Tests")
-    print("=" * 90)
 
     passed = 0
     failed = 0
@@ -94,7 +119,6 @@ def run_tests():
         print(f"  Classification: {result['classification'].upper()}")
         print(f"  Is Phishing: {result['is_phishing']}")
         print(f"  Confidence: {result['confidence'] * 100:.1f}%")
-        print(f"  Model Type: {result['model_type']}")
 
         print(f"\nAnalysis:")
         for item in result['feature_analysis']:
@@ -129,4 +153,4 @@ def run_tests():
 
 
 if __name__ == '__main__':
-    run_tests()
+    run_tests() 

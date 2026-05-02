@@ -7,7 +7,7 @@ import re
 import pickle
 import numpy as np
 from sklearn.ensemble import RandomForestClassifier
-from sklearn.model_selection import train_test_split, cross_val_score
+from sklearn.model_selection import train_test_split, cross_val_score, StratifiedKFold
 from sklearn.metrics import classification_report, confusion_matrix, accuracy_score
 from training_data import TRAINING_DATA, get_stats
 from feature_extractor import FeatureExtractor
@@ -17,9 +17,9 @@ from feature_extractor import FeatureExtractor
 def train_model():
     """Train Random Forest classifier on phishing data"""
 
-    print("=" * 80)
+    print("-" * 80)
     print("CyberHunter ML Model Training")
-    print("=" * 80)
+    print("-" * 80)
 
     # Load training data
     stats = get_stats()
@@ -92,9 +92,10 @@ def train_model():
     print(f"Actual Legit      {cm[0][0]:3d}      {cm[0][1]:3d}")
     print(f"       Phishing   {cm[1][0]:3d}      {cm[1][1]:3d}")
 
-    # Cross-validation
-    print("\nCross-Validation (5-fold):")
-    cv_scores = cross_val_score(model, X, y, cv=5)
+    # Cross-validation — stratified so each fold has same phishing/legit ratio
+    print("\nCross-Validation (5-fold Stratified):")
+    skf = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    cv_scores = cross_val_score(model, X, y, cv=skf)
     print(f"  CV Scores: {cv_scores}")
     print(f"  Mean CV Accuracy: {cv_scores.mean() * 100:.2f}% (+/- {cv_scores.std() * 2 * 100:.2f}%)")
 
