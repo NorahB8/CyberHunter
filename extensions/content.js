@@ -297,12 +297,18 @@ class EmailPhishingDetector {
                 is_phishing: mlResult.is_phishing
             });
 
+            const recs = mlResult.feature_analysis || [];
+            const foundKeywords = this.extractSuspiciousKeywords(emailData);
+            if (foundKeywords.length > 0) {
+                recs.push(`[WARNING] Suspicious keywords detected in email: "${foundKeywords.join('", "')}"`);
+            }
+
             return {
                 riskScore: mlResult.risk_score,
                 riskLevel: mlResult.classification === 'high_risk' ? 'high' :
                           mlResult.classification === 'medium_risk' ? 'medium' : 'low',
                 features: this.convertMLFeatures(mlResult),
-                recommendations: mlResult.feature_analysis || [],
+                recommendations: recs,
                 detectionMethod: 'machine-learning (Random Forest)',
                 modelAccuracy: mlResult.model_accuracy
             };
@@ -576,6 +582,21 @@ class EmailPhishingDetector {
         });
 
         return { score: Math.min(score, 100), matches };
+    }
+
+    extractSuspiciousKeywords(emailData) {
+        const text = `${emailData.subject || ''} ${emailData.body || ''}`.toLowerCase();
+        const keywords = [
+            'urgent', 'immediate', 'action required', 'suspended', 'verify now',
+            'confirm identity', 'update required', 'act now', 'today only',
+            'last chance', 'account will be closed', 'confirm immediately',
+            'unauthorized', 'suspicious activity', 'security alert', 'compromised',
+            'blocked', 'locked', 'winner', 'prize', 'congratulations', 'selected',
+            'claim', 'free gift', 'donation', 'verify', 'payment', 'invoice',
+            'wire transfer', 'bank account', 'password', 'credit card', 'pin', 'cvv',
+            'verification code', 'social security', 'asap', 'limited time'
+        ];
+        return keywords.filter(kw => text.includes(kw));
     }
 
     detectURLMismatch(links) {
