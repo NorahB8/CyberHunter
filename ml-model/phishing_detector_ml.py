@@ -89,7 +89,6 @@ class PhishingMLDetector:
             override_score = 80  # High risk - multiple spam indicators
 
         # 5. Cloud storage abuse - suspicious path on legitimate cloud service - CRITICAL
-        # BUT: Exclude legitimate support/help domains
         elif ('storage.googleapis.com' in sender_email or 'amazonaws.com' in sender_email or 's3.' in sender_email):
             # Whitelist legitimate Google/Apple/Microsoft domains
             legitimate_domains = ['support.google.com', 'support.apple.com', 'support.microsoft.com',
