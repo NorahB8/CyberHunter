@@ -233,8 +233,11 @@ function initAuth() {
                 return;
             }
             await saveExtSession(data.user);
+            await chrome.storage.local.remove('scanHistory');
             msg.textContent = '';
             renderExtAuth();
+            loadStats();
+            loadRecentScans();
         } catch {
             msg.textContent = 'Server unavailable. Start the API server first.';
             msg.className = 'auth-msg error';

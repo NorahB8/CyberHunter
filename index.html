@@ -1276,10 +1276,30 @@
             }
         }
 
+        const LEGIT_DOMAINS = ['amazon.com','amazon.sa','amazon.co.uk','amazon.de','amazon.fr','amazon.it','amazon.es','amazon.ca','amazon.ae','amazon.in','amazon.nl','amazon.pl','amazon.se','amazon.com.au','amazon.com.br','amazon.com.mx','amazon.co.jp','amazon.sg','google.com','gmail.com','googleapis.com','apple.com','icloud.com','microsoft.com','outlook.com','paypal.com','netflix.com','fedex.com','dhl.com','ebay.com','linkedin.com','github.com','instagram.com','facebook.com','twitter.com','x.com'];
+
+        function isKnownLegit(url) {
+            try {
+                const host = new URL(url).hostname.replace(/^www\./, '');
+                return LEGIT_DOMAINS.some(d => host === d || host.endsWith('.' + d));
+            } catch(e) { return false; }
+        }
+
         function convertMLResultToDisplay(mlResult, normalizedUrl) {
             // Convert ML model result format to display format
             const features = mlResult.email_features || {};
             const isHTTPS = normalizedUrl.match(/^https:\/\//i);
+
+            // Override false positives for known legitimate domains
+            if (isKnownLegit(normalizedUrl)) {
+                features.brand_impersonation = 0;
+                features.typosquatting = 0;
+                mlResult.risk_score = Math.min(mlResult.risk_score || 0, 15);
+                mlResult.classification = 'low_risk';
+                mlResult.feature_analysis = (mlResult.feature_analysis || []).filter(a =>
+                    !a.includes('Brand impersonation') && !a.includes('Typosquatting') && !a.includes('CRITICAL')
+                );
+            }
 
             const displayFeatures = {
                 urlLength: {
@@ -1319,11 +1339,19 @@
                     value: 'Analyzed by ML model',
                     score: 0
                 },
-                tldRisk: {
-                    risk: features.suspicious_tld ? 'danger' : 'safe',
-                    value: features.suspicious_tld ? 'Suspicious TLD' : 'Standard TLD',
-                    score: features.suspicious_tld ? 0.6 : 0
-                },
+                tldRisk: (() => {
+                    const knownTlds = ['.com','.net','.org','.edu','.gov','.mil','.sa','.co.uk','.uk','.us','.de','.fr','.it','.es','.ca','.ae','.au','.jp','.sg','.nl','.pl','.se','.br','.mx','.tr','.in','.kr','.cn','.ru','.ch','.io','.co','.app','.dev','.ai','.me','.tv'];
+                    let isSuspTld = features.suspicious_tld;
+                    try {
+                        const host = new URL(normalizedUrl).hostname.replace(/^www\./,'');
+                        if (!knownTlds.some(t => host.endsWith(t))) isSuspTld = 1;
+                    } catch(e) {}
+                    return {
+                        risk: isSuspTld ? 'danger' : 'safe',
+                        value: isSuspTld ? 'Suspicious TLD' : 'Standard TLD',
+                        score: isSuspTld ? 0.6 : 0
+                    };
+                })(),
                 homographAttack: {
                     risk: (features.brand_impersonation || features.typosquatting) ? 'danger' : 'safe',
                     value: features.typosquatting && features.brand_impersonation
@@ -1348,8 +1376,8 @@
             let riskScore = Math.max(mlResult.risk_score || 0, featureRiskScore);
 
             let classification = riskScore >= 50 ? 'danger' : riskScore >= 25 ? 'warning' : 'safe';
-            // Respect ML override if it's higher risk
-            if (mlResult.classification === 'high_risk') classification = 'danger';
+            // Respect ML override only when score also confirms high risk
+            if (mlResult.classification === 'high_risk' && riskScore >= 50) classification = 'danger';
 
             return {
                 riskScore,

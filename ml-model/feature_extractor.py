@@ -80,7 +80,7 @@ class FeatureExtractor:
             'dhl': ['dhl.com', 'dhl.de', 'dhl.co.uk'],
             'fedex': ['fedex.com', 'fedex.co.uk'],
             'paypal': ['paypal.com'],
-            'amazon': ['amazon.com', 'amazon.sa', 'amazon.co.uk'],
+            'amazon': ['amazon.com', 'amazon.sa', 'amazon.co.uk', 'amazon.de', 'amazon.fr', 'amazon.it', 'amazon.es', 'amazon.ca', 'amazon.ae', 'amazon.in', 'amazon.nl', 'amazon.pl', 'amazon.se', 'amazon.com.au', 'amazon.com.br', 'amazon.com.mx', 'amazon.com.tr', 'amazon.co.jp', 'amazon.sg'],
             'microsoft': ['microsoft.com', 'outlook.com', 'live.com'],
             'apple': ['apple.com', 'icloud.com', 'email.apple.com'],
             'google': ['google.com', 'gmail.com', 'googleapis.com', 'googleusercontent.com', 'gstatic.com', 'googlevideo.com'],
@@ -357,7 +357,9 @@ class FeatureExtractor:
                     return 1
 
         # Check for brand name in subdomain (e.g., paypal.evil-site.com)
-        domain_parts = domain.split('.')
+        # Strip www. first so www.amazon.fr → amazon.fr (2 parts, skips check)
+        domain_no_www = domain[4:] if domain.startswith('www.') else domain
+        domain_parts = domain_no_www.split('.')
         if len(domain_parts) >= 3:
             subdomains = '.'.join(domain_parts[:-2]).lower()
             for brand in self.legitimate_brands:
@@ -392,8 +394,14 @@ class FeatureExtractor:
     def _check_tld(self, email):
         parsed = self._parse_input(email)
         domain = parsed['domain'].lower() if parsed['domain'] else email.lower()
-        suspicious_tlds = ['.tk', '.ml', '.ga', '.cf', '.gq', '.xyz', '.top', '.club']
-        return 1 if any(domain.endswith(tld) for tld in suspicious_tlds) else 0
+        legitimate_tlds = [
+            '.com', '.net', '.org', '.edu', '.gov', '.mil', '.int',
+            '.sa', '.co.uk', '.uk', '.us', '.de', '.fr', '.it', '.es',
+            '.ca', '.ae', '.au', '.jp', '.sg', '.nl', '.pl', '.se',
+            '.br', '.mx', '.tr', '.in', '.kr', '.cn', '.ru', '.ch',
+            '.io', '.co', '.app', '.dev', '.ai', '.me', '.tv',
+        ]
+        return 0 if any(domain.endswith(tld) for tld in legitimate_tlds) else 1
 
     def _count_username_digits(self, email):
         parsed = self._parse_input(email)
@@ -474,8 +482,11 @@ class FeatureExtractor:
             'fac3book': 'facebook',  # 3 instead of e
             'netf1ix': 'netflix',    # 1 instead of l
             'netfl1x': 'netflix',    # 1 instead of i
-            'netf1ix': 'netflix',    # 1 instead of li
             'n3tflix': 'netflix',    # 3 instead of e
+            'n4tflix': 'netflix',    # 4 instead of e
+            'netf1ix': 'netflix',    # 1 instead of li
+            'netlfix': 'netflix',    # transposed letters
+            'netflx': 'netflix',     # missing i
             'twitt3r': 'twitter',    # 3 instead of e
             'linkdin': 'linkedin',   # missing e
             'l1nkedin': 'linkedin',  # 1 instead of i
@@ -486,6 +497,12 @@ class FeatureExtractor:
             'g0ogle': 'google',      # 0 instead of first o
             'goog1e': 'google',      # 1 instead of l
             'go0gle': 'google',      # 0 instead of second o
+            'g0gle': 'google',       # 0 instead of o + missing o
+            'gogle': 'google',       # missing one o
+            'googgle': 'google',     # extra g
+            'gooogle': 'google',     # extra o
+            'amaz00n': 'amazon',     # both o replaced with 0
+            'amazoon': 'amazon',     # extra o
             'micosoft': 'microsoft', # missing r
             'microsfot': 'microsoft', # transposed letters
             'paypal1': 'paypal',     # extra 1
