@@ -148,6 +148,7 @@ def health_check():
     })
 
 
+#ML scanner
 @app.route('/api/analyze', methods=['POST'])
 def analyze_url():
     """
@@ -349,6 +350,7 @@ def get_features():
     })
 
 
+#download extension
 @app.route('/api/download-extension', methods=['GET'])
 def download_extension():
     """Download browser extension as ZIP file"""

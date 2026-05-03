@@ -256,7 +256,7 @@ class EmailPhishingDetector {
                 this.displaySafeIndicator(emailElement, emailId);
             }
 
-            // Log to storage
+            // Log to storage (scan history in extension)
             this.logScan(emailId, analysis, emailData.subject, emailData.sender, emailData.senderEmail);
         } catch (error) {
             console.error('CyberHunter: Error analyzing email', error);
@@ -297,6 +297,7 @@ class EmailPhishingDetector {
                 is_phishing: mlResult.is_phishing
             });
 
+            //shows detected suspicious words in banner
             const recs = mlResult.feature_analysis || [];
             const foundKeywords = this.extractSuspiciousKeywords(emailData);
             if (foundKeywords.length > 0) {
@@ -344,6 +345,7 @@ class EmailPhishingDetector {
 
         console.log(`CyberHunter: Scanning ${uniqueLinks.length} unique links (${links.length} total) with ML API...`);
 
+        //whitelist of big companies
         const safeDomains = [
             // Social media
             'tiktok.com', 'instagram.com', 'twitter.com', 'x.com',
@@ -379,7 +381,7 @@ class EmailPhishingDetector {
             'awstrack.me',
         ];
 
-        // Filter to scannable links first
+        // filters out links that shouldn't be scanned.
         const toScan = uniqueLinks.filter(link => {
             if (!link.href || (!link.href.startsWith('http://') && !link.href.startsWith('https://'))) return false;
             try {
@@ -521,7 +523,9 @@ class EmailPhishingDetector {
             }
 
             // Extract body
-            const bodyElement = emailElement.querySelector('[data-message-id] div[dir="ltr"]');
+            const bodyElement = emailElement.querySelector('[data-message-id] div[dir="ltr"]')
+                             || emailElement.querySelector('[data-message-id] div[dir="auto"]')
+                             || emailElement.querySelector('[data-message-id] .ii.gt');
             body = bodyElement ? bodyElement.textContent : '';
 
             // Extract links
@@ -946,6 +950,7 @@ class EmailPhishingDetector {
         }
     }
 
+   //after @
     analyzeDomain(domain) {
         if (!domain) {
             return { score: 0, issues: [] };
@@ -1279,7 +1284,7 @@ class EmailPhishingDetector {
 // Initialize detector
 const detector = new EmailPhishingDetector();
 
-// FR13 — Listen for site toggle from popup
+// FR13 — Listen for site toggle from popup (enable/disable scanning on current site)
 chrome.runtime.onMessage.addListener((request) => {
     if (request.action === 'setSiteEnabled') {
         detector.siteEnabled = request.enabled;

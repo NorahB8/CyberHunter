@@ -196,7 +196,7 @@ class PhishingMLDetector:
         }
 
     def _generate_analysis(self, features: Dict, risk_score: float, sender_email: str = '', email_body: str = '') -> list:
-        """Generate human-readable analysis from features"""
+        #Generate human-readable analysis from features
         analysis = []
         body_lower = (email_body or '').lower()
 
@@ -289,7 +289,7 @@ class PhishingMLDetector:
 
         return analysis
 
-    def get_feature_importance(self, top_n=10):
+    def get_feature_importance(self, top_n=10): #called in test_ml_model.py to show which features the model found most important
         """Get top N most important features"""
         feature_importance = sorted(
             zip(self.feature_names, self.model.feature_importances_),
